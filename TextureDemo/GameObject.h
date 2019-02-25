@@ -38,4 +38,7 @@ protected:
 
 	// Object's texture
 	GLuint texture;
+
+	float health;
+	float damage;
 };

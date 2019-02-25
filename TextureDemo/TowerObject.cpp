@@ -13,22 +13,19 @@ TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entit
 // Update function for moving the player object around
 void TowerObject::update(double deltaTime) {
 
-	// Checking for player input and changing velocity
-	if (glfwGetKey(Window::getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
-		velocity += glm::vec3(0.0f, 1.0f, 0.0f) * (float)deltaTime;
-		// This is where you should change the velocity vector of the player
+	if (currentEnemy != NULL) {
+
+		rotateTurret();
 	}
-	if (glfwGetKey(Window::getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
-		velocity += glm::vec3(0.0f, -1.0f, 0.0f) * (float)deltaTime;
-		// This is where you should change the velocity vector of the player
-	}
-	if (glfwGetKey(Window::getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
-		// This is where you should change the velocity vector of the player
-	}
-	if (glfwGetKey(Window::getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
-		// This is where you should change the velocity vector of the player
-	}
+	
+
+
 
 	// Call the parent's update method to move the object
 	GameObject::update(deltaTime);
+}
+
+void rotateTurret() {
+
+
 }
