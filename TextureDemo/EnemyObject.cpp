@@ -1,4 +1,4 @@
-#include "PlayerGameObject.h"
+#include "EnemyObject.h"
 
 #include "Window.h"
 
@@ -7,11 +7,11 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-PlayerGameObject::PlayerGameObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements)
+EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements)
 	: GameObject(entityPos, entityTexture, entityNumElements) {}
 
 // Update function for moving the player object around
-void PlayerGameObject::update(double deltaTime) {
+void EnemyObject::update(double deltaTime) {
 
 
 	// Call the parent's update method to move the object
