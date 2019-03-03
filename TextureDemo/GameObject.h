@@ -10,7 +10,7 @@
 
 class GameObject {
 public:
-	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements);
+	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements, std::string type);
 
 	// Updates the GameObject's state. Can be overriden for children
 	virtual void update(double deltaTime);
@@ -24,6 +24,7 @@ public:
 	inline glm::vec3& getVelocity() { return velocity; }
 	inline float getSpeed() { return speed; }
 	inline glm::vec3& getTargetPos() { return targetPos; }
+	inline std::string getType() { return type; }
 
 	inline GLuint getTex() { return texture; }
 
@@ -47,6 +48,7 @@ protected:
 	// Object's details
 	GLint numElements;
 	float objectSize; // Not currently being used (will be needed for collision detection when objects have a different scale)
+	std::string type;
 
 	// Object's texture
 	GLuint texture;

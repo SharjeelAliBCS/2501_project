@@ -7,8 +7,8 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-PlayerGameObject::PlayerGameObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements)
-	: GameObject(entityPos, entityTexture, entityNumElements) {}
+PlayerGameObject::PlayerGameObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type)
+	: GameObject(entityPos, entityTexture, entityNumElements,type) {}
 
 // Update function for moving the player object around
 void PlayerGameObject::update(double deltaTime) {

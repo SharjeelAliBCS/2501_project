@@ -7,24 +7,63 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLint entityNumElements)
-	: GameObject(entityPos, entityTexture, entityNumElements) {
+TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLint entityNumElements, std::string type)
+	: GameObject(entityPos, entityTexture, entityNumElements, type) {
 	turretAngle = 0.0f;
 	turretTexture = turrTex;
+	_state = Init;
+
+
 	
 }
 
 // Update function for moving the player object around
 void TowerObject::update(double deltaTime) {
-	std::cout <<turretAngle << std::endl;
-	rotateTurret();
+	
 	
 
-
-
+	switch (_state) {
+	case Init:
+		_state = Locate;
+		break;
+	case Idle:
+		break;
+	case Locate:
+		locateEnemy();
+		break;
+	case Fire:
+		break;
+	case Death:
+		break;
+	default:
+		break;
+	}
+	
 	// Call the parent's update method to move the object
 	GameObject::update(deltaTime);
 }
+void TowerObject::locateEnemy() {
+	float tx = position.x;
+	float ty = position.y;
+	float ex = currentEnemy->getPosition().x;
+	float ey = currentEnemy->getPosition().y;
+
+	float deltaX = tx-ex;
+	float deltaY = ty-ey;
+	float targetAngle = atan2(deltaY, deltaX);
+	//std::cout << "enemy x: " <<  ex <<", enemy y: " << ey << std::endl;
+	
+	turretAngle = targetAngle * (180 / 3.14f)+180;
+	std::cout << turretAngle << std::endl;
+
+}
+
+void TowerObject::deathAnimation() {
+}
+
+void TowerObject::fireEnemy() {
+}
+
 
 void TowerObject::render(Shader &shader) {
 	// Bind the entities texture
@@ -53,11 +92,4 @@ void TowerObject::render(Shader &shader) {
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 }
 
-void TowerObject::rotateTurret() {
-	turretAngle += 1;
 
-}
-
-void TowerObject::deathAnimation() {
-
-}

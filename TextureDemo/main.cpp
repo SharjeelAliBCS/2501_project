@@ -127,7 +127,7 @@ void setallTexture(void)
 	setthisTexture(tex[4], "Graphics/Map/7_destructible.png");
 	setthisTexture(tex[5], "Graphics/Map/6_spawn.png");
 
-	setthisTexture(tex[6], "Graphics/Enemy/monster_41.png");
+	setthisTexture(tex[6], "Graphics/Enemy/01_enemy.png");
 	setthisTexture(tex[7], "Graphics/Enemy/monster_42.png");
 
 	setthisTexture(tex[8], "Graphics/Map/2_checkpoint.png");
@@ -205,12 +205,13 @@ int main(void){
 			++height;
 		}
 
-		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0], size),texMap, fname, start,end);
+		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0], size,"map"),texMap, fname, start,end);
 
 		start = *(g.getBotStartSet().begin());
 		std::cout << std::endl << start;
-		PlayerGameObject *p1 = new PlayerGameObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[7], size);
-		PlayerGameObject *p2 = new PlayerGameObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[7], size);
+		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
+		EnemyObject *p2 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
+
 		p1->setSpeed(1.5);
 		gameObjects.push_back(p1);
 		float p1x = p1->getPosition().x;
@@ -290,7 +291,7 @@ int main(void){
 					float x = (float)xpos;
 					float y = (float)ypos;
 					g.getHoverCoords(x,y);
-					gameObjects.push_back(new TowerObject(glm::vec3(x,y, 0.0f), tex[10], tex[11], size));
+					gameObjects.push_back(new TowerObject(glm::vec3(x,y, 0.0f), tex[10], tex[11], size,"tower"));
 					
 
 				}
@@ -470,6 +471,14 @@ int main(void){
 			for (int i = 0; i < gameObjects.size(); i++) {
 				// Get the current object
 				GameObject* currentGameObject = gameObjects[i];
+
+				if (currentGameObject->getType().compare("tower") ){
+	
+					TowerObject *tower = static_cast<TowerObject *>(currentGameObject);
+			
+					tower->setCurrEnemy(p1);
+					
+				}
 
 				// Updates game objects
 				currentGameObject->update(deltaTime);
