@@ -44,8 +44,8 @@
 const std::string window_title_g = "Pathfinding Demo";
 const unsigned int window_width_g = 800;
 const unsigned int window_height_g = 600;
-const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
-
+//const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
+const glm::vec3 viewport_background_color_g(1, 1, 1);
 
 // Global texture info
 GLuint tex[30];
@@ -286,10 +286,10 @@ int main(void){
 
 				}
 				if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-					double xpos, ypos;
-					glfwGetCursorPos(Window::getWindow(), &xpos, &ypos);
-					float x = (float)xpos;
-					float y = (float)ypos;
+					//double xpos, ypos;
+					//glfwGetCursorPos(Window::getWindow(), &xpos, &ypos);
+					float x;// = (float)xpos;
+					float y;// = (float)ypos;
 					g.getHoverCoords(x,y);
 					gameObjects.push_back(new TowerObject(glm::vec3(x,y, 0.0f), tex[10], tex[11], size,"tower"));
 					
