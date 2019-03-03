@@ -33,13 +33,19 @@
     <ClCompile Include="PlayerGameObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TowerObject.cpp">
+    <ClCompile Include="Node.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graph.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BossObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EnemyObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BossObject.cpp">
+    <ClCompile Include="TowerObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,13 +65,19 @@
     <ClInclude Include="PlayerGameObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TowerObject.h">
+    <ClInclude Include="Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BossObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EnemyObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BossObject.h">
+    <ClInclude Include="TowerObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

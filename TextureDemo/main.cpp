@@ -1,3 +1,22 @@
+/* David Neudorf
+ * 101029913
+ * Mobile sprite added, an ant. At the time of writing it is only a single frame and does not rotate, 
+ *	 This is not a requirement in the spec but it would be nice to have.
+ * The player walks along the path determined via right click (as per diablo-style request)
+ *	 to the blue circle using code from lines 192 to about 340. I spent far too many hours 
+ *	 on this I was using that damned getNodeIdFromCoordinates which is screwy as hell. 
+ * Obstacles (white) are now added with left click and have their weight to 100000, they are not
+ *	 however impossible to path, Might fix this if I feel like it but is out of assignment scope regardless.
+ *	 Might also make obstacles togglable, but again not implemented as of writing (set in update)
+ * Black nodes were searched in the algorithm (set in pathfind method)
+ * A* implemented line 294 of graph.cc using Manhattan distance.
+ * Bonus has been implemented. Modified update and pathfind to show both paths. Red is only on one, 
+ *	 but that was only for checking that the start is changing so I don't much care.
+ * The only issue I'm aware of is some jumpyness when you move the window, but that is out of scope for this assignment.
+ * Path color can be cleared by the faster sprite, annoying but trivial.
+ */
+
+
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -14,23 +33,26 @@
 #include "Shader.h"
 #include "Window.h"
 #include "PlayerGameObject.h"
+#include "Graph.h"
+#include "TowerObject.h"
 
 // Macro for printing exceptions
 #define PrintException(exception_object)\
 	std::cerr << exception_object.what() << std::endl
 
 // Globals that define the OpenGL window and viewport
-const std::string window_title_g = "Transform Demo";
+const std::string window_title_g = "Pathfinding Demo";
 const unsigned int window_width_g = 800;
-const unsigned int window_height_g = 800;
-const glm::vec3 viewport_background_color_g(0.0, 0.0, 0.0);
+const unsigned int window_height_g = 600;
+const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
+
 
 // Global texture info
-GLuint tex[6];
+GLuint tex[10];
 
 // Global game object info
 std::vector<GameObject*> gameObjects;
-std::vector<GameObject*> backGround;
+
 
 // Create the geometry for a square (with two triangles)
 // Return the number of array elements that form the square
@@ -52,7 +74,7 @@ int CreateSquare(void) {
 
 
 	GLuint face[] = {
-		0, 1, 2, // t1
+		0, 1, 2, //t1
 		2, 3, 0  //t2
 	};
 
@@ -71,6 +93,7 @@ int CreateSquare(void) {
 	// Return number of elements in array buffer (6 in this case)
 	return sizeof(face) / sizeof(GLuint);
 }
+
 
 void setthisTexture(GLuint w, char *fname)
 {
@@ -92,13 +115,25 @@ void setthisTexture(GLuint w, char *fname)
 
 void setallTexture(void)
 {
-	glGenTextures(6, tex);
-	setthisTexture(tex[0], "0_boundary.png");
-	setthisTexture(tex[1], "1_empty.png");
-	setthisTexture(tex[2], "3_1hp.png");
-	setthisTexture(tex[3], "7_destructible.png");
-	setthisTexture(tex[4], "6_spawn.png");
-	setthisTexture(tex[5], "orb.png");
+//	tex = new GLuint[4];
+	glGenTextures(9, tex);
+	//setthisTexture(tex[0], "orb.png");
+
+	setthisTexture(tex[0], "0_0_boundary.png");
+	setthisTexture(tex[1], "0_1_boundary.png");
+
+	setthisTexture(tex[2], "1_empty.png");
+	setthisTexture(tex[3], "3_1hp.png");
+	setthisTexture(tex[4], "7_destructible.png");
+	setthisTexture(tex[5], "6_spawn.png");
+
+	setthisTexture(tex[6], "monster_41.png");
+	setthisTexture(tex[7], "monster_42.png");
+
+	setthisTexture(tex[8], "2_checkpoint.png");
+	setthisTexture(tex[9], "3_health.png");
+
+	setthisTexture(tex[10], "4_Unbuildable.png");
 
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
 }
@@ -130,27 +165,138 @@ int main(void){
 		// Set up the textures
 		setallTexture();
 
-		// Set up the background (position, scale, rotation, texture, vertex count)
-		backGround.push_back(new GameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex[0], size));
-		backGround.push_back(new GameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex[1], size));
-		backGround.push_back(new GameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex[2], size));
-		backGround.push_back(new GameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex[3], size));
-		backGround.push_back(new GameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex[4], size));
-		// Setup the player object (position, texture, vertex count)
-		
-		gameObjects.push_back(new PlayerGameObject(glm::vec3(0.0f, 0.0f, 0.0f), tex[5], size));
-		
+		std::map<std::string,GLuint> texMap = std::map<std::string, GLuint>();
+		texMap.insert(std::pair<std::string, GLuint >("0.5", tex[0]));
+		texMap.insert(std::pair<std::string, GLuint >("0", tex[1]));
+		texMap.insert(std::pair<std::string, GLuint >("1", tex[2]));
 
-		// Setup other objects
-		//gameObjects.push_back(new GameObject(glm::vec3(-5.0f, 5.0f, 0.0f), tex[2], size));
-		//gameObjects.push_back(new GameObject(glm::vec3(1.0f, -0.5f, 0.0f), tex[2], size));
+		texMap.insert(std::pair<std::string, GLuint >("2", tex[8]));
+		texMap.insert(std::pair<std::string, GLuint >("3", tex[3]));
+		texMap.insert(std::pair<std::string, GLuint >("4", tex[4]));
+		texMap.insert(std::pair<std::string, GLuint >("5", tex[8]));
+		texMap.insert(std::pair<std::string, GLuint >("6", tex[5]));
+		texMap.insert(std::pair<std::string, GLuint >("ELSE", tex[8]));
+		texMap.insert(std::pair<std::string, GLuint >("checkpoint", tex[8]));
+		texMap.insert(std::pair<std::string, GLuint >("hp", tex[9]));
+		texMap.insert(std::pair<std::string, GLuint >("tower", tex[10]));
 
 
+
+
+		std::string fname = "map2.csv";
+		int wid = 0;
+		int height = 0;
+		int start = 1149;
+		int end = 122;
+
+		//start = 415;
+		//end = 430;
+		std::ifstream in(fname);
+		std::string line, field;
+		while (getline(in, line)) { 
+			if (!height) {
+				std::stringstream ss(line);
+				while (getline(ss, field, ','))  // break line into comma delimitted fields
+				{
+					++wid;
+				}
+			}
+			++height;
+		}
+
+		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0], size),texMap, fname, start,end);
+
+		start = *(g.getBotStartSet().begin());
+		std::cout << std::endl << start;
+		PlayerGameObject *p1 = new PlayerGameObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[7], size);
+		PlayerGameObject *p2 = new PlayerGameObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[7], size);
+		p1->setSpeed(1.5);
+		gameObjects.push_back(p1);
+		float p1x = p1->getPosition().x;
+		float p1y = p1->getPosition().y;
+		float oldp1x = p1x;
+		float oldp1y = p1y;
+		gameObjects.push_back(p2);
+		float p2x = p2->getPosition().x;
+		float p2y = p2->getPosition().y;
+		float oldp2x = p2x;
+		float oldp2y = p2y;
+		//int id = g.getNodeIdFromCoords(p1x, p1y);
+	
+		g.setStart(start);
 		// Run the main loop
 		double lastTime = glfwGetTime();
-	
-		float cameraZoom = 0.04f;
+		Node* cur1 = &g.getNode(start);
+		Node* cur2 = &g.getNode(start);
+
+		p1->setCur(cur1);
+		p2->setCur(cur2);
+		float timeOfLastMove = 0.0f;
+
+		float maxCamZoom = 0.60f;
+		float minCamZoom = 0.07f;
+
+		float cameraZoom = 0.19f;
+		glm::vec3 cameraTranslatePos(glm::vec3(0.0f));
+		float camShiftInc = 0.5f;
+		float camZoomInc = 0.01f;
+
+		g.setZoom(cameraZoom);
+		g.setCamPos(cameraTranslatePos);
+		bool toggleBlock = false;
 		while (!glfwWindowShouldClose(window.getWindow())) {
+
+	
+
+			if (timeOfLastMove + 0.05 < glfwGetTime()) {
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
+					cameraTranslatePos.y -= camShiftInc * camShiftInc;
+					g.setCamPos(cameraTranslatePos);
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
+					cameraTranslatePos.y += camShiftInc * camShiftInc;
+					g.setCamPos(cameraTranslatePos);
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
+					cameraTranslatePos.x -= camShiftInc * camShiftInc;
+					g.setCamPos(cameraTranslatePos);
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
+					cameraTranslatePos.x += camShiftInc * camShiftInc;
+					g.setCamPos(cameraTranslatePos);
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_Z) == GLFW_PRESS) {
+					cameraZoom = std::fmin(cameraZoom + camZoomInc, maxCamZoom);
+					g.setZoom(cameraZoom);
+					timeOfLastMove = glfwGetTime();
+
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_X) == GLFW_PRESS) {
+					cameraZoom = std::fmax(cameraZoom - camZoomInc, minCamZoom);
+					g.setZoom(cameraZoom);
+					timeOfLastMove = glfwGetTime();
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_T) == GLFW_PRESS && 
+					(timeOfLastMove + 0.15 < glfwGetTime())) {
+					std::cout << "T" << std::endl;
+					toggleBlock = !toggleBlock;
+					timeOfLastMove = glfwGetTime();
+
+				}
+				if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+					double xpos, ypos;
+					glfwGetCursorPos(Window::getWindow(), &xpos, &ypos);
+					float x = (float)xpos;
+					float y = (float)ypos;
+					g.getHoverCoords(x,y);
+					gameObjects.push_back(new TowerObject(glm::vec3(x,y, 0.0f), tex[7], size));
+					
+
+				}
+
+			}
+			//std::cout << g.getZoom() << std::endl;
+			//std::cout << g.getCamPos().x << " " << g.getCamPos().y << std::endl;
 			// Clear background
 			window.clear(viewport_background_color_g);
 
@@ -162,23 +308,162 @@ int main(void){
 			// Select proper shader program to use
 			shader.enable();
 
-			// Setup camera to focus on the player object (the first object in the gameObjects array)
-			glm::vec3 cameraTranslatePos(-gameObjects[0]->getPosition());
-			//glm::vec3 cameraTranslatePos(-20,-20,0);
-
-			if (glfwGetKey(Window::getWindow(), GLFW_KEY_Z) == GLFW_PRESS) {
-				// This is where you should change the velocity vector of the player
-				cameraZoom += 0.001;
-			}
-
-			if (glfwGetKey(Window::getWindow(), GLFW_KEY_X) == GLFW_PRESS) {
-				// This is where you should change the velocity vector of the player
-				cameraZoom -= 0.001;
-			}
+			// Setup camera to focus on (0, 0)
+			
 			
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
 			shader.setUniformMat4("viewMatrix", viewMatrix);
+			
+			//animate p1
+			oldp1x = p1x;
+			oldp1y = p1y;
+			p1x = round(p1->getPosition().x * 100) / 100;
+			p1y = round(p1->getPosition().y * 100) / 100;
 
+			if (cur1->getId() != g.getEndId()) {
+				Node* next = cur1->getNextNode();
+				float nextx = next->getX();
+				float nexty = next->getY();
+				//update velocity
+				p1->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
+				glm::vec3 vel = p1->getVelocity();
+				if (p1x < nextx) {
+					vel.x = 1.0f;
+				}else if (p1x > nextx) {
+					vel.x = -1.0f;
+				}else {
+					vel.x = 0.0f;
+				}
+				if (p1y < nexty) {
+					vel.y = 1.0f;
+				}
+				else if (p1y > nexty) {
+					vel.y = -1.0f;
+				}else {
+					vel.y = 0.0f;
+				}
+				//if we walked over the node and we are not going to be at the end
+				if (((oldp1x <= nextx && nextx <= p1x) || (oldp1x >= nextx && nextx >= p1x)) &&
+					((oldp1y <= nexty && nexty <= p1y) || (oldp1y >= nexty && nexty >= p1y)) &&
+					next->getNextNode() != NULL) {
+					//update current node and color
+					//cur1->setOnPath(false);
+					cur1 = next;
+					p1->setPosition(glm::vec3(nextx, nexty, 0.0f));
+					p1->setCur(cur1);
+					p1x = round(p1->getPosition().x * 100) / 100;
+					p1y = round(p1->getPosition().y * 100) / 100;
+					//test variables are legacy from messing with the cursed getNodeIdFromCoords() method
+					Node* test = next->getNextNode();
+					float testx = test->getX();
+					float testy = test->getY();
+					next = test;
+					nextx = testx;
+					nexty = testy;
+					//update target
+					p1->setTargetPos(glm::vec3(test->getX(), test->getY(), 0.0f));
+					//update velocity
+					if (p1x < nextx) {
+						vel.x = 1.0f;
+					}else if (p1x > nextx) {
+						vel.x = -1.0f;
+					}else {
+						vel.x = 0.0f;
+					}
+					if (p1y < nexty) {
+						vel.y = 1.0f;
+					}
+					else if (p1y > nexty) {
+						vel.y = -1.0f;
+					}
+					else {
+						vel.y = 0.0f;
+					}
+				}
+				p1->setVelocity(vel);
+			}
+			//stop moving if we're done
+			if (cur1->getId() == g.getEndId()) {
+				std::cout << "fuck";
+				p1->setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+			}
+			
+
+			//animate p2 leaving out comments bc identical to above.
+			oldp2x = p2x;
+			oldp2y = p2y;
+			p2x = round(p2->getPosition().x * 100) / 100;
+			p2y = round(p2->getPosition().y * 100) / 100;
+
+			if (cur2->getId() != g.getEndId()) {
+				Node* next = cur2->getNextNode();
+				float nextx = next->getX();
+				float nexty = next->getY();
+
+				p2->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
+				glm::vec3 vel = p2->getVelocity();
+				if (p2x < nextx) {
+					vel.x = 1.0f;
+				}
+				else if (p2x > nextx) {
+					vel.x = -1.0f;
+				}
+				else {
+					vel.x = 0.0f;
+				}
+				if (p2y < nexty) {
+					vel.y = 1.0f;
+				}
+				else if (p2y > nexty) {
+					vel.y = -1.0f;
+				}
+				else {
+					vel.y = 0.0f;
+				}
+				if (((oldp2x <= nextx && nextx <= p2x) || (oldp2x >= nextx && nextx >= p2x)) &&
+					((oldp2y <= nexty && nexty <= p2y) || (oldp2y >= nexty && nexty >= p2y)) &&
+					next->getNextNode() != NULL) {
+
+					//cur2->setOnPath(false);
+					cur2 = next;
+					p2->setPosition(glm::vec3(nextx, nexty, 0.0f));
+					p2->setCur(cur2);
+					p2x = round(p2->getPosition().x * 100) / 100;
+					p2y = round(p2->getPosition().y * 100) / 100;
+
+					Node* test = next->getNextNode();
+					float testx = test->getX();
+					float testy = test->getY();
+					next = test;
+					nextx = testx;
+					nexty = testy;
+
+					p2->setTargetPos(glm::vec3(test->getX(), test->getY(), 0.0f));
+
+					if (p2x < nextx) {
+						vel.x = 1.0f;
+					}
+					else if (p2x > nextx) {
+						vel.x = -1.0f;
+					}
+					else {
+						vel.x = 0.0f;
+					}
+					if (p2y < nexty) {
+						vel.y = 1.0f;
+					}
+					else if (p2y > nexty) {
+						vel.y = -1.0f;
+					}
+					else {
+						vel.y = 0.0f;
+					}
+				}
+				p2->setVelocity(vel);
+			}
+			if (cur2->getId() == g.getEndId()) {
+				p2->setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+			}
 
 			// Update and render all game objects
 			for (int i = 0; i < gameObjects.size(); i++) {
@@ -188,84 +473,21 @@ int main(void){
 				// Updates game objects
 				currentGameObject->update(deltaTime);
 
-				// Check for collision between game objects
-				for (int j = i + 1; j < gameObjects.size(); j++) {
-					GameObject* otherGameObject = gameObjects[j];
-
-					float distance = glm::length(currentGameObject->getPosition() - otherGameObject->getPosition());
-					if (distance < 0.1f) {
-
-						// This is where you would perform collision response between objects
-					}
-				}
+				//reset color uniform.
+				GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+				glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
 
 				// Render game objects
 				currentGameObject->render(shader);
 			}
 
-			//------------------------------------------------------------------
-			using namespace std;
+			//update graph
+			g.update(p1->getCur(),toggleBlock, true);
+			g.update(p2->getCur(),toggleBlock, false);
+			//render graph
+			g.render(shader);
 
-			ifstream in("map.csv");
-
-			string line, field;
-
-			vector< vector<string> > array;  // the 2D array
-			vector<string> v;                // array of values for one line only
-			float j = -20.0;
-
-			while (getline(in, line))    // get next line in file
-			{
-
-				v.clear();
-				stringstream ss(line);
-				//for(int i =0;i<s)
-				//cout << line+"\n";
-				float i = -20.0;
-				while (getline(ss, field, ','))  // break line into comma delimitted fields
-				{
-					//cout << field+"\n";
-					if (field == "0") {
-						glm::vec3 out = glm::vec3(i, j, 0.0f);
-						backGround[0]->setPosition(out);
-						backGround[0]->render(shader);
-					}
-					else if (field == "1") {
-						glm::vec3 out = glm::vec3(i, j, 0.0f);
-						backGround[1]->setPosition(out);
-						backGround[1]->render(shader);
-					}
-					else if (field == "3") {
-						glm::vec3 out = glm::vec3(i, j, 0.0f);
-						backGround[2]->setPosition(out);
-						backGround[2]->render(shader);
-					}
-					else if (field == "4") {
-						glm::vec3 out = glm::vec3(i, j, 0.0f);
-						backGround[3]->setPosition(out);
-						backGround[3]->render(shader);
-					}
-					else if (field == "6") {
-						glm::vec3 out = glm::vec3(i, j, 0.0f);
-						backGround[4]->setPosition(out);
-						backGround[4]->render(shader);
-					}
-					i++;
-				}
-				j++;
-			}
-			//------------------------------------------------------------------
-
-			/* Draw background
-			for (int i = 0; i < backGround.size(); i++) {
-				GameObject* currentBackGround = backGround[i];
-			
-				currentBackGround->render(shader);
-				//backGround[1]->render(shader);
-			}
-			*/
 			// Update other events like input handling
-
 			glfwPollEvents();
 
 			// Push buffer drawn in the background onto the display

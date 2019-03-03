@@ -8,7 +8,9 @@
 */
 
 TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements)
-	: GameObject(entityPos, entityTexture, entityNumElements) {}
+	: GameObject(entityPos, entityTexture, entityNumElements) {
+	std::cout << entityPos.x << ", " << entityPos.y << std::endl;
+}
 
 // Update function for moving the player object around
 void TowerObject::update(double deltaTime) {
@@ -25,7 +27,17 @@ void TowerObject::update(double deltaTime) {
 	GameObject::update(deltaTime);
 }
 
-void rotateTurret() {
+void TowerObject::render(Shader &shader) {
+	// Bind the entities texture
 
+	GameObject::render(shader);
+}
+
+void TowerObject::rotateTurret() {
+
+
+}
+
+void TowerObject::deathAnimation() {
 
 }
