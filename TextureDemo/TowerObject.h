@@ -6,7 +6,7 @@
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements);
+	TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex,GLint entityNumElements);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -16,9 +16,11 @@ public:
 	void setCurrEnemy(EnemyObject* enemy) { currentEnemy = enemy; }
 	
 private:
-	float rotationSpeed;
+	float rotationSpeed, turretAngle;
 	void deathAnimation();
 	void rotateTurret();
+
+	GLuint turretTexture;
 
 	EnemyObject* currentEnemy;
 

@@ -48,7 +48,7 @@ const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
 
 
 // Global texture info
-GLuint tex[10];
+GLuint tex[30];
 
 // Global game object info
 std::vector<GameObject*> gameObjects;
@@ -116,24 +116,25 @@ void setthisTexture(GLuint w, char *fname)
 void setallTexture(void)
 {
 //	tex = new GLuint[4];
-	glGenTextures(9, tex);
+	glGenTextures(30, tex);
 	//setthisTexture(tex[0], "orb.png");
+	
+	setthisTexture(tex[0], "Graphics/Map/0_0_boundary.png");
+	setthisTexture(tex[1], "Graphics/Map/0_1_boundary.png");
 
-	setthisTexture(tex[0], "0_0_boundary.png");
-	setthisTexture(tex[1], "0_1_boundary.png");
+	setthisTexture(tex[2], "Graphics/Map/1_empty.png");
+	setthisTexture(tex[3], "Graphics/Map/3_1hp.png");
+	setthisTexture(tex[4], "Graphics/Map/7_destructible.png");
+	setthisTexture(tex[5], "Graphics/Map/6_spawn.png");
 
-	setthisTexture(tex[2], "1_empty.png");
-	setthisTexture(tex[3], "3_1hp.png");
-	setthisTexture(tex[4], "7_destructible.png");
-	setthisTexture(tex[5], "6_spawn.png");
+	setthisTexture(tex[6], "Graphics/Enemy/monster_41.png");
+	setthisTexture(tex[7], "Graphics/Enemy/monster_42.png");
 
-	setthisTexture(tex[6], "monster_41.png");
-	setthisTexture(tex[7], "monster_42.png");
+	setthisTexture(tex[8], "Graphics/Map/2_checkpoint.png");
+	setthisTexture(tex[9], "Graphics/Map/3_health.png");
 
-	setthisTexture(tex[8], "2_checkpoint.png");
-	setthisTexture(tex[9], "3_health.png");
-
-	setthisTexture(tex[10], "4_Unbuildable.png");
+	setthisTexture(tex[10], "Graphics/Tower/01_tower.png");
+	setthisTexture(tex[11], "Graphics/Tower/01_turret.png");
 
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
 }
@@ -289,7 +290,7 @@ int main(void){
 					float x = (float)xpos;
 					float y = (float)ypos;
 					g.getHoverCoords(x,y);
-					gameObjects.push_back(new TowerObject(glm::vec3(x,y, 0.0f), tex[7], size));
+					gameObjects.push_back(new TowerObject(glm::vec3(x,y, 0.0f), tex[10], tex[11], size));
 					
 
 				}
