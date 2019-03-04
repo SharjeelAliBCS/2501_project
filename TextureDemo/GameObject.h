@@ -21,7 +21,7 @@ public:
 
 	// Getters
 	inline glm::vec3& getPosition() { return position; }
-	inline glm::vec3& getVelocity() { return velocity; }
+	inline glm::vec3& getDirection() { return direction; }
 	inline float getSpeed() { return speed; }
 	inline glm::vec3& getTargetPos() { return targetPos; }
 	inline std::string getType() { return type; }
@@ -30,8 +30,9 @@ public:
 
 	// Setters
 	inline void setPosition(glm::vec3& newPosition) { position = newPosition; }
-	inline void setVelocity(glm::vec3& newVelocity) { velocity = newVelocity; }
+	inline void setDirection(glm::vec3& newDir) { direction = newDir; }
 	inline void setSpeed(float s) { speed = s; }
+	inline void setRotation(float r) { rotation = r; }
 	inline void setTargetPos(glm::vec3& newTarPos) { targetPos = newTarPos; }
 	
 	inline void setTex(GLuint t) { texture = t; }
@@ -41,8 +42,8 @@ protected:
 	// Object's Transform Variables
 	// TODO: Add more transformation variables
 	glm::vec3 position;
-	glm::vec3 velocity;
-	float speed;
+	glm::vec3 direction;
+	float speed,rotation=0.0f;
 	glm::vec3 targetPos;
 
 	// Object's details

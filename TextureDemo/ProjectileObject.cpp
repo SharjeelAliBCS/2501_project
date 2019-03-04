@@ -19,14 +19,15 @@ ProjectileObject::ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, G
 	damage = 10.0f;
 	speed = s;
 	exists = true;
+	rotation = angle;
 }
 
 // Update function for moving the player object around
 void ProjectileObject::update(double deltaTime) {
 	float vX = 0;
 	float vY = 0;
-	vX = speed * cos(angle*3.14159 / 180);
-	vY = speed * sin(angle*3.14159 / 180);
+	vX = speed * cos(rotation*3.14159 / 180);
+	vY = speed * sin(rotation*3.14159 / 180);
 	position.x += vX;
 	position.y += vY;
 	float distanceTar = glm::length(position - target->getPosition());

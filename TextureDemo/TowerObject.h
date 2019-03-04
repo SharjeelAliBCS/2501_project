@@ -17,7 +17,7 @@ public:
 	void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
 	
 private:
-	float rotationSpeed, turretAngle;
+	float rotationSpeed;
 
 	//*********Finite State Machine******
 	enum State {

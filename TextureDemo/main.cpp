@@ -52,7 +52,11 @@ GLuint tex[30];
 
 // Global game object info
 std::vector<GameObject*> gameObjects;
+std::map<std::string, std::vector<EnemyObject*>> enemyMap;
 
+
+std::vector<TowerObject*> towerObjects;
+std::vector<EnemyObject*> enemyObjects;
 
 // Create the geometry for a square (with two triangles)
 // Return the number of array elements that form the square
@@ -135,7 +139,8 @@ void setallTexture(void)
 
 	setthisTexture(tex[10], "Graphics/Tower/01_tower.png");
 	setthisTexture(tex[11], "Graphics/Tower/01_turret.png");
-	setthisTexture(tex[12], "Graphics/Tower/monster_41.png");
+	setthisTexture(tex[12], "Graphics/Tower/01_projectile.png");
+
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
 }
 
@@ -214,25 +219,26 @@ int main(void){
 
 		p1->setSpeed(1.5);
 		gameObjects.push_back(p1);
-		float p1x = p1->getPosition().x;
-		float p1y = p1->getPosition().y;
-		float oldp1x = p1x;
-		float oldp1y = p1y;
 		gameObjects.push_back(p2);
-		float p2x = p2->getPosition().x;
-		float p2y = p2->getPosition().y;
-		float oldp2x = p2x;
-		float oldp2y = p2y;
-		//int id = g.getNodeIdFromCoords(p1x, p1y);
-	
+
+		enemyMap["test"].push_back(p1);
+		enemyMap["test"].push_back(p2);
+
+		Node* cur = &g.getNode(start);
+		for (EnemyObject* e : enemyMap["test"]) {
+			e->oldx = round(e->getPosition().x * 100) / 100;
+			e->oldy = round(e->getPosition().y * 100) / 100;
+			e->setCur(cur);
+		}
+
+
+
+		
 		g.setStart(start);
 		// Run the main loop
 		double lastTime = glfwGetTime();
-		Node* cur1 = &g.getNode(start);
-		Node* cur2 = &g.getNode(start);
-
-		p1->setCur(cur1);
-		p2->setCur(cur2);
+		
+	
 		float timeOfLastMove = 0.0f;
 
 		float maxCamZoom = 0.60f;
@@ -246,6 +252,9 @@ int main(void){
 		g.setZoom(cameraZoom);
 		g.setCamPos(cameraTranslatePos);
 		bool toggleBlock = false;
+
+		float enemyX, enemyY, oldEnemyX, oldEnemyY;
+
 		while (!glfwWindowShouldClose(window.getWindow())) {
 
 	
@@ -293,7 +302,7 @@ int main(void){
 					int id = g.getHover();
 					g.getHoverCoords(x,y);
 					if (g.getNode(id).getBuildable()) {
-						gameObjects.push_back(new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11],tex[12], size, "tower"));
+						towerObjects.push_back(new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], size, "tower"));
 						std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl;
 						g.getNode(id).toggleTower();
 						std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl<<std::endl;
@@ -325,168 +334,137 @@ int main(void){
 			shader.setUniformMat4("viewMatrix", viewMatrix);
 			
 			//animate p1
-			oldp1x = p1x;
-			oldp1y = p1y;
-			p1x = round(p1->getPosition().x * 100) / 100;
-			p1y = round(p1->getPosition().y * 100) / 100;
+			//oldp1x = p1x;
+			//oldp1y = p1y;
+			for (EnemyObject* e : enemyMap["test"]) {
+				oldEnemyX = e->oldx;
+				oldEnemyY = e->oldy;
 
-			if (cur1->getId() != g.getEndId()) {
-				Node* next = cur1->getNextNode();
-				float nextx = next->getX();
-				float nexty = next->getY();
-				//update velocity
-				p1->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
-				glm::vec3 vel = p1->getVelocity();
-				if (p1x < nextx) {
-					vel.x = 1.0f;
-				}else if (p1x > nextx) {
-					vel.x = -1.0f;
-				}else {
-					vel.x = 0.0f;
-				}
-				if (p1y < nexty) {
-					vel.y = 1.0f;
-				}
-				else if (p1y > nexty) {
-					vel.y = -1.0f;
-				}else {
-					vel.y = 0.0f;
-				}
-				//if we walked over the node and we are not going to be at the end
-				if (((oldp1x <= nextx && nextx <= p1x) || (oldp1x >= nextx && nextx >= p1x)) &&
-					((oldp1y <= nexty && nexty <= p1y) || (oldp1y >= nexty && nexty >= p1y)) &&
-					next->getNextNode() != NULL) {
-					//update current node and color
-					//cur1->setOnPath(false);
-					cur1 = next;
-					p1->setPosition(glm::vec3(nextx, nexty, 0.0f));
-					p1->setCur(cur1);
-					p1x = round(p1->getPosition().x * 100) / 100;
-					p1y = round(p1->getPosition().y * 100) / 100;
-					//test variables are legacy from messing with the cursed getNodeIdFromCoords() method
-					Node* test = next->getNextNode();
-					float testx = test->getX();
-					float testy = test->getY();
-					next = test;
-					nextx = testx;
-					nexty = testy;
-					//update target
-					p1->setTargetPos(glm::vec3(test->getX(), test->getY(), 0.0f));
+				enemyX = round(e->getPosition().x * 100) / 100;
+				enemyY = round(e->getPosition().y * 100) / 100;
+
+				e->oldx = enemyX;
+				e->oldy = enemyY;
+
+				cur = e->getCur();
+
+
+				if (cur->getId() != g.getEndId() && cur->getNextNode()!=NULL) {
+
+					Node* next = cur->getNextNode();
+					float nextx = next->getX();
+					float nexty = next->getY();
+
+
 					//update velocity
-					if (p1x < nextx) {
-						vel.x = 1.0f;
-					}else if (p1x > nextx) {
-						vel.x = -1.0f;
-					}else {
-						vel.x = 0.0f;
+					e->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
+					e->setDirection(glm::normalize(glm::vec3(nextx - enemyX, nexty - enemyY, 0.0f)));
+					glm::vec3 dir = e->getDirection();
+					dir.x = glm::round(dir.x);
+					dir.y = glm::round(dir.y);
+					e->setDirection(dir);
+					std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
+
+					//if we walked over the node and we are not going to be at the end
+					//std::cout << "oldx: " << oldp1x << "  x: " << p1x << "  nextx: " << nextx << std::endl;
+					//std::cout << "oldY: " << oldp1y << "  y: " << p1y << "  nexty: " << nexty << std::endl;
+
+					if ((oldEnemyY <= nexty && nexty <= enemyY) || (oldEnemyY >= nexty && nexty >= enemyY)) {
+						//if (bounceY || true) {
+						glm::vec3 pos = e->getPosition();
+						pos.y = nexty;
+						e->setPosition(pos);
+						cur = next;
+						e->setCur(cur);
+						//std::cout << "=> "<< (next->getNextNode() == NULL)<<std::endl;
+						if (next->getNextNode() != NULL) {
+
+							next = cur->getNextNode();
+							nextx = next->getX();
+							nexty = next->getY();
+
+
+							//update velocity
+							e->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
+							e->setDirection(glm::normalize(glm::vec3(nextx - enemyX, nexty - enemyY, 0.0f)));
+							glm::vec3 dir = e->getDirection();
+							dir.x = glm::round(dir.x);
+							dir.y = glm::round(dir.y);
+							e->setDirection(dir);
+							std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
+						}
+						else {
+							//std::cout << "this one";
+							e->setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+						}
+						//vel.y = 0;
+						//}
+						//++bounceY %= 2;
 					}
-					if (p1y < nexty) {
-						vel.y = 1.0f;
+					if ((oldEnemyX <= nextx && nextx <= enemyX) || (oldEnemyX >= nextx && nextx >= enemyX)) {
+						//if (bounceX || true) {
+						glm::vec3 pos = e->getPosition();
+						pos.x = nextx;
+						e->setPosition(pos);
+						//vel.x = 0;
+						cur = next;
+						e->setCur(cur);
+						//}
+						//++bounceX %= 2;
+						if (next->getNextNode() != NULL) {
+
+							next = cur->getNextNode();
+							nextx = next->getX();
+							nexty = next->getY();
+
+
+							//update velocity
+							e->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
+							e->setDirection(glm::normalize(glm::vec3(nextx - enemyX, nexty - enemyY, 0.0f)));
+							glm::vec3 dir = e->getDirection();
+							dir.x = glm::round(dir.x);
+							dir.y = glm::round(dir.y);
+							e->setDirection(dir);
+							std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
+
+						}
+						else {
+							//std::cout << "This two";
+							e->setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+						}
+						
+
 					}
-					else if (p1y > nexty) {
-						vel.y = -1.0f;
-					}
-					else {
-						vel.y = 0.0f;
-					}
+
+
 				}
-				p1->setVelocity(vel);
-			}
-			//stop moving if we're done
-			if (cur1->getId() == g.getEndId()) {
-				std::cout << "fuck";
-				p1->setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+
+				//stop moving if we're done
+				if (cur->getId() == g.getEndId() || cur->getNextNode() == NULL) {
+					std::cout << "done";
+					e->setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+				}
+
 			}
 			
 
-			//animate p2 leaving out comments bc identical to above.
-			oldp2x = p2x;
-			oldp2y = p2y;
-			p2x = round(p2->getPosition().x * 100) / 100;
-			p2y = round(p2->getPosition().y * 100) / 100;
-
-			if (cur2->getId() != g.getEndId()) {
-				Node* next = cur2->getNextNode();
-				float nextx = next->getX();
-				float nexty = next->getY();
-
-				p2->setTargetPos(glm::vec3(nextx, nexty, 0.0f));
-				glm::vec3 vel = p2->getVelocity();
-				if (p2x < nextx) {
-					vel.x = 1.0f;
-				}
-				else if (p2x > nextx) {
-					vel.x = -1.0f;
-				}
-				else {
-					vel.x = 0.0f;
-				}
-				if (p2y < nexty) {
-					vel.y = 1.0f;
-				}
-				else if (p2y > nexty) {
-					vel.y = -1.0f;
-				}
-				else {
-					vel.y = 0.0f;
-				}
-				if (((oldp2x <= nextx && nextx <= p2x) || (oldp2x >= nextx && nextx >= p2x)) &&
-					((oldp2y <= nexty && nexty <= p2y) || (oldp2y >= nexty && nexty >= p2y)) &&
-					next->getNextNode() != NULL) {
-
-					//cur2->setOnPath(false);
-					cur2 = next;
-					p2->setPosition(glm::vec3(nextx, nexty, 0.0f));
-					p2->setCur(cur2);
-					p2x = round(p2->getPosition().x * 100) / 100;
-					p2y = round(p2->getPosition().y * 100) / 100;
-
-					Node* test = next->getNextNode();
-					float testx = test->getX();
-					float testy = test->getY();
-					next = test;
-					nextx = testx;
-					nexty = testy;
-
-					p2->setTargetPos(glm::vec3(test->getX(), test->getY(), 0.0f));
-
-					if (p2x < nextx) {
-						vel.x = 1.0f;
-					}
-					else if (p2x > nextx) {
-						vel.x = -1.0f;
-					}
-					else {
-						vel.x = 0.0f;
-					}
-					if (p2y < nexty) {
-						vel.y = 1.0f;
-					}
-					else if (p2y > nexty) {
-						vel.y = -1.0f;
-					}
-					else {
-						vel.y = 0.0f;
-					}
-				}
-				p2->setVelocity(vel);
-			}
-			if (cur2->getId() == g.getEndId()) {
-				p2->setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+			for (int i = 0; i < towerObjects.size(); i++) {
+				// Get the current object
+				TowerObject* currentGameObject = towerObjects[i];
+				currentGameObject->setCurrEnemy(p1);
+				// Updates game objects
+				currentGameObject->update(deltaTime);
+				//reset color uniform.
+				GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+				glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
+				// Render game objects
+				currentGameObject->render(shader);
 			}
 
 			// Update and render all game objects
 			for (int i = 0; i < gameObjects.size(); i++) {
 				// Get the current object
 				GameObject* currentGameObject = gameObjects[i];
-
-				if (currentGameObject->getType().compare("tower") ){
-	
-					TowerObject *tower = static_cast<TowerObject *>(currentGameObject);
-			
-					tower->setCurrEnemy(p2);
-					
-				}
 
 				// Updates game objects
 				currentGameObject->update(deltaTime);
@@ -520,3 +498,4 @@ int main(void){
 
 	return 0;
 }
+

@@ -12,9 +12,12 @@ public:
 	virtual void update(double deltaTime) override;
 	inline void setCur(Node* n) { cur = n; }
 	inline Node* getCur() { return cur; }
+
+	float oldx;
+	float oldy;
 protected:
 	Node * cur;
-private:
 	float speed;
+
 };
 

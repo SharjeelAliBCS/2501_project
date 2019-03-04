@@ -10,12 +10,12 @@
 TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLuint bulTex,GLint entityNumElements, std::string type)
 	: GameObject(entityPos, entityTexture, entityNumElements, type) {
 	projectileTex = bulTex;
-	turretAngle = 0.0f;
+	rotation = 0.0f;
 	turretTexture = turrTex;
 	size = numElements;
 	_state = Init;
 	fireRate = 10;
-	frames = 0.0f;
+	frames = 0;
 
 	
 }
@@ -27,7 +27,7 @@ void TowerObject::update(double deltaTime) {
 
 	for (int i = 0; i < bullObjects.size(); i++) {
 		bullObjects[i]->setCurrEnemy(currentEnemy);
-		bullObjects[i]->setAngle(turretAngle);
+		bullObjects[i]->setRotation(rotation);
 		bullObjects[i]->update(deltaTime);
 
 		if (!bullObjects[i]->getExists()) {
@@ -73,7 +73,7 @@ void TowerObject::locateEnemy() {
 	float targetAngle = atan2(deltaY, deltaX);
 	//std::cout << "enemy x: " <<  ex <<", enemy y: " << ey << std::endl;
 	
-	turretAngle = targetAngle * (180 / 3.14f)+180;
+	rotation = targetAngle * (180 / 3.14f)+180;
 
 	fireEnemy();
 	
@@ -87,7 +87,7 @@ void TowerObject::deathAnimation() {
 void TowerObject::fireEnemy() {
 	if (frames%fireRate==0) {
 		
-		bullObjects.push_back(new ProjectileObject(position, projectileTex, size, "t_projectile", currentEnemy, turretAngle, 0.3));
+		bullObjects.push_back(new ProjectileObject(position, projectileTex, size, "t_projectile", currentEnemy, rotation, 0.3));
 	}
 	frames += 1;
 
@@ -106,7 +106,7 @@ void TowerObject::render(Shader &shader) {
 
 	// Setup the transformation matrix for the shader
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
-	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), turretAngle, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though
 
 

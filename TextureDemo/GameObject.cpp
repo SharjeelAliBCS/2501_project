@@ -9,15 +9,16 @@ GameObject::GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint en
 	position = entityPosition;
 	texture = entityTexture;
 	numElements = entityNumElements;
-	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
+	direction = glm::vec3(0.0f, 0.0f, 0.0f);
 	speed = 0.25;
 	targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	
 }
 
 // Updates the GameObject's state. Can be overriden for children
 void GameObject::update(double deltaTime) {
 	// Update object position
-	position += speed*velocity * (float)deltaTime;
+	position += speed*direction * (float)deltaTime;
 	
 }
 
@@ -28,7 +29,7 @@ void GameObject::render(Shader &shader) {
 
 	// Setup the transformation matrix for the shader
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
-	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 	//glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f,0.3f,0.3f));
 	//glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.75f, 1.0f, 1.0f));
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though
