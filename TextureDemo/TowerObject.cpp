@@ -7,12 +7,15 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLint entityNumElements, std::string type)
+TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLuint bulTex,GLint entityNumElements, std::string type)
 	: GameObject(entityPos, entityTexture, entityNumElements, type) {
+	projectileTex = bulTex;
 	turretAngle = 0.0f;
 	turretTexture = turrTex;
+	size = numElements;
 	_state = Init;
-
+	fireRate = 10;
+	frames = 0.0f;
 
 	
 }
@@ -20,7 +23,24 @@ TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turr
 // Update function for moving the player object around
 void TowerObject::update(double deltaTime) {
 	
-	
+	std::vector<int> deleteBullets;
+
+	for (int i = 0; i < bullObjects.size(); i++) {
+		bullObjects[i]->setCurrEnemy(currentEnemy);
+		bullObjects[i]->setAngle(turretAngle);
+		bullObjects[i]->update(deltaTime);
+
+		if (!bullObjects[i]->getExists()) {
+			deleteBullets.push_back(i);
+		}
+		
+	}
+
+	for (int i = 0; i < deleteBullets.size(); i++) {
+		std::cout << "ddd" << std::endl;
+		bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
+		//delete bullObjects[deleteBullets[i]];
+	}
 
 	switch (_state) {
 	case Init:
@@ -54,7 +74,10 @@ void TowerObject::locateEnemy() {
 	//std::cout << "enemy x: " <<  ex <<", enemy y: " << ey << std::endl;
 	
 	turretAngle = targetAngle * (180 / 3.14f)+180;
-	std::cout << turretAngle << std::endl;
+
+	fireEnemy();
+	
+	//std::cout << turretAngle << std::endl;
 
 }
 
@@ -62,10 +85,22 @@ void TowerObject::deathAnimation() {
 }
 
 void TowerObject::fireEnemy() {
+	if (frames%fireRate==0) {
+		
+		bullObjects.push_back(new ProjectileObject(position, projectileTex, size, "t_projectile", currentEnemy, turretAngle, 0.3));
+	}
+	frames += 1;
+
+	
+
 }
 
 
 void TowerObject::render(Shader &shader) {
+
+	for (int i = 0; i < bullObjects.size(); i++) {
+		bullObjects[i]->render(shader);
+	}
 	// Bind the entities texture
 	glBindTexture(GL_TEXTURE_2D, turretTexture);
 

@@ -14,6 +14,7 @@ Node::Node(float _x, float _y, GLuint tex) : id(globalId++) {
 	buildable = false;
 	pathable = true;
 	highlight = false;
+	towerHere = false;
 	texture = tex;
 }
 
@@ -41,4 +42,8 @@ void Node::addNode(Node& n, int edgeCost) {
 	n.addEdge(e);
 }
 
-
+void Node::toggleTower() {
+	buildable = !buildable;
+	pathable = !pathable;
+	towerHere = !towerHere;
+}

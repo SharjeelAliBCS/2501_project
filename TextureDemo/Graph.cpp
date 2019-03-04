@@ -110,7 +110,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 				if (field.compare("1") == 0) {
 					getNode(id).setBuildable(true);
 				}
-				if (field.substr(0, 1).compare("0") == 0) {
+				if (field.substr(0, 1).compare("0") == 0 || field.substr(0, 1).compare("6") == 0) {
 					getNode(id).setPathable(false);
 				}
 
@@ -260,54 +260,11 @@ void Graph::update(Node* s, bool block, bool clear) {
 	}
 }
 
-//returns the id of the node at the screen coordinates. If no node exists, it will return -1
-/*
-int Graph::getNodeIdFromCoords(double _x, double _y) {
-	float start_x = -4.4f;
-	float start_y = -4.4f;
-	float movementX = 0.22f;
-	float movementY = 0.3f;
-
-	start_x -= movementX * .5;
-	start_y -= movementY * .5;
-
-	int x = (int)((_x - start_x) / movementX);
-	int y = (int)((_y - start_y) / movementY);
-
-	//check if the node is 
-	if (y >= nodes.size() || y < 0) {
-		return -1;
-	}
-	else if (x >= nodes.at(y).size() || x < 0) {
-		return -1;
-	}
-	else {
-		return nodes.at(y).at(x).getId();
-	}
-}*/
-
 //returns the id of the node at the mouse coordinates
 void Graph::getHoverCoords(float &x, float &y) {
 	Node n = getNode(hover);
 	x = n.getX();
 	y = n.getY();
-}
-
-void Graph::getCoord(double&x, double&y) {
-
-	unsigned int window_width_g = 800;
-	unsigned int window_height_g = 600;
-
-
-	float cursor_x_pos = (x / (float)(window_width_g / 2)) - 0.986f;//1.0f;	//transforms cursor position to screen coordinates
-	float cursor_y_pos = (y / (float)(window_height_g / 2)) - 0.986f;//1.0f;
-	cursor_x_pos /= zoom;
-	cursor_y_pos /= zoom;	//transforms cursor position based on screen scale. used to be const 0.2
-	cursor_x_pos -= camPos.x;
-	cursor_y_pos += camPos.y; // transform cursor position based on screen pos
-	//movementY = 0.3f; //uncomment to see grid
-	x = (int)((cursor_x_pos - start_x) / movementX);
-	y = (int)((-cursor_y_pos - start_y) / movementY);
 }
 
 int Graph::selectNode(double x, double y) {
@@ -319,7 +276,19 @@ int Graph::selectNode(double x, double y) {
 		return -1;
 	}
 	else {
-		getCoord(x, y);
+		float cursor_x_pos = (x / (float)(window_width_g / 2)) - 0.986f;//1.0f;	//transforms cursor position to screen coordinates
+		float cursor_y_pos = (y / (float)(window_height_g / 2)) - 0.986f;//1.0f;
+
+
+		cursor_x_pos /= zoom;
+		cursor_y_pos /= zoom;	//transforms cursor position based on screen scale. used to be const 0.2
+
+		cursor_x_pos -= camPos.x;
+		cursor_y_pos += camPos.y; // transform cursor position based on screen pos
+
+		int x = (int)((cursor_x_pos - start_x) / movementX);
+		int y = (int)((-cursor_y_pos - start_y) / movementY);
+
 
 		//check if the node is 
 		if (y >= nodes.size() || y < 0) {
@@ -331,8 +300,8 @@ int Graph::selectNode(double x, double y) {
 		else {
 			return nodes.at(y).at(x).getId();
 		}
-		
-		
+
+
 	}
 }
 

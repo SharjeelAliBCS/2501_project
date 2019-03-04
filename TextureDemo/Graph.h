@@ -63,9 +63,10 @@ public:
 	inline int getEndId() { return endNodeId; }
 	inline float getZoom() { return zoom; }
 	inline glm::vec3 getCamPos() { return camPos; }
-	void getCoord(double&x, double&y);
+	//void getCoord(double&x, double&y);
 	void getHoverCoords(float &x, float&y);
 
+	inline int getHover() { return hover; }
 
 	inline std::set<int> getTopStartSet() { return topStartSet; }
 	inline std::set<int> getBotStartSet() { return botStartSet; }

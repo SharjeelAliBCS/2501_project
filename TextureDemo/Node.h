@@ -60,6 +60,7 @@ public:
 	inline Node* getPrev() { return prev; }
 	inline std::vector<Edge> getEdges() { return edges; }
 
+	void toggleTower();
 
 	//vector containing all edges the connect connects to.
 	//this can be used to create a graph with any number of connectivity
@@ -69,12 +70,14 @@ protected:
 	//id used to compare nodes.
 	const int id;
 	Node* nextNode;
+
 	
 	int cost;
 	bool onPath;
 	//bool visited;
 	bool pathable;
 	bool buildable;
+	bool towerHere;
 	bool highlight;
 	float x, y;
 	Node* prev;
