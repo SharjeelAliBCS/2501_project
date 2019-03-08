@@ -16,7 +16,7 @@ void main()
 	FragColor = vec4(color.r,color.g,color.b,color.a);
 	FragColor += vec4(colorMod, 0.0);					//the fragment color is modified by the 'color' uniform
     //if((color.r + color.g + color.b) / 3.0 <=0.10)
-	if(color.a<=0.7)
+	if(color.a==0)
 	{
 		discard;
 	}

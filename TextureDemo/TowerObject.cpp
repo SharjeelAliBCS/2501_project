@@ -24,7 +24,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turr
 // Update function for moving the player object around
 void TowerObject::update(double deltaTime) {
 	
-	std::vector<int> deleteBullets;
+	std::deque<int> deleteBullets;
 
 	for (int i = 0; i < bullObjects.size(); i++) {
 		bullObjects[i]->setCurrEnemy(currentEnemy);
@@ -32,13 +32,13 @@ void TowerObject::update(double deltaTime) {
 		bullObjects[i]->update(deltaTime);
 
 		if (!bullObjects[i]->getExists()) {
-			deleteBullets.push_back(i);
+			deleteBullets.push_front(i);
 		}
 		
 	}
 
 	for (int i = 0; i < deleteBullets.size(); i++) {
-		std::cout << "ddd" << std::endl;
+		//std::cout << "ddd" << std::endl;
 		bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
 		//delete bullObjects[deleteBullets[i]];
 	}

@@ -11,8 +11,12 @@ public:
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
 	virtual void  render(Shader &shader);
-	inline void setCur(Node* n) { cur = n; }
 	void setHit(bool h) { hit = h; }
+	inline void setCur(Node* n) { cur = n; }
+	
+	inline void setCurDestId(int id) { curDestId = id == -1 ? curDestId : id; }
+
+	inline int getCurDestId() const { return curDestId; }
 	inline Node* getCur() { return cur; }
 
 	float oldx;
@@ -20,6 +24,7 @@ public:
 protected:
 	Node * cur;
 	float speed;
+	int curDestId;
 	bool hit;
 
 };

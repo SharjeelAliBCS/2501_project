@@ -26,7 +26,6 @@ ProjectileObject::ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, s
 
 // Update function for moving the player object around
 void ProjectileObject::update(double deltaTime) {
-
 	if (explosion_num >= 0) {
 		setTex(explosion_tex[explosion_num]);
 		explosion_num++;
@@ -43,14 +42,13 @@ void ProjectileObject::update(double deltaTime) {
 		position.y += vY;
 		float distanceTar = glm::length(position - target->getPosition());
 		float distanceTower = glm::length(position - orgCoord);
-		std::cout << "distance = " << distanceTower << std::endl;
+		//std::cout << "distance = " << distanceTower << std::endl;
 		if (distanceTar <= 0.2 || distanceTower >= 10) {
 			explosion_num++;
 			target->setHit(true);
 		}
 	}
-	
-	
+
 
 
 	// Call the parent's update method to move the object

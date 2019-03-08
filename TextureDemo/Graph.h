@@ -4,8 +4,11 @@
 #include "Shader.h"
 #include "GameObject.h"
 #include "Window.h"
+#include "EnemyObject.h"
+
 
 #include <queue>
+#include <deque>
 #include <map>
 #include <algorithm>
 #include <string>
@@ -22,7 +25,7 @@ struct QNode{
 class Graph {
 public:
 	//constructor. 
-	Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname, int start, int end);
+	Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname);
 
 	
 	//Loops through array and prints out associated data for each node.
@@ -47,9 +50,9 @@ public:
 
 	//inline bool revStrCmp(std::string s1, std::string s2) { return -1 * s1.compare(s2); }
 
-
+	bool rePath(std::vector<EnemyObject*>* creeps, bool T = false);
 	//creates and marks a path from start to end
-	void pathfind(bool clear=true,bool redone=false);
+	bool pathfind(int destId, bool clear=true);
 
 	//setters
 	inline void setStart(int nodeId) { startNodeId = nodeId; }
@@ -90,7 +93,9 @@ private:
 	//int oldEndNodeId;
 
 	//2d vector containing all the nodes in the graph
-	std::vector<std::vector<Node>> nodes;
+	std::vector<std::vector<Node*>> nodes;
+	int nodeWid;
+	int size;
 	//map used for easy access to nodes via id
 	std::map<int, Node*> nodeMap;
 	std::map<std::string, GLuint> texMap;

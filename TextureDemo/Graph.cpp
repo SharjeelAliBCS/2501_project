@@ -15,11 +15,14 @@ public:
 
 //main constructor
 //takes the width, height of graph, as well as a gameobject used to render each node.
-Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname, int start, int end) : nodeObj(nodeSprite), camPos(glm::vec3(0.0f)) {
+Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname) : nodeObj(nodeSprite), camPos(glm::vec3(0.0f)) {
 	//initializes the 2d nodes array and nodeMap
-	nodes = std::vector<std::vector<Node>>();
+	nodes = std::vector<std::vector<Node*>>();
 	nodeMap = std::map<int, Node*>();
+	std::deque<pair<int,int>> removeNode = std::deque<pair<int,int>>();
 	texMap = tex;
+	nodeWid = nodeWidth;
+	size = nodeWidth * nodeHeight - 1;
 	//int hover = -1;
 	//data for setting node positions on, screen. This works best for a 40x30 graph
 	//TODO change these values based on graph size.
@@ -41,12 +44,12 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 
 	//fills the 2d nodes array with nodes.
 	for (int i = 0; i < nodeHeight; i++) {
-		std::vector<Node> nodeRow = std::vector<Node>();
+		std::vector<Node*> nodeRow = std::vector<Node*>();
 
 		for (int j = 0; j < nodeWidth; j++) {
 			//creates each node, starting at (-4.4, 4.4), topLeft, going down, right
 			//with x distance .22, y distance .3
-			Node newNode = Node(start_x + j * movementX, start_y + i * movementY, nodeObj.getTex());
+			Node* newNode = new Node(start_x + j * movementX, start_y + i * movementY, nodeObj.getTex());
 			nodeRow.push_back(newNode);
 
 		}
@@ -61,8 +64,8 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			if (j + 1 < nodes.at(i).size()) {
 				//int randWeight = 10 + (rand() % 6);	//creates a random weight between 10-15
 
-				Node *n1 = &nodes.at(i).at(j);		//referncec to current node in graph.
-				Node *n2 = &nodes.at(i).at(j + 1);	//reference to node to the left of the current node.
+				Node *n1 = nodes.at(i).at(j);		//referncec to current node in graph.
+				Node *n2 = nodes.at(i).at(j + 1);	//reference to node to the left of the current node.
 
 				n1->addNode(*n2, 10);			//links both nodes together
 			}
@@ -71,8 +74,8 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			if (i + 1 < nodes.size()) {
 				//int randWeight = 10 + (rand() % 6);	//creates a random weight between 10-15
 
-				Node *n1 = &nodes.at(i).at(j);		//referncec to current node in graph.
-				Node *n2 = &nodes.at(i + 1).at(j);	//node below the current node.
+				Node *n1 = nodes.at(i).at(j);		//referncec to current node in graph.
+				Node *n2 = nodes.at(i + 1).at(j);	//node below the current node.
 
 				n1->addNode(*n2, 10);			//links both nodes together
 			}
@@ -82,10 +85,9 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	//adds all nodes to map with nodeId as key and a pointer to the node
 	for (int i = 0; i < nodes.size(); i++) {
 		for (int j = 0; j < nodes.at(i).size(); j++) {
-			nodeMap.insert(std::pair<int, Node*>(nodes.at(i).at(j).getId(), &nodes.at(i).at(j)));
+			nodeMap.insert(std::pair<int, Node*>(nodes.at(i).at(j)->getId(), nodes.at(i).at(j)));
 		}
 	}
-
 
 
 	std::ifstream in(fname);
@@ -96,16 +98,22 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 
 	std::string line, field;
 	int id = 0;
+	int row = 0;
+	int col = 0;
 
 	while (getline(in, line))    // get next line in file
 	{
 		stringstream ss(line);
-
+		//std::cout<< id<< std::endl;
 		while (getline(ss, field, ','))  // break line into comma delimitted fields
 		{
 
-			//std::cout << id << std::endl;
-			if (texMap.find(field) != texMap.end()) {
+			//std::cout << "field: " << field << std::endl;
+			if (field.compare("-1") == 0) {
+				nodeMap[id]->setTex(texMap["ELSE"]);
+				removeNode.push_front(pair<int, int>(row, col));
+			}
+			else if (texMap.find(field) != texMap.end()) {
 				nodeMap[id]->setTex(texMap[field]);
 				if (field.compare("1") == 0) {
 					getNode(id).setBuildable(true);
@@ -127,18 +135,35 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			else {
 				nodeMap[id]->setTex(texMap["ELSE"]);
 				std::cout << std::endl << "FIELD NOT FOUND : " << field << std::endl << std::endl;
+				removeNode.push_front(pair<int,int>(row,col));
+				
 			}
 			id++;
+			col++;
 		}
 		//std::cout << std::endl;
 		//id++;
+		row++;
+		col = 0;
 	}
 	in.close();
+	std::cout << "file read" << std::endl;
+	for (std::deque<pair<int, int>>::iterator it = removeNode.begin(); it != removeNode.end(); ++it) {
+		std::vector<Node*> row = nodes[it->first];
+		//std::cout << it->first <<" ==> " << it->second << std::endl;
+		//std::cout << row.size();
+		row.erase(row.begin()+it->second);
+		nodes[it->first] = row;
+		
+		//break;
+	}
+
+
 
 	std::string key;
 	std::string nextKey;
 	for (std::map<std::string, pair<std::string,int>>::iterator it = checkpoints.begin(); it != checkpoints.end(); ++it) {
-		std::cout << it->first << " ==> " << it->second.first << ", " << it->second.second << '\n';
+		//std::cout << it->first << " ==> " << it->second.first << ", " << it->second.second << '\n';
 
 		if (it->first.substr(0, 1).compare("T") == 0) {
 			if (it->first.substr(3, 1).compare("0") == 0) {
@@ -164,31 +189,38 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	std::cout << "T\n";
 	for (std::map<int, int>::iterator it = topDestMap.begin(); it != topDestMap.end(); ++it) {
 		std::cout << it->first << " => " << it->second << '\n';
+		getNode(it->first).setNextId(it->second);
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(false);
-		}
-	}
-	std::cout << "B\n";
-	for (std::map<int, int>::iterator it = botDestMap.begin(); it != botDestMap.end(); ++it) {
-		std::cout << it->first << " => " << it->second << '\n';
-		if (it->second != -1) {
-			setStart(it->first);
-			setEnd(it->second);
-			pathfind(false);
+			pathfind(endNodeId,false);
 		}
 		else {
 			setEnd(it->first);
 		}
 	}
+	std::cout << "B\n";
+	for (std::map<int, int>::iterator it = botDestMap.begin(); it != botDestMap.end(); ++it) {
+		std::cout << it->first << " => " << it->second << '\n';
+		getNode(it->first).setNextId(it->second);
+		if (it->second != -1) {
+			setStart(it->first);
+			setEnd(it->second);
+			pathfind(endNodeId, false);
+		}
+		else {
+			setEnd(it->first);
+		}
+		
+	}
+	std::cout << "StartSets\n";
 	for (std::set<int>::iterator it = botStartSet.begin(); it != botStartSet.end(); ++it) {
 		std::cout << *it << '\n';
 	}
 	for (std::set<int>::iterator it = topStartSet.begin(); it != topStartSet.end(); ++it) {
 		std::cout << *it << '\n';
 	}
-	//std::cout <<'1';
+	std::cout <<"\n1\n\n";
 
 	//sets the start/end nodes to the top_left and bottom_right nodes.
 	//setStart(start);
@@ -197,15 +229,14 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	zoom = 0.2f;
 	getNode(0).toggleHighlight();
 	
-	//pathfind(false);
 }
 
 //Loops through array and prints out associated data for each node.
 void Graph::printData() {
 	for (int i = 0; i < nodes.size(); i++) {
 		for (int j = 0; j < nodes.at(i).size(); j++) {
-			cout << i << ", " << j << " - " << nodes.at(i).at(j).getId() << " - " << &nodes.at(i).at(j);
-			cout << " - " << nodes.at(i).at(j).getEdges().size() << endl;
+			cout << i << ", " << j << " - " << nodes.at(i).at(j)->getId() << " - " << &nodes.at(i).at(j);
+			cout << " - " << nodes.at(i).at(j)->getEdges().size() << endl;
 		}
 	}
 }
@@ -231,20 +262,6 @@ void Graph::update(Node* s, bool block, bool clear) {
 		highlight(n);
 	}
 
-	if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-		//gets the node corresponding the mouseclick
-		std::cout << n << std::endl;
-		//set the start to selected node, if node exists and is not the end-node.
-		if (n != -1 && n != endNodeId && n != sid) {
-			getNode(n).setPathable(block);
-
-			//std::cout << getNode(n).getId()<<std::endl;
-			//for (int i = 0; i < getNode(n).edges.size(); ++i) {
-			//	getNode(n).edges[i].cost = 100000;
-			//}
-			pathfind(clear);
-		}
-	}
 
 	if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 		//gets the node corresponding the mouseclick
@@ -254,7 +271,7 @@ void Graph::update(Node* s, bool block, bool clear) {
 		if (n != -1 && n != startNodeId && getNode(n).getPathable()) {
 			//oldEndNodeId = endNodeId;
 			setEnd(n);
-			pathfind(clear);
+			pathfind(endNodeId,true);
 		}
 		//pathfind(clear);
 	}
@@ -291,16 +308,11 @@ int Graph::selectNode(double x, double y) {
 
 
 		//check if the node is 
-		if (y >= nodes.size() || y < 0) {
+		int tryId = nodeWid * y + x;
+		if (tryId<0 || tryId>size) {
 			return -1;
 		}
-		else if (x >= nodes.at(y).size() || x < 0) {
-			return -1;
-		}
-		else {
-			return nodes.at(y).at(x).getId();
-		}
-
+		return tryId;
 
 	}
 }
@@ -320,11 +332,11 @@ void Graph::render(Shader &shader) {
 
 		for (int i = 0; i < nodes.at(j).size(); i++) {
 			//gets the current node to draw
-			Node currentNode = nodes.at(j).at(i);
+			Node* currentNode = nodes.at(j).at(i);
 
 			//set the node 'pen' to the position of the current node.
-			nodeObj.setPosition(glm::vec3(currentNode.getX(), currentNode.getY(), 0.0f));
-			nodeObj.setTex(currentNode.getTex());
+			nodeObj.setPosition(glm::vec3(currentNode->getX(), currentNode->getY(), 0.0f));
+			nodeObj.setTex(currentNode->getTex());
 			
 			//set the color of the node via the color uniform. Default is dark green
 			glUniform3f(color_loc, -0.2f, -0.2f, -0.2f);	//dark green
@@ -332,19 +344,19 @@ void Graph::render(Shader &shader) {
 
 			
 			//change the color uniform depending on if the node is the start or end node.
-			if (currentNode.getId() == startNodeId) {
+			if (currentNode->getId() == startNodeId) {
 				glUniform3f(color_loc, 1.0f, -1.0f, -1.0f);	//red = start
 			}
-			else if (currentNode.getId() == endNodeId) {
+			else if (currentNode->getId() == endNodeId) {
 				glUniform3f(color_loc, -1.0f, -1.0f, 1.0f); //blue = end
-			}else if (currentNode.isOnPath()) {
+			}else if (currentNode->isOnPath()) {
 				glUniform3f(color_loc, 0.0f, 0.0f, 1.0f);	//light blue = on path
 			}
 			//else if (currentNode.isVisited()) {
 			//	glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//black = searched
 			//}
 
-			if (currentNode.getHighlight()) {
+			if (currentNode->getHighlight()) {
 				glUniform3f(color_loc, 1.0f, 1.0f, -1.0f);	//white = cannot be pathed
 			}
 
@@ -360,8 +372,46 @@ Node& Graph::getNode(int id) {
 	return *nodeMap.at(id);
 }
 
+/*TODO
+create map for each node to store path based on dest, otherwise overwritten
+*/
+bool Graph::rePath(std::vector<EnemyObject*>* creeps, bool T) {
+	map<int, int> mapInUse = T ? topDestMap : botDestMap;
+	bool pathFound = true;
+	std::cout << "got here 1\n";
+	if (creeps != NULL) {
+		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
+			setStart((*it)->getCur()->getId());
+			setEnd((*it)->getCurDestId());
+			std::cout << startNodeId << " => " << endNodeId << std::endl;
+			if (startNodeId == endNodeId) { continue; }
+			if (getEndId() == -1) {
+				std::cout << std::endl << "Houston we have a problem, creep dest = -1" << std::endl << std::endl;
+			}
+			pathFound = pathFound ? pathfind((*it)->getCurDestId(), false) : false;
+			std::cout << pathFound << std::endl;
+		}
+	}
+	std::cout << "got here 2\n";
+	for (std::map<int, int>::iterator it = mapInUse.begin(); it != mapInUse.end(); ++it) {
+		std::cout << it->first << " => " << it->second << '\n';
+		if (it->second != -1) {
+			setStart(it->first);
+			setEnd(it->second);
+		}
+		else {
+			setEnd(it->first);
+		}
+		if (startNodeId == endNodeId) { continue; }
+		pathFound = pathFound ? pathfind(endNodeId,false) : false;
+	}
+	std::cout << "got here 3\n";
+	return pathFound;
+}
+
+
 //using zombie-key based approach to Djikstra's algorithm
-void Graph::pathfind(bool clear, bool redone) {
+bool Graph::pathfind(int destId, bool clear) {
 
 	//priority queue used in pathfinding.
 	//it is created using the NodeTuple struct with a min compare function called compareNode
@@ -370,9 +420,9 @@ void Graph::pathfind(bool clear, bool redone) {
 	//sets the costs of all nodes to infinity. reset all nodes to be off-path
 	for (int i = 0; i < nodes.size(); i++) {
 		for (int j = 0; j < nodes.at(i).size(); j++) {
-			nodes.at(i).at(j).setCost(INT_MAX);
+			nodes.at(i).at(j)->setCost(INT_MAX);
 			if (clear) {
-				nodes.at(i).at(j).setOnPath(false);
+				nodes.at(i).at(j)->setOnPath(false);
 				//nodes.at(i).at(j).setVisited(false);
 			}
 		}
@@ -432,18 +482,18 @@ void Graph::pathfind(bool clear, bool redone) {
 		//queue is done, go in reverse from END to START to determine path
 		Node* nextNode = &getNode(endNodeId);
 		Node* currentNode = getNode(endNodeId).getPrev();
-		currentNode->setNextNode(nextNode);
+		currentNode->setNextNode(destId,nextNode);
 		//std::cout << nextNodeId << std::endl;
 		//while the current node isn't null, or the end, mark the current node as on the path
 		while (currentNode != NULL && currentNode->getId() != startNodeId) {
 			currentNode->setOnPath(true);
-			currentNode->setNextNode(nextNode);
+			currentNode->setNextNode(destId,nextNode);
 			nextNode = currentNode;
 			//std::cout << nextNodeId << std::endl;
 			currentNode = currentNode->getPrev();
 		}
 		//std::cout << nextNodeId << std::endl;
-		currentNode->setNextNode(nextNode);
+		currentNode->setNextNode(destId,nextNode);
 		//std::cout << std::endl;
 	}
 	else {
@@ -455,4 +505,5 @@ void Graph::pathfind(bool clear, bool redone) {
 		//	pathfind(clear,true);
 		//}
 	}
+	return endFound;
 }

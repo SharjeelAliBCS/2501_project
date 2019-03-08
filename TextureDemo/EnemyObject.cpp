@@ -8,13 +8,9 @@
 */
 
 EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type)
-	: GameObject(entityPos, entityTexture, entityNumElements,type) {
-	hit = false;
-}
+	: GameObject(entityPos, entityTexture, entityNumElements,type),hit(false) {}
 
 // Update function for moving the player object around
-
-
 void EnemyObject::update(double deltaTime) {
 
 

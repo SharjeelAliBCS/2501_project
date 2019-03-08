@@ -8,15 +8,16 @@ public:
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
-	void setCurrEnemy(EnemyObject* enemy) { target = enemy; }
+	inline void setCurrEnemy(EnemyObject* enemy) { target = enemy; }
 
-	bool getExists() { return exists; }
+	inline bool getExists() { return exists; }
 private:
 	float damage;
 	float distance;
 	bool exists;
 	glm::vec3 orgCoord;
 	EnemyObject* target;
+
 	std::vector<GLuint> explosion_tex;
 	int explosion_num;
 };

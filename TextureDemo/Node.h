@@ -1,9 +1,12 @@
+
 #pragma once
 
+//#include "TowerObject.h"
 #include <vector>
+#include <map>
 #include "Shader.h"
 
-
+class TowerObject;
 class Node;
 
 struct Edge {
@@ -28,7 +31,7 @@ public:
 	inline void addEdge(Edge e) { edges.push_back(e); }
 
 	//setters
-	inline void setNextNode(Node* n) { nextNode = n; }
+	inline void setNextNode(int key, Node* n) { nextNodeMap[key] = n; }
 	inline void setBuildable(bool b) { buildable = b; }
 	inline void setPathable(bool p) { pathable= p; }
 
@@ -41,11 +44,16 @@ public:
 	inline void setCost(int c) { cost = c; }
 	inline void setPrev(Node* n) { prev = n; }
 	inline void setOnPath(bool pathStatus) { onPath = pathStatus; }
+	inline void setNextId(int id) { nextId = id; }
+	inline void setTower(TowerObject* t) { tower = t; }
 
 	inline void toggleHighlight() { highlight = !highlight; }
 
 	//getters
-	inline Node* getNextNode() const { return nextNode; }
+	inline Node* getNextNode(int key) const {
+		return nextNodeMap.find(key) != nextNodeMap.end() ? nextNodeMap.at(key) : NULL;
+	}
+
 	inline bool getBuildable() const { return buildable; }
 	inline bool getPathable() const { return pathable; }
 
@@ -58,10 +66,12 @@ public:
 	inline float getX() const { return x; }
 	inline float getY() const { return y; }
 	inline int getCost() const { return cost; }
+	inline int getNextId() const { return nextId; }
 	inline Node* getPrev() { return prev; }
 	inline std::vector<Edge> getEdges() { return edges; }
+	inline TowerObject* getTower() { return tower; }
 
-	void toggleTower();
+	void setTowerState(bool);
 
 	//vector containing all edges the connect connects to.
 	//this can be used to create a graph with any number of connectivity
@@ -70,9 +80,10 @@ protected:
 	
 	//id used to compare nodes.
 	const int id;
-	Node* nextNode;
+	std::map<int,Node*> nextNodeMap;
 
-	
+	TowerObject *tower;
+	int nextId;
 	int cost;
 	bool onPath;
 	//bool visited;

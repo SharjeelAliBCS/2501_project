@@ -35,6 +35,8 @@
 #include "PlayerGameObject.h"
 #include "Graph.h"
 #include "TowerObject.h"
+#include "HUD.h"
+
 
 // Macro for printing exceptions
 #define PrintException(exception_object)\
@@ -44,19 +46,20 @@
 const std::string window_title_g = "Pathfinding Demo";
 const unsigned int window_width_g = 800;
 const unsigned int window_height_g = 600;
-//const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
-const glm::vec3 viewport_background_color_g(1, 1, 1);
+const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
+//const glm::vec3 viewport_background_color_g(1, 1, 1);
 
 // Global texture info
 GLuint tex[30];
 
 // Global game object info
 std::vector<GameObject*> gameObjects;
-std::map<std::string, std::vector<EnemyObject*>> enemyMap;
+std::map<std::string, std::vector<EnemyObject*>*> enemyMap;
 
 
 std::vector<TowerObject*> towerObjects;
 std::vector<EnemyObject*> enemyObjects;
+std::vector<HUD*> hudObjects;
 
 // Create the geometry for a square (with two triangles)
 // Return the number of array elements that form the square
@@ -148,6 +151,7 @@ void setallTexture(void)
 	setthisTexture(tex[17], "Graphics/Explosion/tower_explode_5.png");
 	setthisTexture(tex[18], "Graphics/Explosion/tower_explode_6.png");
 
+	setthisTexture(tex[19], "Graphics/HUD/panel.png");//HUD image 
 
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
 }
@@ -182,8 +186,6 @@ int main(void){
 		std::vector<GLuint> explosion;
 		for (int i = 0; i < 6; i++)explosion.push_back(tex[i + 13]);
 
-		
-
 		std::map<std::string,GLuint> texMap = std::map<std::string, GLuint>();
 		texMap.insert(std::pair<std::string, GLuint >("0.5", tex[0]));
 		texMap.insert(std::pair<std::string, GLuint >("0", tex[1]));
@@ -194,20 +196,18 @@ int main(void){
 		texMap.insert(std::pair<std::string, GLuint >("4", tex[4]));
 		texMap.insert(std::pair<std::string, GLuint >("5", tex[8]));
 		texMap.insert(std::pair<std::string, GLuint >("6", tex[5]));
-		texMap.insert(std::pair<std::string, GLuint >("ELSE", tex[8]));
+		texMap.insert(std::pair<std::string, GLuint >("ELSE", tex[7]));
 		texMap.insert(std::pair<std::string, GLuint >("checkpoint", tex[8]));
 		texMap.insert(std::pair<std::string, GLuint >("hp", tex[9]));
 		texMap.insert(std::pair<std::string, GLuint >("tower", tex[10]));
 
-
-
-
-		std::string fname = "Maps/map1.csv";
+		std::string fname = "Maps/Map1.csv";
 		int wid = 0;
 		int height = 0;
 		int start = 1149;
 		int end = 122;
 
+		int hp = 5;
 		//start = 415;
 		//end = 430;
 		std::ifstream in(fname);
@@ -222,29 +222,34 @@ int main(void){
 			}
 			++height;
 		}
+		std::cout << "got here at least" << std::endl;
 
-		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0], size,"map"),texMap, fname, start,end);
-
+		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0], size,"map"),texMap, fname);
+		std::cout << "got here at least" << std::endl;
 		start = *(g.getBotStartSet().begin());
-		std::cout << std::endl << start;
+		std::cout << std::endl << start<<std::endl;
+		std::cout << "got here at least" << std::endl;
 		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
 		EnemyObject *p2 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
-
-		p1->setSpeed(1);
+		std::cout << "got here at least" << std::endl;
+		p1->setSpeed(1.5);
 		gameObjects.push_back(p1);
 		gameObjects.push_back(p2);
 
-		enemyMap["test"].push_back(p1);
-		enemyMap["test"].push_back(p2);
-
+		enemyMap["test"] = new std::vector<EnemyObject*>;
+		enemyMap["test"]->push_back(p1);
+		enemyMap["test"]->push_back(p2);
+		std::cout << "got here at least" << std::endl;
 		Node* cur = &g.getNode(start);
-		for (EnemyObject* e : enemyMap["test"]) {
+		for (EnemyObject* e : *enemyMap["test"]) {
 			e->oldx = round(e->getPosition().x * 100) / 100;
 			e->oldy = round(e->getPosition().y * 100) / 100;
 			e->setCur(cur);
+			e->setCurDestId(cur->getNextId());
 		}
 
-		
+		std::cout << "got here at least" << std::endl;
+
 
 
 		
@@ -269,6 +274,17 @@ int main(void){
 
 		float enemyX, enemyY, oldEnemyX, oldEnemyY;
 
+		//-------------------------------------------------------------------------------- - |
+		//							HUD CODE											   |
+		//---------------------------------------------------------------------------------|
+		glm::vec3 objectS = glm::vec3(0.5f, 0.8f, 0.0f);//this handels the size(scale) of the HUD panel 
+		hudObjects.push_back(new HUD(glm::vec3(-1.55f, 0.91f, 0.0f), cameraZoom, objectS, tex[19], size, "HUD1") );//(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
+		hudObjects.push_back(new HUD(glm::vec3(1.56f, 0.91f, 0.0f), cameraZoom, objectS, tex[19], size, "HUD3") );
+		objectS.x = 1.25f;//this handels the size(scale) of the HUD panel
+		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, tex[19], size, "HUD2") );
+
+
+		std::cout << "got here at least" << std::endl;
 		while (!glfwWindowShouldClose(window.getWindow())) {
 
 	
@@ -277,29 +293,37 @@ int main(void){
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
 					cameraTranslatePos.y -= camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
+					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
+					
+					
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
 					cameraTranslatePos.y += camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
+					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
 					cameraTranslatePos.x -= camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
+					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
 					cameraTranslatePos.x += camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
+					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_Z) == GLFW_PRESS) {
 					cameraZoom = std::fmin(cameraZoom + camZoomInc, maxCamZoom);
 					g.setZoom(cameraZoom);
 					timeOfLastMove = glfwGetTime();
+					for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_X) == GLFW_PRESS) {
 					cameraZoom = std::fmax(cameraZoom - camZoomInc, minCamZoom);
 					g.setZoom(cameraZoom);
 					timeOfLastMove = glfwGetTime();
+					for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_T) == GLFW_PRESS && 
 					(timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -316,15 +340,34 @@ int main(void){
 					int id = g.getHover();
 					g.getHoverCoords(x,y);
 					if (g.getNode(id).getBuildable()) {
-						towerObjects.push_back(new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], explosion,size, "tower"));
-						std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl;
-						g.getNode(id).toggleTower();
-						std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl<<std::endl;
-
+						TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], explosion,size, "tower");
+						towerObjects.push_back(t);
+						//std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl;
+						g.getNode(id).setTowerState(true);
+						g.getNode(id).setTower(t);
+						//std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl<<std::endl;
+						if (!g.rePath(enemyMap["test"])) {
+							std::cout << "\n\n\nSOUND THE FUCKING ALARMS";
+						}
+						std::cout << "Repath" << std::endl;
 
 					}
 					
 
+				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
+					(timeOfLastMove + 0.15 < glfwGetTime())) { 
+					std::cout << "spawn";
+					Node* cur = &g.getNode(*g.getBotStartSet().begin());
+					EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), tex[6], size, "enemy");
+					enemyMap["test"]->push_back(e);
+					gameObjects.push_back(e);
+					e->setSpeed(1);
+					e->oldx = round(e->getPosition().x * 100) / 100;
+					e->oldy = round(e->getPosition().y * 100) / 100;
+					e->setCur(cur);
+					e->setCurDestId(cur->getNextId());
+					timeOfLastMove = glfwGetTime();
 				}
 
 			}
@@ -345,12 +388,17 @@ int main(void){
 			
 			
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
+			//glm::mat4 viewMatrix =  glm::translate(glm::mat4(1.0f), cameraTranslatePos) * glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
 			shader.setUniformMat4("viewMatrix", viewMatrix);
 			
 			//animate p1
 			//oldp1x = p1x;
 			//oldp1y = p1y;
-			for (EnemyObject* e : enemyMap["test"]) {
+
+			for (HUD* h : hudObjects) {
+				h->render(shader);
+			}
+			for (EnemyObject* e : *enemyMap["test"]) {
 				oldEnemyX = e->oldx;
 				oldEnemyY = e->oldy;
 
@@ -363,9 +411,9 @@ int main(void){
 				cur = e->getCur();
 
 
-				if (cur->getId() != g.getEndId() && cur->getNextNode()!=NULL) {
+				if (cur->getId() != g.getEndId() && cur->getNextNode(e->getCurDestId())!=NULL) {
 
-					Node* next = cur->getNextNode();
+					Node* next = cur->getNextNode(e->getCurDestId());
 					float nextx = next->getX();
 					float nexty = next->getY();
 
@@ -377,7 +425,7 @@ int main(void){
 					dir.x = glm::round(dir.x);
 					dir.y = glm::round(dir.y);
 					e->setDirection(dir);
-					std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
+					//std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
 
 					//if we walked over the node and we are not going to be at the end
 					//std::cout << "oldx: " << oldp1x << "  x: " << p1x << "  nextx: " << nextx << std::endl;
@@ -390,10 +438,11 @@ int main(void){
 						e->setPosition(pos);
 						cur = next;
 						e->setCur(cur);
+						e->setCurDestId(cur->getNextId());
 						//std::cout << "=> "<< (next->getNextNode() == NULL)<<std::endl;
-						if (next->getNextNode() != NULL) {
+						if (next->getNextNode(e->getCurDestId()) != NULL) {
 
-							next = cur->getNextNode();
+							next = cur->getNextNode(e->getCurDestId());
 							nextx = next->getX();
 							nexty = next->getY();
 
@@ -405,7 +454,7 @@ int main(void){
 							dir.x = glm::round(dir.x);
 							dir.y = glm::round(dir.y);
 							e->setDirection(dir);
-							std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
+							//std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
 						}
 						else {
 							//std::cout << "this one";
@@ -423,11 +472,12 @@ int main(void){
 						//vel.x = 0;
 						cur = next;
 						e->setCur(cur);
+						e->setCurDestId(cur->getNextId());
 						//}
 						//++bounceX %= 2;
-						if (next->getNextNode() != NULL) {
+						if (next->getNextNode(e->getCurDestId()) != NULL) {
 
-							next = cur->getNextNode();
+							next = cur->getNextNode(e->getCurDestId());
 							nextx = next->getX();
 							nexty = next->getY();
 
@@ -439,7 +489,7 @@ int main(void){
 							dir.x = glm::round(dir.x);
 							dir.y = glm::round(dir.y);
 							e->setDirection(dir);
-							std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
+							//std::cout << e->getDirection().x << ", " << e->getDirection().y << std::endl;
 
 						}
 						else {
@@ -454,9 +504,14 @@ int main(void){
 				}
 
 				//stop moving if we're done
-				if (cur->getId() == g.getEndId() || cur->getNextNode() == NULL) {
-					std::cout << "done";
+				if (cur->getId() == g.getEndId() || cur->getNextNode(e->getCurDestId()) == NULL) {
+					--hp;
+					//std::cout << "done, HP="<<hp<<std::endl;
 					e->setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+					if (hp == 0) {
+						std::cout << "GAME OVER" << std::endl;
+					}
+
 				}
 
 			}
@@ -492,10 +547,11 @@ int main(void){
 			}
 
 			//update graph
-			g.update(p1->getCur(),toggleBlock, true);
+			g.update(p1->getCur(),toggleBlock, false);
 			g.update(p2->getCur(),toggleBlock, false);
 			//render graph
 			g.render(shader);
+			
 
 			// Update other events like input handling
 			glfwPollEvents();

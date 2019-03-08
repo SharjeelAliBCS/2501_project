@@ -3,6 +3,7 @@
 #include "GameObject.h"
 #include "EnemyObject.h"
 #include "ProjectileObject.h"
+#include <deque>
 
 // Inherits from GameObject
 class TowerObject : public GameObject {
@@ -14,7 +15,7 @@ public:
 
 	// Renders the GameObject using a shader
 	virtual void  render(Shader &shader) override;
-	void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
+	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
 	
 private:
 	float rotationSpeed;
@@ -41,8 +42,8 @@ private:
 
 	int fireRate, frames;
 	GLint size;
-	std::vector<GLuint> explosion_tex;
 	std::vector<ProjectileObject*> bullObjects;
+	std::vector<GLuint> explosion_tex;
 
 
 };
