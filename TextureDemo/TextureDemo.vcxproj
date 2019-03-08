@@ -156,7 +156,6 @@
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="HUD.cpp" />
     <ClCompile Include="Node.cpp" />
-    <ClCompile Include="PlayerGameObject.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FileUtils.cpp" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Graph.h" />
     <ClInclude Include="HUD.h" />
     <ClInclude Include="Node.h" />
-    <ClInclude Include="PlayerGameObject.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="FileUtils.h" />
     <ClInclude Include="ProjectileObject.h" />

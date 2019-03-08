@@ -32,7 +32,6 @@
 
 #include "Shader.h"
 #include "Window.h"
-#include "PlayerGameObject.h"
 #include "Graph.h"
 #include "TowerObject.h"
 #include "HUD.h"
@@ -201,7 +200,7 @@ int main(void){
 		texMap.insert(std::pair<std::string, GLuint >("hp", tex[9]));
 		texMap.insert(std::pair<std::string, GLuint >("tower", tex[10]));
 
-		std::string fname = "Maps/Map1.csv";
+		std::string fname = "Levels/map1.csv";
 		int wid = 0;
 		int height = 0;
 		int start = 1149;
