@@ -4,7 +4,7 @@
 class ProjectileObject : public GameObject
 {
 public:
-	ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type, EnemyObject* enemy, float angle, float s);
+	ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, std::vector<GLuint> explosion,GLint entityNumElements, std::string type, EnemyObject* enemy, float angle, float s);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -17,5 +17,7 @@ private:
 	bool exists;
 	glm::vec3 orgCoord;
 	EnemyObject* target;
+	std::vector<GLuint> explosion_tex;
+	int explosion_num;
 };
 

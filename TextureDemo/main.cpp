@@ -141,6 +141,14 @@ void setallTexture(void)
 	setthisTexture(tex[11], "Graphics/Tower/01_turret.png");
 	setthisTexture(tex[12], "Graphics/Tower/01_projectile.png");
 
+	setthisTexture(tex[13], "Graphics/Explosion/tower_explode_1.png");
+	setthisTexture(tex[14], "Graphics/Explosion/tower_explode_2.png");
+	setthisTexture(tex[15], "Graphics/Explosion/tower_explode_3.png");
+	setthisTexture(tex[16], "Graphics/Explosion/tower_explode_4.png");
+	setthisTexture(tex[17], "Graphics/Explosion/tower_explode_5.png");
+	setthisTexture(tex[18], "Graphics/Explosion/tower_explode_6.png");
+
+
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
 }
 
@@ -171,6 +179,11 @@ int main(void){
 		// Set up the textures
 		setallTexture();
 
+		std::vector<GLuint> explosion;
+		for (int i = 0; i < 6; i++)explosion.push_back(tex[i + 13]);
+
+		
+
 		std::map<std::string,GLuint> texMap = std::map<std::string, GLuint>();
 		texMap.insert(std::pair<std::string, GLuint >("0.5", tex[0]));
 		texMap.insert(std::pair<std::string, GLuint >("0", tex[1]));
@@ -189,7 +202,7 @@ int main(void){
 
 
 
-		std::string fname = "map2.csv";
+		std::string fname = "Maps/map1.csv";
 		int wid = 0;
 		int height = 0;
 		int start = 1149;
@@ -217,7 +230,7 @@ int main(void){
 		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
 		EnemyObject *p2 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
 
-		p1->setSpeed(1.5);
+		p1->setSpeed(1);
 		gameObjects.push_back(p1);
 		gameObjects.push_back(p2);
 
@@ -231,6 +244,7 @@ int main(void){
 			e->setCur(cur);
 		}
 
+		
 
 
 		
@@ -302,7 +316,7 @@ int main(void){
 					int id = g.getHover();
 					g.getHoverCoords(x,y);
 					if (g.getNode(id).getBuildable()) {
-						towerObjects.push_back(new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], size, "tower"));
+						towerObjects.push_back(new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], explosion,size, "tower"));
 						std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl;
 						g.getNode(id).toggleTower();
 						std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl<<std::endl;

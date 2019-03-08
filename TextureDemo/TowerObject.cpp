@@ -7,7 +7,7 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLuint bulTex,GLint entityNumElements, std::string type)
+TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLuint bulTex, std::vector<GLuint> explosion,GLint entityNumElements, std::string type)
 	: GameObject(entityPos, entityTexture, entityNumElements, type) {
 	projectileTex = bulTex;
 	rotation = 0.0f;
@@ -16,6 +16,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turr
 	_state = Init;
 	fireRate = 10;
 	frames = 0;
+	explosion_tex = explosion;
 
 	
 }
@@ -87,7 +88,7 @@ void TowerObject::deathAnimation() {
 void TowerObject::fireEnemy() {
 	if (frames%fireRate==0) {
 		
-		bullObjects.push_back(new ProjectileObject(position, projectileTex, size, "t_projectile", currentEnemy, rotation, 0.3));
+		bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex,size, "t_projectile", currentEnemy, rotation, 0.3));
 	}
 	frames += 1;
 
