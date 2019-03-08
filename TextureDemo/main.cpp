@@ -517,17 +517,27 @@ int main(void){
 			}
 			
 
-			for (int i = 0; i < towerObjects.size(); i++) {
+			for (TowerObject* t: towerObjects) {
 				// Get the current object
-				TowerObject* currentGameObject = towerObjects[i];
-				currentGameObject->setCurrEnemy(p1);
+				EnemyObject* closestEnemy = enemyMap["test"]->front();
+				float enemyDistance = glm::length(t->getPosition() - closestEnemy->getPosition());
+				for (EnemyObject* e : *enemyMap["test"]) {
+
+					float tempDistance = glm::length(t->getPosition() - e->getPosition());
+					if (tempDistance < enemyDistance) {
+						enemyDistance = tempDistance;
+						closestEnemy = e;
+					}
+
+				}
+				t->setCurrEnemy(closestEnemy);
 				// Updates game objects
-				currentGameObject->update(deltaTime);
+				t->update(deltaTime);
 				//reset color uniform.
 				GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
 				glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
 				// Render game objects
-				currentGameObject->render(shader);
+				t->render(shader);
 			}
 
 			// Update and render all game objects
