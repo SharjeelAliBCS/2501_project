@@ -355,10 +355,17 @@ void Graph::render(Shader &shader) {
 			//else if (currentNode.isVisited()) {
 			//	glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//black = searched
 			//}
-
+			/*
 			if (currentNode->getHighlight()) {
-				glUniform3f(color_loc, 1.0f, 1.0f, -1.0f);	//white = cannot be pathed
-			}
+				
+				if (getNode(hover).getBuildable()) {
+					glUniform3f(color_loc, 1.0f, 1.0f, -1.0f);	//white = cannot be pathed
+				}
+				else {
+					glUniform3f(color_loc, 1.0f, -1.0f, -1.0f);	//red = start
+				}
+				
+			}*/
 
 			nodeObj.render(shader);
 		}

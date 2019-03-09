@@ -152,6 +152,9 @@ void setallTexture(void)
 
 	setthisTexture(tex[19], "Graphics/HUD/panel.png");//HUD image 
 
+	setthisTexture(tex[20], "Graphics/Cursor/0_cursor.png");//HUD image 
+	
+
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
 }
 
@@ -222,8 +225,11 @@ int main(void){
 			++height;
 		}
 		std::cout << "got here at least" << std::endl;
+		GLuint cursorTex = tex[20];
 
-		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0], size,"map"),texMap, fname);
+		GameObject* cursor = new GameObject(glm::vec3(0.0f), cursorTex, size, "cursor");
+
+		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), tex[0],size,"map"),texMap, fname);
 		std::cout << "got here at least" << std::endl;
 		start = *(g.getBotStartSet().begin());
 		std::cout << std::endl << start<<std::endl;
@@ -287,7 +293,6 @@ int main(void){
 		while (!glfwWindowShouldClose(window.getWindow())) {
 
 	
-
 			if (timeOfLastMove + 0.05 < glfwGetTime()) {
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
 					cameraTranslatePos.y -= camShiftInc * camShiftInc;
@@ -393,10 +398,29 @@ int main(void){
 			//animate p1
 			//oldp1x = p1x;
 			//oldp1y = p1y;
-
+			
+			
 			for (HUD* h : hudObjects) {
 				h->render(shader);
 			}
+
+			float x, y;
+			int id = g.getHover();
+			g.getHoverCoords(x, y);
+			cursor->setPosition(glm::vec3(x,y,0.0f));
+			if (g.getNode(id).getBuildable()) {
+
+				cursor->render(shader);
+			}
+			else {
+				
+				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 1.0f, -1.0f, -1.0f);
+				cursor->render(shader);
+				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
+			}
+
+			
+
 			for (EnemyObject* e : *enemyMap["test"]) {
 				oldEnemyX = e->oldx;
 				oldEnemyY = e->oldy;

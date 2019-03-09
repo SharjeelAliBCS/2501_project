@@ -77,6 +77,7 @@ private:
 	//node sprite used to draw each node.
 	GameObject nodeObj;
 	
+	
 	int hover;
 	
 	float zoom;
