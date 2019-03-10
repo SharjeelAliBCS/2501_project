@@ -5,8 +5,6 @@
 #include "GameObject.h"
 #include "Window.h"
 #include "EnemyObject.h"
-
-
 #include <queue>
 #include <deque>
 #include <map>
@@ -33,23 +31,18 @@ public:
 
 	//gets mouse input, updates start and end position using that information
 	void update(Node*, bool block, bool clear=true);
-
-	//returns the id of the node at the screen coordinates. If no node exists, it will return -1
-	//int Graph::getNodeIdFromCoords(double x, double y);
+	//renders all the nodes in the graph
+	void render(Shader &shader);
 
 	//returns the id of a node from an x/y coordinate
 	int selectNode(double x, double y);
 
 	//returns a reference to the node with the supplied id.
-	Node& getNode(int id);
+	
 
 	void highlight(int n);
 
-	//renders all the nodes in the graph
-	void render(Shader &shader);
-
-	//inline bool revStrCmp(std::string s1, std::string s2) { return -1 * s1.compare(s2); }
-
+	
 	bool rePath(std::vector<EnemyObject*>* creeps, int id, bool T = false);
 	//creates and marks a path from start to end
 	bool pathfind(int destId, bool clear=true);
@@ -57,7 +50,6 @@ public:
 	//setters
 	inline void setStart(int nodeId) { startNodeId = nodeId; }
 	inline void setEnd(int nodeId) { endNodeId = nodeId; }
-
 	inline void setZoom(float camZoom) { zoom = camZoom; }
 	inline void setCamPos(glm::vec3 pos) { camPos = pos; }
 
@@ -66,13 +58,14 @@ public:
 	inline int getEndId() { return endNodeId; }
 	inline float getZoom() { return zoom; }
 	inline glm::vec3 getCamPos() { return camPos; }
-	//void getCoord(double&x, double&y);
+	Node& getNode(int id);
 	void getHoverCoords(float &x, float&y);
-
 	inline int getHover() { return hover; }
 
 	inline std::set<int> getTopStartSet() { return topStartSet; }
 	inline std::set<int> getBotStartSet() { return botStartSet; }
+
+
 private:
 	//node sprite used to draw each node.
 	GameObject nodeObj;

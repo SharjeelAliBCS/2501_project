@@ -24,8 +24,10 @@ ProjectileObject::ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, s
 	damage = d;
 }
 
-// Update function for moving the player object around
+// Update function for moving the bullet object around
 void ProjectileObject::update(double deltaTime) {
+
+	//checks if it should despawn, so adds the explosion sprites
 	if (explosion_num >= 0) {
 		texture = explosion_tex[explosion_num];
 		explosion_num++;
@@ -35,8 +37,11 @@ void ProjectileObject::update(double deltaTime) {
 	}
 	else {
 
+		//explodes if there are no targets to shoot at
 		if (target == NULL)explosion_num++;
 		else {
+			
+			//follows the enemy around
 			float vX = 0;
 			float vY = 0;
 			vX = speed * cos(rotation*3.14159 / 180);
@@ -47,7 +52,8 @@ void ProjectileObject::update(double deltaTime) {
 
 			float distanceTar = glm::length(position - target->getPosition());
 			float distanceTower = glm::length(position - orgCoord);
-			//std::cout << "distance = " << distanceTower << std::endl;
+			
+			//if it should despawn, increments the explosion counter. 
 			if (distanceTar <= 0.2 || distanceTower >= 10) {
 				explosion_num++;
 				target->enemyHit(damage);

@@ -13,9 +13,9 @@ EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entit
 void EnemyObject::enemyHit(float damage) {
 	health -= damage;
 	hit = true;
-	std::cout << "hp: " << health << std::endl;
+
 }
-// Update function for moving the player object around
+// Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
 
 	if (health <= 0.0f) {
@@ -26,9 +26,11 @@ void EnemyObject::update(double deltaTime) {
 }
 
 void EnemyObject::render(Shader &shader) {
+
+	//Sets the shader to red to signify damage. 
 	if (hit) {
 		GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
-		glUniform3f(color_loc, 1.0f, -1.0f, -1.0f);	//red = start
+		glUniform3f(color_loc, 1.0f, -1.0f, -0.6f);	//red = damaged
 		hit = false;
 	}
 	GameObject::render(shader);

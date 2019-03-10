@@ -13,10 +13,11 @@ public:
 	virtual void  render(Shader &shader);
 
 	void enemyHit(float damage);
+	//setters
 	inline void setCur(Node* n) { cur = n; }
-	
 	inline void setCurDestId(int id) { curDestId = id == -1 ? curDestId : id; }
 
+	//getters
 	inline int getCurDestId() const { return curDestId; }
 	inline Node* getCur() { return cur; }
 

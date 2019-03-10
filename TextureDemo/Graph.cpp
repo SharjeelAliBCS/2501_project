@@ -15,7 +15,8 @@ public:
 
 //main constructor
 //takes the width, height of graph, as well as a gameobject used to render each node.
-Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname) : nodeObj(nodeSprite), camPos(glm::vec3(0.0f)) {
+Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname):
+	nodeObj(nodeSprite), camPos(glm::vec3(0.0f)) {
 	//initializes the 2d nodes array and nodeMap
 	nodes = std::vector<std::vector<Node*>>();
 	nodeMap = std::map<int, Node*>();
@@ -23,17 +24,6 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	texMap = tex;
 	nodeWid = nodeWidth;
 	size = nodeWidth * nodeHeight - 1;
-	//int hover = -1;
-	//data for setting node positions on, screen. This works best for a 40x30 graph
-	//TODO change these values based on graph size.
-	//float x_b = -4.4f;
-	//float y_b = 4.4f;
-	//float movementX = 0.22f;
-	//float movementY = -0.3f;
-	//float movementX = 0.2f;
-
-	//movementX = 0.205f;
-	//movementY = -0.31f; //uncomment to see grid
 
 	movementX = 0.225f;
 	movementY = -0.3f;
@@ -262,19 +252,6 @@ void Graph::update(Node* s, bool block, bool clear) {
 		highlight(n);
 	}
 
-
-	if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-		//gets the node corresponding the mouseclick
-		int n = selectNode(xpos, ypos);
-
-		//set the start to selected node, if node exists and is not the start-node.
-		if (n != -1 && n != startNodeId && getNode(n).getPathable()) {
-			//oldEndNodeId = endNodeId;
-			setEnd(n);
-			pathfind(endNodeId,true);
-		}
-		//pathfind(clear);
-	}
 }
 
 //returns the id of the node at the mouse coordinates
@@ -342,22 +319,16 @@ void Graph::render(Shader &shader) {
 			glUniform3f(color_loc, -0.2f, -0.2f, -0.2f);	//dark green
 			glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);	//dark green
 
-			
 			//change the color uniform depending on if the node is the start or end node.
-			if (currentNode->getId() == startNodeId) {
-				glUniform3f(color_loc, 1.0f, -1.0f, -1.0f);	//red = start
+			if (currentNode->getId() == startNodeId){
+				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = start
 			}
 			else if (currentNode->getId() == endNodeId) {
-				glUniform3f(color_loc, -1.0f, -1.0f, 1.0f); //blue = end
+				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = end
 			}else if (currentNode->isOnPath()) {
-				glUniform3f(color_loc, 0.0f, 0.0f, 1.0f);	//light blue = on path
+				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = on path
 			}
-			//else if (currentNode.isVisited()) {
-			//	glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//black = searched
-			//}
-
 			
-
 			nodeObj.render(shader);
 		}
 	}

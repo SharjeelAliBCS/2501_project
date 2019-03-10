@@ -8,7 +8,7 @@
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex,GLuint bulTex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type);
+	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
