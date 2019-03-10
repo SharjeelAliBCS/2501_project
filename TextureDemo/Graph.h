@@ -50,7 +50,7 @@ public:
 
 	//inline bool revStrCmp(std::string s1, std::string s2) { return -1 * s1.compare(s2); }
 
-	bool rePath(std::vector<EnemyObject*>* creeps, bool T = false);
+	bool rePath(std::vector<EnemyObject*>* creeps, int id, bool T = false);
 	//creates and marks a path from start to end
 	bool pathfind(int destId, bool clear=true);
 
@@ -76,7 +76,6 @@ public:
 private:
 	//node sprite used to draw each node.
 	GameObject nodeObj;
-	
 	
 	int hover;
 	

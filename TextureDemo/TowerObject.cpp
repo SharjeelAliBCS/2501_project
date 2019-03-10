@@ -7,7 +7,7 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLuint bulTex, std::vector<GLuint> explosion,GLint entityNumElements, std::string type)
+TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex, GLuint bulTex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type)
 	: GameObject(entityPos, entityTexture, entityNumElements, type) {
 	projectileTex = bulTex;
 	rotation = 0.0f;
@@ -17,6 +17,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turr
 	fireRate = 10;
 	frames = 0;
 	explosion_tex = explosion;
+	dps = d; 
 
 	
 }
@@ -64,21 +65,24 @@ void TowerObject::update(double deltaTime) {
 	GameObject::update(deltaTime);
 }
 void TowerObject::locateEnemy() {
-	float tx = position.x;
-	float ty = position.y;
-	float ex = currentEnemy->getPosition().x;
-	float ey = currentEnemy->getPosition().y;
 
-	float deltaX = tx-ex;
-	float deltaY = ty-ey;
-	float targetAngle = atan2(deltaY, deltaX);
-	//std::cout << "enemy x: " <<  ex <<", enemy y: " << ey << std::endl;
-	
-	rotation = targetAngle * (180 / 3.14f)+180;
+	if (!currentEnemy == NULL) {
+		float tx = position.x;
+		float ty = position.y;
+		float ex = currentEnemy->getPosition().x;
+		float ey = currentEnemy->getPosition().y;
 
-	fireEnemy();
-	
-	//std::cout << turretAngle << std::endl;
+		float deltaX = tx - ex;
+		float deltaY = ty - ey;
+		float targetAngle = atan2(deltaY, deltaX);
+		//std::cout << "enemy x: " <<  ex <<", enemy y: " << ey << std::endl;
+
+		rotation = targetAngle * (180 / 3.14f) + 180;
+
+		fireEnemy();
+
+		//std::cout << turretAngle << std::endl;
+	}
 
 }
 
@@ -88,7 +92,7 @@ void TowerObject::deathAnimation() {
 void TowerObject::fireEnemy() {
 	if (frames%fireRate==0) {
 		
-		bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex,size, "t_projectile", currentEnemy, rotation, 0.3));
+		bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex,size, "t_projectile", currentEnemy, rotation, dps,0.3));
 	}
 	frames += 1;
 

@@ -8,7 +8,7 @@
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex,GLuint bulTex, std::vector<GLuint> explosion,GLint entityNumElements,std::string type);
+	TowerObject(glm::vec3 &entityPos, GLuint entityTexture, GLuint turrTex,GLuint bulTex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -16,6 +16,7 @@ public:
 	// Renders the GameObject using a shader
 	virtual void  render(Shader &shader) override;
 	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
+	
 	
 private:
 	float rotationSpeed;
@@ -41,6 +42,7 @@ private:
 	EnemyObject* currentEnemy;
 
 	int fireRate, frames;
+	float dps;
 	GLint size;
 	std::vector<ProjectileObject*> bullObjects;
 	std::vector<GLuint> explosion_tex;

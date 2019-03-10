@@ -7,13 +7,20 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type)
-	: GameObject(entityPos, entityTexture, entityNumElements,type),hit(false) {}
+EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type)
+	: GameObject(entityPos, entityTexture, entityNumElements,type),hit(false),health(h) {}
 
+void EnemyObject::enemyHit(float damage) {
+	health -= damage;
+	hit = true;
+	std::cout << "hp: " << health << std::endl;
+}
 // Update function for moving the player object around
 void EnemyObject::update(double deltaTime) {
 
-
+	if (health <= 0.0f) {
+		exists = false;
+	}
 	// Call the parent's update method to move the object
 	GameObject::update(deltaTime);
 }

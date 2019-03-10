@@ -5,7 +5,7 @@
 // Inherits from GameObject
 class BossObject : public EnemyObject {
 public:
-	BossObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type);
+	BossObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;

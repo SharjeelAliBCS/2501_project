@@ -25,7 +25,6 @@ public:
 	inline void setZoom(float newZoom) { zoom = newZoom; }
 
 private:
-	GLuint texture;
 	float zoom;
 	glm::vec3 camPos;
 	glm::vec3 scale;

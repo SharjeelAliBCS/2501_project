@@ -4,7 +4,6 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	: GameObject(entityPos, entityTexture, entityNumElements, type), camPos(glm::vec3(0.0f))
 {
 	position = entityPos;
-	texture = entityTexture;
 	zoom = zoomHUD;//fix for inital zoom pas as parameter on constructur and update inmain key values
 	scale = objectScale;
 }

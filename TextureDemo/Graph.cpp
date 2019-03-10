@@ -355,17 +355,8 @@ void Graph::render(Shader &shader) {
 			//else if (currentNode.isVisited()) {
 			//	glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//black = searched
 			//}
-			/*
-			if (currentNode->getHighlight()) {
-				
-				if (getNode(hover).getBuildable()) {
-					glUniform3f(color_loc, 1.0f, 1.0f, -1.0f);	//white = cannot be pathed
-				}
-				else {
-					glUniform3f(color_loc, 1.0f, -1.0f, -1.0f);	//red = start
-				}
-				
-			}*/
+
+			
 
 			nodeObj.render(shader);
 		}
@@ -382,21 +373,25 @@ Node& Graph::getNode(int id) {
 /*TODO
 create map for each node to store path based on dest, otherwise overwritten
 */
-bool Graph::rePath(std::vector<EnemyObject*>* creeps, bool T) {
+bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, bool T) {
 	map<int, int> mapInUse = T ? topDestMap : botDestMap;
 	bool pathFound = true;
+	Node changedNode = getNode(id);
+
 	std::cout << "got here 1\n";
 	if (creeps != NULL) {
 		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
-			setStart((*it)->getCur()->getId());
-			setEnd((*it)->getCurDestId());
-			std::cout << startNodeId << " => " << endNodeId << std::endl;
-			if (startNodeId == endNodeId) { continue; }
-			if (getEndId() == -1) {
-				std::cout << std::endl << "Houston we have a problem, creep dest = -1" << std::endl << std::endl;
-			}
-			pathFound = pathFound ? pathfind((*it)->getCurDestId(), false) : false;
-			std::cout << pathFound << std::endl;
+			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL) {
+				setStart((*it)->getCur()->getId());
+				setEnd((*it)->getCurDestId());
+				std::cout << startNodeId << " => " << endNodeId << std::endl;
+				if (startNodeId == endNodeId) { continue; }
+				if (getEndId() == -1) {
+					std::cout << std::endl << "Houston we have a problem, creep dest = -1" << std::endl << std::endl;
+				}
+				pathFound = pathFound ? pathfind((*it)->getCurDestId(), false) : false;
+				std::cout << pathFound << std::endl;
+			}			
 		}
 	}
 	std::cout << "got here 2\n";
@@ -410,7 +405,9 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, bool T) {
 			setEnd(it->first);
 		}
 		if (startNodeId == endNodeId) { continue; }
-		pathFound = pathFound ? pathfind(endNodeId,false) : false;
+		if (changedNode.getNextNode(endNodeId) != NULL) {
+			pathFound = pathFound ? pathfind(endNodeId, false) : false;
+		}
 	}
 	std::cout << "got here 3\n";
 	return pathFound;

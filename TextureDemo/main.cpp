@@ -52,7 +52,7 @@ const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
 GLuint tex[30];
 
 // Global game object info
-std::vector<GameObject*> gameObjects;
+
 std::map<std::string, std::vector<EnemyObject*>*> enemyMap;
 
 
@@ -151,8 +151,10 @@ void setallTexture(void)
 	setthisTexture(tex[18], "Graphics/Explosion/tower_explode_6.png");
 
 	setthisTexture(tex[19], "Graphics/HUD/panel.png");//HUD image 
+	setthisTexture(tex[20], "Graphics/HUD/panelGameOver.png");//HUD image 
 
-	setthisTexture(tex[20], "Graphics/Cursor/0_cursor.png");//HUD image 
+	setthisTexture(tex[21], "Graphics/Cursor/0_cursor.png");//HUD image 
+
 	
 
 	glBindTexture(GL_TEXTURE_2D, tex[0]);
@@ -209,7 +211,8 @@ int main(void){
 		int start = 1149;
 		int end = 122;
 
-		int hp = 5;
+		float hp = 5;
+		float enemyHealth = 50.0f;
 		//start = 415;
 		//end = 430;
 		std::ifstream in(fname);
@@ -225,7 +228,7 @@ int main(void){
 			++height;
 		}
 		std::cout << "got here at least" << std::endl;
-		GLuint cursorTex = tex[20];
+		GLuint cursorTex = tex[21];
 
 		GameObject* cursor = new GameObject(glm::vec3(0.0f), cursorTex, size, "cursor");
 
@@ -234,13 +237,11 @@ int main(void){
 		start = *(g.getBotStartSet().begin());
 		std::cout << std::endl << start<<std::endl;
 		std::cout << "got here at least" << std::endl;
-		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
-		EnemyObject *p2 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size,"enemy");
+		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size, enemyHealth,"enemy");
+		EnemyObject *p2 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), tex[6], size, enemyHealth,"enemy");
 		std::cout << "got here at least" << std::endl;
 		p1->setSpeed(1.5);
-		gameObjects.push_back(p1);
-		gameObjects.push_back(p2);
-
+	
 		enemyMap["test"] = new std::vector<EnemyObject*>;
 		enemyMap["test"]->push_back(p1);
 		enemyMap["test"]->push_back(p2);
@@ -290,9 +291,10 @@ int main(void){
 
 
 		std::cout << "got here at least" << std::endl;
+		bool gameOver = false;
 		while (!glfwWindowShouldClose(window.getWindow())) {
 
-	
+		
 			if (timeOfLastMove + 0.05 < glfwGetTime()) {
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
 					cameraTranslatePos.y -= camShiftInc * camShiftInc;
@@ -344,14 +346,21 @@ int main(void){
 					int id = g.getHover();
 					g.getHoverCoords(x,y);
 					if (g.getNode(id).getBuildable()) {
-						TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], explosion,size, "tower");
-						towerObjects.push_back(t);
+						TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), tex[10], tex[11], tex[12], explosion, size, 10,"tower");
+
 						//std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl;
 						g.getNode(id).setTowerState(true);
-						g.getNode(id).setTower(t);
+
 						//std::cout << g.getNode(id).getBuildable() << " => " << g.getNode(id).getPathable()<<std::endl<<std::endl;
-						if (!g.rePath(enemyMap["test"])) {
-							std::cout << "\n\n\nSOUND THE FUCKING ALARMS";
+						if (g.rePath(enemyMap["test"], id)) {
+							towerObjects.push_back(t);
+							g.getNode(id).setTower(t);
+						}
+						else {
+							std::cout << "\n\n\nINVALID TOWER PLACEMENT";
+							g.getNode(id).setTowerState(false);
+							g.rePath(enemyMap["test"], id);
+							delete(t);
 						}
 						std::cout << "Repath" << std::endl;
 
@@ -361,11 +370,12 @@ int main(void){
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
 					(timeOfLastMove + 0.15 < glfwGetTime())) { 
+					
 					std::cout << "spawn";
 					Node* cur = &g.getNode(*g.getBotStartSet().begin());
-					EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), tex[6], size, "enemy");
+					EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), tex[6], size, enemyHealth,"enemy");
 					enemyMap["test"]->push_back(e);
-					gameObjects.push_back(e);
+					
 					e->setSpeed(1);
 					e->oldx = round(e->getPosition().x * 100) / 100;
 					e->oldy = round(e->getPosition().y * 100) / 100;
@@ -390,7 +400,6 @@ int main(void){
 
 			// Setup camera to focus on (0, 0)
 			
-			
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
 			//glm::mat4 viewMatrix =  glm::translate(glm::mat4(1.0f), cameraTranslatePos) * glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom));
 			shader.setUniformMat4("viewMatrix", viewMatrix);
@@ -401,6 +410,7 @@ int main(void){
 			
 			
 			for (HUD* h : hudObjects) {
+				h->update(deltaTime);
 				h->render(shader);
 			}
 
@@ -419,8 +429,10 @@ int main(void){
 				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 			}
 
-			
+			std::deque<int> deleteEnemies;
 
+			
+			int delIndex = 0;
 			for (EnemyObject* e : *enemyMap["test"]) {
 				oldEnemyX = e->oldx;
 				oldEnemyY = e->oldy;
@@ -432,6 +444,14 @@ int main(void){
 				e->oldy = enemyY;
 
 				cur = e->getCur();
+				
+				if (!e->getExists()) {
+					e->setType("delete this!");
+					deleteEnemies.push_front(delIndex);
+				}
+
+					delIndex++;
+
 
 
 				if (cur->getId() != g.getEndId() && cur->getNextNode(e->getCurDestId())!=NULL) {
@@ -526,33 +546,62 @@ int main(void){
 
 				}
 
+
+
 				//stop moving if we're done
 				if (cur->getId() == g.getEndId() || cur->getNextNode(e->getCurDestId()) == NULL) {
-					--hp;
+					hp -= 0.5;
+					std::cout << "hp = " << hp << std::endl;
 					//std::cout << "done, HP="<<hp<<std::endl;
-					e->setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+					e->setExists(false);
 					if (hp == 0) {
+						gameOver = true;
 						std::cout << "GAME OVER" << std::endl;
+						hudObjects[2]->setTex(tex[20]);
+						
 					}
 
 				}
 
+				e->update(deltaTime);
+
+				//reset color uniform.
+				GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+				glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
+
+				// Render game objects
+				e->render(shader);
+
+
+
 			}
-			
+
+			for (int i = 0; i < deleteEnemies.size(); i++) {
+				//std::cout << "ddd" << std::endl;
+				enemyMap["test"]->erase(enemyMap["test"]->begin() + deleteEnemies[i]);
+				//delete bullObjects[deleteBullets[i]];
+			}
 
 			for (TowerObject* t: towerObjects) {
 				// Get the current object
-				EnemyObject* closestEnemy = enemyMap["test"]->front();
-				float enemyDistance = glm::length(t->getPosition() - closestEnemy->getPosition());
-				for (EnemyObject* e : *enemyMap["test"]) {
+				EnemyObject* closestEnemy;
 
-					float tempDistance = glm::length(t->getPosition() - e->getPosition());
-					if (tempDistance < enemyDistance) {
-						enemyDistance = tempDistance;
-						closestEnemy = e;
+				if (enemyMap["test"]->size() == 0)closestEnemy = NULL;
+				else {
+					closestEnemy = enemyMap["test"]->front();
+					float enemyDistance = glm::length(t->getPosition() - closestEnemy->getPosition());
+					for (EnemyObject* e : *enemyMap["test"]) {
+
+						float tempDistance = glm::length(t->getPosition() - e->getPosition());
+						if (tempDistance < enemyDistance) {
+							enemyDistance = tempDistance;
+							closestEnemy = e;
+						}
+
 					}
-
 				}
+
+				
 				t->setCurrEnemy(closestEnemy);
 				// Updates game objects
 				t->update(deltaTime);
@@ -563,24 +612,9 @@ int main(void){
 				t->render(shader);
 			}
 
-			// Update and render all game objects
-			for (int i = 0; i < gameObjects.size(); i++) {
-				// Get the current object
-				GameObject* currentGameObject = gameObjects[i];
-
-				// Updates game objects
-				currentGameObject->update(deltaTime);
-
-				//reset color uniform.
-				GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
-				glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
-
-				// Render game objects
-				currentGameObject->render(shader);
-			}
-
+			
 			//update graph
-			g.update(p1->getCur(),toggleBlock, false);
+			//g.update(p1->getCur(),toggleBlock, false);
 			g.update(p2->getCur(),toggleBlock, false);
 			//render graph
 			g.render(shader);
