@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "Window.h"
 #include "GameObject.h"
+#include "Text.h"
 
 class HUD : public GameObject {
 public:
@@ -14,10 +15,11 @@ public:
 	// Renders the GameObject using a shader
 	virtual void  render(Shader &shader) override;
 
-
+	void addText(Text* t); 
 	// Getters
 	inline glm::vec3 getCamPos() { return camPos; }
 	inline float getZoom() { return zoom; }
+	inline std::vector<Text*> getTextObjects() { return textObjects; }
 
 	// Setters
 	inline void setCamPos(glm::vec3 newPosition) { camPos = newPosition; }
@@ -28,4 +30,5 @@ private:
 	float zoom;
 	glm::vec3 camPos;
 	glm::vec3 scale;
+	std::vector<Text*> textObjects;
 };

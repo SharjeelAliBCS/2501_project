@@ -22,6 +22,7 @@
 #include "Graph.h"
 #include "TowerObject.h"
 #include "HUD.h"
+#include "Text.h"
 
 
 // Macro for printing exceptions
@@ -38,6 +39,7 @@ const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
 // Global texture info
 
 std::map<std::string, std::vector<GLuint>  > textures;
+std::map<char, GLuint > fontTexture;
 
 // Global game object info
 
@@ -47,6 +49,8 @@ std::map<std::string, std::vector<EnemyObject*>*> enemyMap;
 std::vector<TowerObject*> towerObjects;
 std::vector<EnemyObject*> enemyObjects;
 std::vector<HUD*> hudObjects;
+
+
 
 // Create the geometry for a square (with two triangles)
 // Return the number of array elements that form the square
@@ -113,6 +117,17 @@ GLuint createTexture(char *fname)
 	glGenTextures(1,w);
 	glBindTexture(GL_TEXTURE_2D, w[0]);
 
+	float x = 0.2;
+	float y = 0.4;
+	
+
+	float h = 0.1;
+	glTexCoord2f(0, 0); glVertex2f(x, y);
+	glTexCoord2f(0.5, 0); glVertex2f(x+0.1, y);
+	glTexCoord2f(0.5, 0.5); glVertex2f(x +0.2, y + h);
+	glTexCoord2f(0, 0.5); glVertex2f(x, y + h);
+	
+
 	int width, height;
 	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGBA);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
@@ -157,7 +172,20 @@ void setallTexture(void)
 	textures["UI"].push_back(createTexture("Graphics/HUD/panel.png"));
 	textures["UI"].push_back(createTexture("Graphics/HUD/panelGameOver.png"));
 
+
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/0_cursor.png"));
+
+	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@";
+	
+	for (int i = 0; i < characters.size(); i++) {
+		
+		 
+		std::string s = "Graphics/Text/text_"+ std::to_string(i + 1)+".png";
+	
+		char *cstr = &s[0u];
+		std::cout << (i+1) << " " << characters[i] << " " << s << std::endl;
+		fontTexture[characters[i]] = createTexture(cstr);
+	}
 
 }
 
@@ -244,6 +272,7 @@ int main(void){
 			++height;
 		}
 		
+
 		/************************************************GRAPH INIT************************************************/
 		
 		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0],size,"map"),texMap, fname);
@@ -253,6 +282,8 @@ int main(void){
 		g.setCamPos(cameraTranslatePos);
 	
 		g.setStart(start);
+
+	
 		/************************************************ENEMY INIT************************************************/
 
 		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), textures["Enemy"][0], size, enemyHealth,"enemy");
@@ -282,6 +313,11 @@ int main(void){
 		hudObjects.push_back(new HUD(glm::vec3(1.56f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD3") );
 		objectS.x = 1.25f;//this handels the size(scale) of the HUD panel
 		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD2") );
+
+		/************************************************TEXT INIT************************************************/
+		hudObjects[2]->addText(new Text(glm::vec3(1.5f, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f, "turn"));
+		hudObjects[2]->addText(new Text(glm::vec3(-4.5f,-6.0f,0.0f), fontTexture, "Enemies = ", size, 0.1f, "enemies"));
+		
 
 		/************************************************GAME LOOP************************************************/
 	
@@ -390,9 +426,23 @@ int main(void){
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			
+			
+
 			//**********HUD**********
 			for (HUD* h : hudObjects) {
 				h->update(deltaTime);
+			
+				for (Text* t : h->getTextObjects()) {
+					
+					if (!t->getType().compare("enemies")) {
+						std::string temp = t->getText() + std::to_string(enemyMap["Origin"]->size());
+						t->setRenderedText(temp);
+					}
+
+
+
+				}
+				
 				h->render(shader);
 			}
 

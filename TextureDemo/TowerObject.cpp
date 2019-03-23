@@ -108,7 +108,12 @@ void TowerObject::render(Shader &shader) {
 		bullObjects[i]->render(shader);
 	}
 	// Bind the entities texture
+
+	
+
 	glBindTexture(GL_TEXTURE_2D, turretTexture);
+
+	
 
 	// Setup the transformation matrix for the shader
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
@@ -122,6 +127,9 @@ void TowerObject::render(Shader &shader) {
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 
 	glBindTexture(GL_TEXTURE_2D, texture);
+
+	
+	
 	
 	transformationMatrix = translationMatrix  * scaleMatrix;
 

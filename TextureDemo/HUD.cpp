@@ -6,13 +6,31 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	position = entityPos;
 	zoom = zoomHUD;//fix for inital zoom pas as parameter on constructur and update inmain key values
 	scale = objectScale;
+
+}
+
+void HUD::addText(Text* t) { 
+	t->setCamPos(camPos);
+	t->setCamZoom(zoom);
+	textObjects.push_back(t); 
 }
 void HUD::update(double deltaTime)// use it to compute the x and y coord of the mouse to detemine if its buildable
 //as well as as if you are on top of a button in the HUD menu. 
 {
+	
+	for (Text* t : textObjects) {
+		t->setCamPos(camPos);
+		t->setCamZoom(zoom);
+		t->update(deltaTime);
+	}
 
 }
 void HUD::render(Shader &shader) {
+
+	//**********Text**********
+	for (Text* t : textObjects) {
+		t->render(shader);
+	}
 	//std::cout << "------------- in render";
 	// Bind the entities texture
 	glBindTexture(GL_TEXTURE_2D, texture);
