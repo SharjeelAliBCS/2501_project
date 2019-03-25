@@ -12,6 +12,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 
 	turretTexture = tex[1];
 	projectileTex = tex[2];
+	icon = tex[3];
 	rotation = 0.0f;
 	size = numElements;
 	_state = Init;
@@ -19,6 +20,8 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	frames = 0;
 	explosion_tex = explosion;
 	dps = d; 
+	texvec = tex;
+
 
 	
 }

@@ -49,6 +49,7 @@ std::map<std::string, std::vector<EnemyObject*>*> enemyMap;
 std::vector<TowerObject*> towerObjects;
 std::vector<EnemyObject*> enemyObjects;
 std::vector<HUD*> hudObjects;
+std::vector<TowerObject*> blueprints;
 
 
 
@@ -158,9 +159,19 @@ void setallTexture(void)
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/0_enemy.png"));
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/1_enemy.png"));
 
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_tower.png"));
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_turret.png"));
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_projectile.png"));
+	textures["Tower"].push_back(createTexture("Graphics/Tower/01_tower.png"));//0
+	textures["Tower"].push_back(createTexture("Graphics/Tower/01_turret.png"));//1
+	textures["Tower"].push_back(createTexture("Graphics/Tower/01_projectile.png"));//2
+	textures["Tower"].push_back(createTexture("Graphics/Tower/01_towerIcon.png"));//3
+	textures["Tower"].push_back(createTexture("Graphics/Tower/02_tower.png"));//4
+	textures["Tower"].push_back(createTexture("Graphics/Tower/02_turret.png"));//5
+	textures["Tower"].push_back(createTexture("Graphics/Tower/02_projectile.png"));//6
+	textures["Tower"].push_back(createTexture("Graphics/Tower/02_towerIcon.png"));//7
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_tower.png"));//8
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_turret.png"));//9
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_projectile.png"));//10
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_towerIcon.png"));//11
+
 
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_1.png"));
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_2.png"));
@@ -174,6 +185,7 @@ void setallTexture(void)
 
 
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
+	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
 
 	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@";
 	
@@ -228,6 +240,7 @@ int main(void){
 		texMap.insert(std::pair<std::string, GLuint >("hp", textures["Map"][4]));//end health
 		
 		GLuint cursorTex = textures["Cursor"][0];
+		GLuint selectGraphicTex = textures["Cursor"][1];
 
 		/************************************************VARIABLES INIT************************************************/
 
@@ -303,14 +316,26 @@ int main(void){
 			e->setCurDestId(cur->getNextId());
 		}
 
-	
+		/************************************************blueprints INIT************************************************/
+		int index = 0;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0")); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---1"));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---2"));//index += 4;
+		//blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
+		//blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint"));//index += 4;
+		//blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
+		//blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
+		//blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));
+
 		/************************************************HUD INIT************************************************/
 
 		GameObject* cursor = new GameObject(glm::vec3(0.0f), cursorTex, size, "cursor");
+		HUD* selectionGraphic = new HUD(glm::vec3(0.0f, 0.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, "selection");
 
 		glm::vec3 objectS = glm::vec3(0.5f, 0.8f, 0.0f);//this handels the size(scale) of the HUD panel 
-		hudObjects.push_back(new HUD(glm::vec3(-1.55f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD1") );//(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
-		hudObjects.push_back(new HUD(glm::vec3(1.56f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD3") );
+		hudObjects.push_back(new HUD(glm::vec3(1.55f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD1") );//(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
+		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD3") );
+		hudObjects[1]->setBlueprints(blueprints);
 		objectS.x = 1.25f;//this handels the size(scale) of the HUD panel
 		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD2") );
 
@@ -330,36 +355,40 @@ int main(void){
 					cameraTranslatePos.y -= camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
 					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
-					
+					selectionGraphic->setCamPos(cameraTranslatePos);
 					
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
 					cameraTranslatePos.y += camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
 					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
+					selectionGraphic->setCamPos(cameraTranslatePos);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
 					cameraTranslatePos.x -= camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
 					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
+					selectionGraphic->setCamPos(cameraTranslatePos);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
 					cameraTranslatePos.x += camShiftInc * camShiftInc;
 					g.setCamPos(cameraTranslatePos);
 					for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
+					selectionGraphic->setCamPos(cameraTranslatePos);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_Z) == GLFW_PRESS) {
 					cameraZoom = std::fmin(cameraZoom + camZoomInc, maxCamZoom);
 					g.setZoom(cameraZoom);
 					timeOfLastMove = glfwGetTime();
 					for (HUD* h : hudObjects)h->setZoom(cameraZoom);
-
+					selectionGraphic->setZoom(cameraZoom);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_X) == GLFW_PRESS) {
 					cameraZoom = std::fmax(cameraZoom - camZoomInc, minCamZoom);
 					g.setZoom(cameraZoom);
 					timeOfLastMove = glfwGetTime();
 					for (HUD* h : hudObjects)h->setZoom(cameraZoom);
+					selectionGraphic->setZoom(cameraZoom);
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_T) == GLFW_PRESS && 
 					(timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -368,29 +397,46 @@ int main(void){
 
 				}
 				if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-	
+					double xpos, ypos;
+					glfwGetCursorPos(window.getWindow(), &xpos, &ypos);
+
 					float x;
 					float y;
 					int id = g.getHover();
-					g.getHoverCoords(x,y);
-					if (g.getNode(id).getBuildable()) {
-						TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), textures["Tower"], textures["Explosion"], size, 10,"tower");
+					g.getHoverCoords(x, y);
 
-						g.getNode(id).setTowerState(true);
 
-						if (g.rePath(enemyMap["Origin"], id)) {
-							towerObjects.push_back(t);
-							g.getNode(id).setTower(t);
+					if (ypos <= 440) {//prints on map
+						if (hudObjects[1]->getFlag()) {
+
+							if (g.getNode(id).getBuildable()) {
+								TowerObject* selectedTower = hudObjects[1]->getSelection();
+
+								TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType());
+
+								g.getNode(id).setTowerState(true);
+								if (g.rePath(enemyMap["Origin"], id)) {
+									towerObjects.push_back(t);
+									g.getNode(id).setTower(t);
+								}
+								else {
+									std::cout << "\n\n\nINVALID TOWER PLACEMENT";
+									g.getNode(id).setTowerState(false);
+									g.rePath(enemyMap["Origin"], id);
+									delete(t);
+								}
+								std::cout << "Repath" << std::endl;
+
+							}
 						}
-						else {
-							std::cout << "\n\n\nINVALID TOWER PLACEMENT";
-							g.getNode(id).setTowerState(false);
-							g.rePath(enemyMap["Origin"], id);
-							delete(t);
-						}
-						std::cout << "Repath" << std::endl;
-
 					}
+					hudObjects[1]->selection(xpos, ypos);
+					if (hudObjects[1]->getFlag()) {
+						cursor->setTex(hudObjects[1]->getCursor());//sets the texture for the cursor with the tower icon <-----------
+						selectionGraphic->setPosition(hudObjects[1]->getSelection()->getPosition());
+					}
+
+					//--------end of click button------------ 
 				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
 					(timeOfLastMove + 0.15 < glfwGetTime())) { 
@@ -431,6 +477,10 @@ int main(void){
 			//**********HUD**********
 			for (HUD* h : hudObjects) {
 				h->update(deltaTime);
+
+				if (h->getFlag()) {
+					selectionGraphic->render(shader);
+				}
 			
 				for (Text* t : h->getTextObjects()) {
 					

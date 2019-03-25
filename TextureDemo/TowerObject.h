@@ -16,6 +16,13 @@ public:
 	// Renders the GameObject using a shader
 	virtual void  render(Shader &shader) override;
 	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
+
+	//getters
+	//getter for the vector of objects
+	inline std::vector<GLuint> getTexvec() { return texvec; }
+	inline std::vector<GLuint> getExplosion_tex() { return explosion_tex; }
+	GLuint getIcon() { return icon; }
+	inline float getDps() { return dps; }
 	
 	
 private:
@@ -46,6 +53,10 @@ private:
 	GLint size;
 	std::vector<ProjectileObject*> bullObjects;
 	std::vector<GLuint> explosion_tex;
+	GLuint icon;
+
+	std::vector<GLuint> texvec;
+	std::vector<GLuint> texvecExplosion;
 
 
 };
