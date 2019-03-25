@@ -9,7 +9,7 @@ class Text :
 	public GameObject
 {
 public:
-	Text(glm::vec3 &entityPos, std::map<char,GLuint> tex, std::string t, GLint entityNumElements, float s, std::string type);
+	Text(glm::vec3 &entityPos, std::map<char,GLuint> tex, std::string t, GLint entityNumElements, float s, glm::vec3 c);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -32,6 +32,7 @@ private:
 	std::string text;
 	std::string renderText;
 	float scale;
+	glm::vec3 color;
 
 	float zoom;
 	glm::vec3 camPos;

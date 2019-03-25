@@ -173,7 +173,7 @@ void setallTexture(void)
 	textures["UI"].push_back(createTexture("Graphics/HUD/panelGameOver.png"));
 
 
-	textures["Cursor"].push_back(createTexture("Graphics/Cursor/0_cursor.png"));
+	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
 
 	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@";
 	
@@ -315,8 +315,8 @@ int main(void){
 		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD2") );
 
 		/************************************************TEXT INIT************************************************/
-		hudObjects[2]->addText(new Text(glm::vec3(1.5f, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f, "turn"));
-		hudObjects[2]->addText(new Text(glm::vec3(-4.5f,-6.0f,0.0f), fontTexture, "Enemies = ", size, 0.1f, "enemies"));
+		hudObjects[2]->addText(new Text(glm::vec3(1.5f, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f,glm::vec3(255, 255, 255)));
+		hudObjects[2]->addText(new Text(glm::vec3(-4.5f,-6.0f,0.0f), fontTexture, "Enemies = ", size, 0.1f, glm::vec3(50,175,255)));
 		
 
 		/************************************************GAME LOOP************************************************/
@@ -434,13 +434,10 @@ int main(void){
 			
 				for (Text* t : h->getTextObjects()) {
 					
-					if (!t->getType().compare("enemies")) {
+					if (t->getType().compare("Enemies = ")==0) {
 						std::string temp = t->getText() + std::to_string(enemyMap["Origin"]->size());
 						t->setRenderedText(temp);
 					}
-
-
-
 				}
 				
 				h->render(shader);
@@ -456,9 +453,15 @@ int main(void){
 				cursor->render(shader);
 			}
 			else {
-				
-				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 1.0f, -1.0f, -1.0f);
+				//glBlendColor(1.0f, 1.0f, 1.0f, 0.05f);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_ONE, GL_SRC_ALPHA);
+				//glUniform4f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f,0.5f);	//dark green
+				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.5f, -1.0f, -1.0f);
 				cursor->render(shader);
+				glEnable(GL_LIGHTING);
+			
+				glBlendFunc(GL_SRC_ALPHA, GL_ZERO),
 				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 			}
 

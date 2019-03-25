@@ -7,13 +7,14 @@ PlayerGameObject inherits from GameObject
 It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-Text::Text(glm::vec3 &entityPos, std::map<char, GLuint> tex, std::string t, GLint entityNumElements, float s, std::string type)
-	: GameObject(entityPos, tex['G'], entityNumElements, type) {
+Text::Text(glm::vec3 &entityPos, std::map<char, GLuint> tex, std::string t, GLint entityNumElements, float s, glm::vec3 c)
+	: GameObject(entityPos, tex['G'], entityNumElements, t) {
 
 	text = t;
 	characters = tex;
 	scale = s;
 	renderText = t;
+	color = c;
 	
 
 }
@@ -28,10 +29,13 @@ void Text::update(double deltaTime) {
 
 void Text::render(Shader &shader) {
 	
+
 	glm::vec3 textPos = position;
 	for (int i = 0; i < renderText.size();i++) {
 		char c = renderText[i];
-		//std::cout << c << std::endl;
+	
+		GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+		glUniform3f(color_loc, color.r/255.0f,color.g/255.0f,color.b/255.0f);	//light red = on pat
 		
 		GLuint tex = characters[c];
 		
@@ -60,10 +64,12 @@ void Text::render(Shader &shader) {
 		}
 		else {
 
-
 			textPos.x += 0.6f;
 		}
 	}
+
+	GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+	glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);	//light red = on pat
 }
 
 
