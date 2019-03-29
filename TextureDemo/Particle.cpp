@@ -58,7 +58,7 @@ void Particle::render(Shader& shader) {
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	// Draw 
-	glDepthMask(GL_FALSE); // draw particles without writing to depth buffer
+	//glDepthMask(GL_FALSE); // draw particles without writing to depth buffer
 	glDrawElements(GL_TRIANGLES, 6 * particlesize, GL_UNSIGNED_INT, 0);
 
 
