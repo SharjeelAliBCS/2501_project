@@ -54,6 +54,9 @@
     <ClCompile Include="Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
@@ -92,12 +95,21 @@
     <ClInclude Include="Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.vert">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="shader.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaderParticle.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaderParticle.vert">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

@@ -11,7 +11,7 @@
 
 class Shader {
 public:
-	Shader(const char *vertPath, const char *fragPath);
+	Shader(const char *vertPath, const char *fragPath, int t);
 	~Shader();
 
 	void enable();
@@ -35,8 +35,12 @@ public:
 	// Sets a uniform matrix4x4 variable in your shader program to a matrix4x4
 	void setUniformMat4(const GLchar *name, const glm::mat4 &matrix);
 
+	int CreateParticleArray(void);
+
+	void setAttribute(int type);
 	// Getters
 	inline GLuint getShaderID() { return shaderProgram; }
 private:
 	GLuint shaderProgram;
+	int type;
 };

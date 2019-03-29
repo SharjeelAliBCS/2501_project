@@ -23,6 +23,12 @@
 #include "TowerObject.h"
 #include "HUD.h"
 #include "Text.h"
+#include "Particle.h"
+
+#include "windows.h"
+#include "mmsystem.h"
+#pragma comment(lib, "winmm.lib")
+
 
 
 // Macro for printing exceptions
@@ -94,23 +100,6 @@ int CreateSquare(void) {
 }
 
 
-void setthisTexture(GLuint w, char *fname)
-{
-	glBindTexture(GL_TEXTURE_2D, w);
-
-	int width, height;
-	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGBA);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	SOIL_free_image_data(image);
-
-	// Texture Wrapping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-	// Texture Filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
 
 GLuint createTexture(char *fname)
 {
@@ -147,7 +136,8 @@ GLuint createTexture(char *fname)
 
 void setallTexture(void)
 {
-	
+	std::map < std::string, std::vector<GLuint> >newTex;
+	textures = newTex;
 	textures["Map"].push_back(createTexture("Graphics/Map/0_0_boundary.png"));
 	textures["Map"].push_back(createTexture("Graphics/Map/0_1_boundary.png"));
 	textures["Map"].push_back(createTexture("Graphics/Map/1_empty.png"));
@@ -187,6 +177,8 @@ void setallTexture(void)
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
 
+	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
+
 	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@";
 	
 	for (int i = 0; i < characters.size(); i++) {
@@ -201,10 +193,46 @@ void setallTexture(void)
 
 }
 
+LPCWSTR to_LPCWSTR(std::string s) {
+	std::wstring stemp = std::wstring(s.begin(), s.end());
+	return stemp.c_str();
+}
+/*
+void drawParticles(GLuint particleprogram, int particlesize)
+{
+
+	// Select proper shader program to use
+	glUseProgram(particleprogram);
+
+	//set displacement
+	int matrixLocation = glGetUniformLocation(particleprogram, "x");
+	int timeLocation = glGetUniformLocation(particleprogram, "time");
+
+	glm::mat4 rot = glm::mat4();
+	glm::mat4 world = glm::mat4();
+
+	float k = glfwGetTime();
+	//rot = glm::rotate(rot, -k * 360 / 6.283f, glm::vec3(0, 0, 1));
+	rot = glm::translate(rot, glm::vec3(0.0, 0, 0));
+	rot = glm::scale(rot, glm::vec3(0.05, 0.05, 0.5));
+	// get ready to draw, load matrix
+	glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, &rot[0][0]);
+	glUniform1f(timeLocation, k);
+	glBindTexture(GL_TEXTURE_2D, textures["Explosion"][2]);
+
+	// Draw 
+	glDrawElements(GL_TRIANGLES, 6 * particlesize, GL_UNSIGNED_INT, 0);
+
+}*/
+
 // Main function that builds and runs the game
 int main(void){
 	try {
-
+		
+		
+		mciSendString(to_LPCWSTR("open waveaudio!warlords.wav alias warlords"), NULL, 0, 0);
+		mciSendString(to_LPCWSTR("play warlords wait"), NULL, 0, 0);
+		mciSendString(to_LPCWSTR("close warlords"), NULL, 0, 0);
 		/************************************************OPENGL INIT************************************************/
 
 		// Seed for generating random numbers with rand()
@@ -225,8 +253,12 @@ int main(void){
 		int size = CreateSquare();
 
 		// Set up shaders
-		Shader shader("shader.vert", "shader.frag");
-
+		
+		
+		Shader shaderParticle("shaderParticle.vert", "shader.frag",1);
+		shaderParticle.CreateParticleArray();
+		shaderParticle.disable();
+		Shader shader("shader.vert", "shader.frag", 0);
 		/************************************************TEXTURE INIT************************************************/
 		setallTexture();
 
@@ -342,14 +374,16 @@ int main(void){
 		/************************************************TEXT INIT************************************************/
 
 		//Parameters: Text(coordinates, fontTexture, text, size, scale, RGBcolor)
-		hudObjects[2]->addText(new Text(glm::vec3(1.5f, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f,glm::vec3(255, 255, 255)));
+		hudObjects[2]->addText(new Text(glm::vec3(1.5, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f,glm::vec3(255, 255, 255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-4.5f,-6.0f,0.0f), fontTexture, "Enemies = ", size, 0.1f, glm::vec3(50,175,255)));
 		
+		
 
+		Particle* particle = new Particle(glm::vec3(0.0f, 0.0f, 0.0f), textures["Particle"][0], size, "particle", NULL, 0.0f, 0.1f,2000);
 		/************************************************GAME LOOP************************************************/
 	
 		while (!glfwWindowShouldClose(window.getWindow())) {
-
+			
 			/************************************************KEY INPUT********************************************/
 		
 			if (timeOfLastMove + 0.05 < glfwGetTime()) {
@@ -466,16 +500,19 @@ int main(void){
 			lastTime = currentTime;
 
 			// Select proper shader program to use
-			shader.enable();
+			
 
 			// Setup camera to focus on zoom center
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
 			shader.setUniformMat4("viewMatrix", viewMatrix);
+			
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			
 			
-
+			
+			//shader =  Shader("shader.vert", "shader.frag");
+		
 			//**********HUD**********
 			for (HUD* h : hudObjects) {
 				h->update(deltaTime);
@@ -517,7 +554,26 @@ int main(void){
 				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 			}
 
+			
+			
+			shader.disable();
+			shaderParticle.enable();
+			shaderParticle.setAttribute(1);
+			
+			shaderParticle.setUniformMat4("viewMatrix", viewMatrix);
+			particle->setRotation(particle->getRotation() + 1);
+			//particle->setPosition(particle->getPosition() + 0.01f);
+			particle->update(deltaTime);
+			particle->render(shaderParticle);
+			
+			shaderParticle.disable();
+			shader.enable();
+			shader.setAttribute(0);
+			
+			//glBlendEquation(GL_FUNC_ADD);*/
 			//**********Tower**********
+
+
 			for (TowerObject* t : towerObjects) {
 
 				EnemyObject* closestEnemy;
@@ -681,9 +737,12 @@ int main(void){
 
 			}
 
+
+
 			//using the indecies, delete the enemies that should be deleted. 
 			for (int i = 0; i < deleteEnemies.size(); i++)enemyMap["Origin"]->erase(enemyMap["Origin"]->begin() + deleteEnemies[i]);
 		
+			
 			//**********Graph**********
 			g.update(p2->getCur(),toggleBlock, false);
 			//render graph
