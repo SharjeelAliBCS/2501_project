@@ -32,7 +32,7 @@ public:
 	//gets mouse input, updates start and end position using that information
 	void update(Node*);
 	//renders all the nodes in the graph
-	void render(Shader &shader);
+	void render(std::vector<Shader*> shaders);
 
 	//returns the id of a node from an x/y coordinate
 	int selectNode(double x, double y);

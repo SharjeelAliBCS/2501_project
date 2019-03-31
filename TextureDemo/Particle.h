@@ -19,7 +19,7 @@ public:
 	Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type, EnemyObject* enemy, float angle, float s,float n);
 
 	// Update function for moving the player object around
-	virtual void render(Shader& shader);
+	virtual void render(std::vector<Shader*> shaders);
 	virtual void update(double deltaTime) override;
 	inline void setCurrEnemy(EnemyObject* enemy) { target = enemy; }
 

@@ -25,7 +25,7 @@ void GameObject::update(double deltaTime) {
 }
 
 // Renders the GameObject using a shader
-void GameObject::render(Shader &shader) {
+void GameObject::render(std::vector<Shader*> shaders) {
 	// Bind the entities texture
 	glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -40,7 +40,7 @@ void GameObject::render(Shader &shader) {
 	// Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
-	shader.setUniformMat4("transformationMatrix", transformationMatrix);
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);

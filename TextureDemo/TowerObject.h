@@ -16,7 +16,7 @@ public:
 	virtual void update(double deltaTime) override;
 
 	// Renders the GameObject using a shader
-	virtual void  render(Shader &shader) override;
+	virtual void  render(std::vector<Shader*> shaders) override;
 	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
 
 	//getters

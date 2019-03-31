@@ -27,14 +27,14 @@ void Text::update(double deltaTime) {
 
 
 
-void Text::render(Shader &shader) {
+void Text::render(std::vector<Shader*> shaders) {
 	
 
 	glm::vec3 textPos = position;
 	for (int i = 0; i < renderText.size();i++) {
 		char c = renderText[i];
 	
-		GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+		GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 		glUniform3f(color_loc, color.r/255.0f,color.g/255.0f,color.b/255.0f);	//light red = on pat
 		
 		GLuint tex = characters[c];
@@ -54,7 +54,7 @@ void Text::render(Shader &shader) {
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* posMat;
 		//glm::mat4 transformationMatrix = posMat  * scaleMatrix;
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
@@ -68,7 +68,7 @@ void Text::render(Shader &shader) {
 		}
 	}
 
-	GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+	GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 	glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);	//light red = on pat
 }
 

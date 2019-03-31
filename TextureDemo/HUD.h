@@ -16,7 +16,7 @@ public:
 	virtual void selectionEnemy(double x, double y);
 	virtual void selectionPowerUp(double x, double y);
 	// Renders the GameObject using a shader
-	virtual void  render(Shader &shader) override;
+	virtual void  render(std::vector<Shader*> shaders) override;
 
 	void addText(Text* t);
 	// Getters

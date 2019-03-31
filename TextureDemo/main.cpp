@@ -58,7 +58,7 @@ std::vector<GameObject*>buttonEnemyPanel;
 std::vector<GameObject*>buttonPowerUpsPanel;
 std::vector<GameObject*>button;
 std::vector<EnemyObject*> enemyBlueprint;
-std::vector<Shader> shaders;
+std::vector<Shader*> shaders;
 
 
 
@@ -246,10 +246,15 @@ int main(void){
 		int size = CreateSquare();
 
 		// Set up shaders
-		Shader shaderParticle("shaderParticle.vert", "shaderParticle.frag", 1);
-		shaderParticle.CreateParticleArray();
-		shaderParticle.disable();
-		Shader shader("shader.vert", "shader.frag", 0);
+		
+		shaders.push_back(new Shader("shader.vert", "shader.frag", 0));
+		shaders[0]->disable();
+		shaders.push_back(new Shader("shaderParticle.vert", "shaderParticle.frag", 1));
+		shaders[1]->CreateParticleArray();
+		shaders[1]->disable();
+		shaders[0]->setAttribute(0);
+		
+		
 
 		/************************************************TEXTURE INIT************************************************/
 		setallTexture();
@@ -348,7 +353,7 @@ int main(void){
 		int index = 0;
 		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0")); index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---1"));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---2"));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "denderBlueprint---2"));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint"));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
@@ -436,8 +441,6 @@ int main(void){
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -11.5f, 0.0f), fontTexture, "Income: ", size, 0.07f, glm::vec3(50, 175, 255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -10.5f, 0.0f), fontTexture, "P1 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -9.5f, 0.0f), fontTexture, "P2 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
-
-		
 
 		/************************************************GAME LOOP************************************************/
 		int abc = 0;
@@ -568,7 +571,7 @@ int main(void){
 									
 									TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType());
 									if (t->getType().compare("denderBlueprint---2") == 0) {
-										t->setShader(&shaderParticle);
+										
 									}
 									g.getNode(id).setTowerState(true, turn);
 									if (g.rePath(enemyMap[turnIndex], id, ++pathCount, turn)) {
@@ -649,22 +652,26 @@ int main(void){
 			lastTime = currentTime;
 
 			// Select proper shader program to use
-			shader.enable();
+			shaders[0]->enable();
 
 			// Setup camera to focus on zoom center
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
-			shader.setUniformMat4("viewMatrix", viewMatrix);
-			shader.disable();
-			shaderParticle.setAttribute(1);
-			shaderParticle.disable();
-			shader.enable();
-			shader.setAttribute(0);
+			shaders[0]->setUniformMat4("viewMatrix", viewMatrix);
+			shaders[0]->disable();
+
+			shaders[1]->enable();
+			shaders[1]->setUniformMat4("viewMatrix", viewMatrix);
+			shaders[1]->setAttribute(1);
+			shaders[1]->disable();
+
+			shaders[0]->enable();
+			shaders[0]->setAttribute(0);
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			
 			if (gameState.back() == "menu") {
 				for (HUD* b : HUDMenu) {
-					b->render(shader);
+					b->render(shaders);
 				}
 			}
 			//==========================================>state:play/render
@@ -676,13 +683,13 @@ int main(void){
 					h->update(deltaTime);
 
 					if (h->getFlag() || h->getButtonFlag()) {
-						selectionGraphic->render(shader);
+						selectionGraphic->render(shaders);
 					}
 					if (h->getEnemyFlag() || h->getButtonFlag()) {
-						selectionGraphic2->render(shader);
+						selectionGraphic2->render(shaders);
 					}
 					if (h->getPowerUpFlag()) {
-						selectionGraphic3->render(shader);
+						selectionGraphic3->render(shaders);
 					}
 
 					for (Text* t : h->getTextObjects()) {
@@ -713,7 +720,7 @@ int main(void){
 						}
 					}
 
-					h->render(shader);
+					h->render(shaders);
 				}
 
 				//**********Cursor**********
@@ -723,19 +730,19 @@ int main(void){
 				cursor->setPosition(glm::vec3(x, y, 0.0f));
 				if (g.getNode(id).getBuildable(turn)) {
 
-					cursor->render(shader);
+					cursor->render(shaders);
 				}
 				else {
 					//glBlendColor(1.0f, 1.0f, 1.0f, 0.05f);
 					glEnable(GL_BLEND);
 					glBlendFunc(GL_ONE, GL_SRC_ALPHA);
 					//glUniform4f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f,0.5f);	//dark green
-					glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.5f, -1.0f, -1.0f);
-					cursor->render(shader);
+					glUniform3f(glGetUniformLocation(shaders[0]->getShaderID(), "colorMod"), 0.5f, -1.0f, -1.0f);
+					cursor->render(shaders);
 					glEnable(GL_LIGHTING);
 
 					glBlendFunc(GL_SRC_ALPHA, GL_ZERO),
-						glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
+						glUniform3f(glGetUniformLocation(shaders[0]->getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 				}
 
 				
@@ -768,10 +775,10 @@ int main(void){
 					// Updates game objects
 					t->update(deltaTime);
 					//reset color uniform.
-					GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+					GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 					glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
 					// Render game objects
-					t->render(shader);
+					t->render(shaders);
 				}
 
 
@@ -918,11 +925,11 @@ int main(void){
 					e->update(deltaTime);
 
 					//reset color uniform.
-					GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+					GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 					glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
 
 					// Render game objects
-					e->render(shader);
+					e->render(shaders);
 
 				}
 
@@ -932,7 +939,7 @@ int main(void){
 				//**********Graph**********
 				g.update(NULL);
 				//render graph
-				g.render(shader);
+				g.render(shaders);
 
 			}
 			// Update other events like input handling

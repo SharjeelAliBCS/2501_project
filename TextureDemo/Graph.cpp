@@ -310,7 +310,7 @@ int Graph::selectNode(double x, double y) {
 }
 
 //renders all the nodes in the graph
-void Graph::render(Shader &shader) {
+void Graph::render(std::vector<Shader*> shaders) {
 
 	//goes through each node and renders it, using the provided gameObject
 	for (int j = 0; j < nodes.size(); j++) {
@@ -320,7 +320,7 @@ void Graph::render(Shader &shader) {
 		}
 
 		//get the location of the color uniform
-		GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+		GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 
 		for (int i = 0; i < nodes.at(j).size(); i++) {
 			//gets the current node to draw
@@ -364,7 +364,7 @@ void Graph::render(Shader &shader) {
 			/*if (currentNode->isCur) {
 				glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//dark green
 			}*/
-			nodeObj.render(shader);
+			nodeObj.render(shaders);
 		}
 	}
 }

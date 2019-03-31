@@ -44,12 +44,22 @@ void TowerObject::update(double deltaTime) {
 	}
 
 	if (particle != NULL) {
-		particle->setRotation(rotation);
+		particle->setRotation(rotation-90);
+
+		if (currentEnemy != NULL) {
+			float dis = glm::length(position - currentEnemy->getPosition());
+			std::cout << "dis " << dis << std::endl;
+			if (dis < 1) {
+				currentEnemy->enemyHit(dps);
+			}
+		}
 	}
 	//delete the bullets that should be deleted
 	for (int i = 0; i < deleteBullets.size(); i++) bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
 
-
+	if (currentEnemy == NULL) {
+		particle = NULL;
+	}
 	//state machine used to move around (right now only uses locate)
 	switch (_state) {
 	case Init:
@@ -101,7 +111,7 @@ void TowerObject::fireEnemy() {
 
 	if (type.compare("denderBlueprint---2")==0) {
 		if (particle == NULL) {
-			particle = new Particle(glm::vec3(0.0f, 0.0f, 0.0f), projectileTex, size, "particle", NULL, 0.0f, 0.1f, 2000);
+			particle = new Particle(position, projectileTex, size, "particle", NULL, 0, 0.075f, 2000);
 		}
 	}
 	else {
@@ -116,26 +126,9 @@ void TowerObject::fireEnemy() {
 }
 
 
-void TowerObject::render(Shader &shader) {
+void TowerObject::render(std::vector<Shader*> shaders) {
 
-	for (int i = 0; i < bullObjects.size(); i++) {
-		bullObjects[i]->render(shader);
-	}
-	// Bind the entities texture
-	if (particle != NULL) {
-		shader.disable();
-		otherShader->enable();
-		otherShader->setAttribute(1);
-		std::cout << "fire!" << std::endl;
-		//particle->setRotation(particle->getRotation() + 1);
-		//particle->setPosition(particle->getPosition() + 0.01f);
-		//particle->update(deltaTime);
-		particle->render(*otherShader);
-
-		otherShader->disable();
-		shader.enable();
-		shader.setAttribute(0);
-	}
+	
 	
 
 	glBindTexture(GL_TEXTURE_2D, turretTexture);
@@ -148,20 +141,25 @@ void TowerObject::render(Shader &shader) {
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though														// Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix = translationMatrix * rotationMatrix*scaleMatrix;
 	
-	shader.setUniformMat4("transformationMatrix", transformationMatrix);
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 
-	glBindTexture(GL_TEXTURE_2D, texture);
 
-	
-	
-	
+	for (int i = 0; i < bullObjects.size(); i++) {
+		bullObjects[i]->render(shaders);
+	}
+	// Bind the entities texture
+	if (particle != NULL) {
+		particle->render(shaders);
+	}
+
+	glBindTexture(GL_TEXTURE_2D, texture);
 	transformationMatrix = translationMatrix  * scaleMatrix;
 
 
-	shader.setUniformMat4("transformationMatrix", transformationMatrix);
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 }
 

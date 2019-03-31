@@ -211,11 +211,11 @@ void HUD::update(double deltaTime)// use it to compute the x and y coord of the 
 	}
 
 }
-void HUD::render(Shader &shader) {
+void HUD::render(std::vector<Shader*> shaders) {
 
 	//**********Text**********
 	for (Text* t : textObjects) {
-		t->render(shader);
+		t->render(shaders);
 	}
 	for (int i = 0; i < powerUps.size(); i++) {
 		glBindTexture(GL_TEXTURE_2D, powerUps[i]->getTex());
@@ -230,7 +230,7 @@ void HUD::render(Shader &shader) {
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
@@ -238,7 +238,7 @@ void HUD::render(Shader &shader) {
 		glBindTexture(GL_TEXTURE_2D, powerUps[i]->getTex());
 
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 	for (int i = 0; i < buttons.size(); i++) {
@@ -254,7 +254,7 @@ void HUD::render(Shader &shader) {
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
@@ -262,7 +262,7 @@ void HUD::render(Shader &shader) {
 		glBindTexture(GL_TEXTURE_2D, buttons[i]->getTex());
 
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 	for (int i = 0; i < enemyBlueprints2.size(); i++) {
@@ -278,7 +278,7 @@ void HUD::render(Shader &shader) {
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
@@ -286,7 +286,7 @@ void HUD::render(Shader &shader) {
 		glBindTexture(GL_TEXTURE_2D, enemyBlueprints2[i]->getTex());
 
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 	for (int i = 0; i < blueprints.size(); i++) {
@@ -304,7 +304,7 @@ void HUD::render(Shader &shader) {
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
 		//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
@@ -312,7 +312,7 @@ void HUD::render(Shader &shader) {
 		glBindTexture(GL_TEXTURE_2D, blueprints[i]->getTex());
 
 
-		shader.setUniformMat4("transformationMatrix", transformationMatrix);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 
@@ -332,7 +332,7 @@ void HUD::render(Shader &shader) {
 	glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));
 	glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
 	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
-	shader.setUniformMat4("transformationMatrix", transformationMatrix);
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
@@ -340,6 +340,6 @@ void HUD::render(Shader &shader) {
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 
-	shader.setUniformMat4("transformationMatrix", transformationMatrix);
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 }

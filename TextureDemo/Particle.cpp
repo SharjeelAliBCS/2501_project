@@ -35,30 +35,36 @@ void Particle::update(double deltaTime) {
 
 }
 
-void Particle::render(Shader& shader) {
+void Particle::render(std::vector<Shader*> shaders) {
 
-	
+	shaders[0]->disable();
+	shaders[1]->enable();
+	shaders[1]->setAttribute(1);
+	std::cout << "ddd" << std::endl;
+
+
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFunc(GL_ONE, GL_ONE);
 	glEnable(GL_BLEND);
-	GLuint particleprogram = shader.getShaderID();
+	GLuint particleprogram = shaders[1]->getShaderID();
 	// Select proper shader program to use
 	glUseProgram(particleprogram);
 
 	//set displacement
 	int matrixLocation = glGetUniformLocation(particleprogram, "x");
 	int timeLocation = glGetUniformLocation(particleprogram, "time");
+	float k = glfwGetTime();
 
 	glm::mat4 rot = glm::mat4();
-	glm::mat4 world = glm::mat4();
-	//position.x = 0.5;
-	float k = glfwGetTime();
+	//rot = glm::translate(rot, -position);
+	rot = glm::translate(rot, position);
 	rot = glm::rotate(rot, rotation, glm::vec3(0, 0, 1));
 	//rot = glm::rotate(rot, glm::vec3(rotation));
-	rot = glm::translate(rot, position);
+	
 	rot = glm::scale(rot,scale);
 	// get ready to draw, load matrix
 	glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, &rot[0][0]);
+
 	glUniform1f(timeLocation, k);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	
@@ -70,5 +76,8 @@ void Particle::render(Shader& shader) {
 	glDepthMask(GL_TRUE); // allow writes to depth buffer
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
+	shaders[1]->disable();
+	shaders[0]->enable();
+	shaders[0]->setAttribute(0);
 
 }

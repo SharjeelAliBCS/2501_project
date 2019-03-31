@@ -25,13 +25,13 @@ void EnemyObject::update(double deltaTime) {
 	GameObject::update(deltaTime);
 }
 
-void EnemyObject::render(Shader &shader) {
+void EnemyObject::render(std::vector<Shader*> shaders) {
 
 	//Sets the shader to red to signify damage. 
 	if (hit) {
-		GLint color_loc = glGetUniformLocation(shader.getShaderID(), "colorMod");
+		GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 		glUniform3f(color_loc, 1.0f, -1.0f, -0.6f);	//red = damaged
 		hit = false;
 	}
-	GameObject::render(shader);
+	GameObject::render(shaders);
 }

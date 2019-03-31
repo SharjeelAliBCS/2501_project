@@ -10,7 +10,7 @@ public:
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
-	virtual void  render(Shader &shader);
+	virtual void  render(std::vector<Shader*> shaders);
 
 	void enemyHit(float damage);
 	//setters
