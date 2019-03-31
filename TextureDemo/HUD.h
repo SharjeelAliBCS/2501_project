@@ -13,17 +13,24 @@ public:
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
 	virtual void selection(double x, double y);
+	virtual void selectionEnemy(double x, double y);
+	virtual void selectionPowerUp(double x, double y);
 	// Renders the GameObject using a shader
 	virtual void  render(Shader &shader) override;
 
-	void addText(Text* t); 
+	void addText(Text* t);
 	// Getters
 	inline glm::vec3 getCamPos() { return camPos; }
 	inline float getZoom() { return zoom; }
 	inline std::vector<Text*> getTextObjects() { return textObjects; }
 	inline bool getFlag() { return flag; }
-	inline bool getDeselect() { return deselect; }
+	inline bool getPowerUpFlag() { return powerUpFlag; }
+	inline bool getEnemyFlag() { return enemyFlag; }
+	inline bool getButtonFlag() { return buttonFlag; }
 	inline TowerObject* getSelection() { return outSelection; }
+	inline EnemyObject* getSelectionEnemy() { return outEnemy; }
+	inline GameObject* getSelectionButton() { return outButton; }
+	inline GameObject* getSelectionPowerUps() { return outPowerUP; }
 	inline GLuint getCursor() { return currentCursor; }
 
 	// Setters
@@ -31,18 +38,33 @@ public:
 	inline void setScale(glm::vec3 newScale) { camPos = newScale; }
 	inline void setZoom(float newZoom) { zoom = newZoom; }
 	inline void setBlueprints(std::vector<TowerObject*> b) { blueprints = b; }
+	inline void setEnemyBlueprints(std::vector<EnemyObject*> e) { enemyBlueprints2 = e; }
 	inline void setFlag(bool newFlag) { flag = newFlag; }
-
+	inline void setButtonFlag(bool newFlag) { buttonFlag = newFlag; }
+	inline void setPowerUpFlag(bool power) { powerUpFlag = power; }
+	inline void setEnemyFlag(bool newEnemyFlag) { enemyFlag = newEnemyFlag; }
+	inline void setButtons(std::vector<GameObject*> butt) { buttons = butt; }
+	inline void setPowerUPs(std::vector<GameObject*> power) { powerUps = power; }
 private:
 	float zoom;
 	glm::vec3 camPos;
 	glm::vec3 scale;
 
 	std::vector<Text*> textObjects;
+	bool flag;//only important flag becuase its flag for selection of towers /////the other flags are just for the selection square demonstration
+	bool powerUpFlag;
+	bool buttonFlag;
+	bool enemyFlag;
 
-	bool flag;
-	bool deselect;
+
 	std::vector<TowerObject*> blueprints;
+	std::vector<GameObject*> buttons;
+	std::vector<GameObject*> powerUps;
+	std::vector<EnemyObject*> enemyBlueprints2;
+
+	GameObject* outPowerUP;
+	GameObject* outButton;
+	EnemyObject* outEnemy;
 	TowerObject* outSelection;
 	GLuint currentCursor;
 

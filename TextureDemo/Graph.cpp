@@ -361,9 +361,9 @@ void Graph::render(Shader &shader) {
 			}else if (currentNode->isOnPath()) {
 				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = on path
 			}
-			if (currentNode->isCur) {
+			/*if (currentNode->isCur) {
 				glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//dark green
-			}
+			}*/
 			nodeObj.render(shader);
 		}
 	}
@@ -412,7 +412,7 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 	}
 	std::cout << "got here 2\n";
 	for (std::map<int, int>::iterator it = mapInUse.begin(); it != mapInUse.end(); ++it) {
-		std::cout << it->first << " => " << it->second << '\n';
+		//std::cout << it->first << " => " << it->second << '\n';
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
