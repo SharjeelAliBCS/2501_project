@@ -3,7 +3,9 @@
 #include "GameObject.h"
 #include "EnemyObject.h"
 #include "ProjectileObject.h"
+#include "Particle.h"
 #include <deque>
+
 
 // Inherits from GameObject
 class TowerObject : public GameObject {
@@ -54,9 +56,10 @@ private:
 	std::vector<ProjectileObject*> bullObjects;
 	std::vector<GLuint> explosion_tex;
 	GLuint icon;
-
+	Particle* particle;
 	std::vector<GLuint> texvec;
 	std::vector<GLuint> texvecExplosion;
+
 
 
 };

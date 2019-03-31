@@ -42,6 +42,10 @@ void TowerObject::update(double deltaTime) {
 		}
 		
 	}
+
+	if (particle != NULL) {
+		particle->setRotation(rotation);
+	}
 	//delete the bullets that should be deleted
 	for (int i = 0; i < deleteBullets.size(); i++) bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
 
@@ -94,12 +98,19 @@ void TowerObject::deathAnimation() {
 
 //creates a single bullet object
 void TowerObject::fireEnemy() {
-	if (frames%fireRate==0) {
-		
-		bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex,size, "t_projectile", currentEnemy, rotation, dps,0.3));
-	}
-	frames += 1;
 
+	if (type.compare("denderBlueprint---2")==0) {
+		if (particle == NULL) {
+			particle = new Particle(glm::vec3(0.0f, 0.0f, 0.0f), projectileTex, size, "particle", NULL, 0.0f, 0.1f, 2000);
+		}
+	}
+	else {
+		if (frames%fireRate == 0) {
+
+			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, dps, 0.1));
+		}
+		frames += 1;
+	}
 	
 
 }
@@ -111,7 +122,20 @@ void TowerObject::render(Shader &shader) {
 		bullObjects[i]->render(shader);
 	}
 	// Bind the entities texture
+	if (particle != NULL) {
+		shader.disable();
+		otherShader->enable();
+		otherShader->setAttribute(1);
+		std::cout << "fire!" << std::endl;
+		//particle->setRotation(particle->getRotation() + 1);
+		//particle->setPosition(particle->getPosition() + 0.01f);
+		//particle->update(deltaTime);
+		particle->render(*otherShader);
 
+		otherShader->disable();
+		shader.enable();
+		shader.setAttribute(0);
+	}
 	
 
 	glBindTexture(GL_TEXTURE_2D, turretTexture);

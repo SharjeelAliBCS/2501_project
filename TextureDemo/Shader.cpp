@@ -1,5 +1,6 @@
 #include "Shader.h"
 
+Shader::Shader(){}
 Shader::Shader(const char *vertPath, const char *fragPath, int t) {
 	type = t;
 	// Load vertex program source code
@@ -121,7 +122,7 @@ int Shader::CreateParticleArray(void) {
 		if (i % 4 == 0)
 		{
 			theta = (6.28*(rand() % 1000) / 1000.0f);//(2*(rand() % 10000) / 10000.0f -1.0f)*0.13f;
-			r = 0.01f + 0.2*(rand() % 10000) / 10000.0f;
+			r = 0.01f + 0.1*(rand() % 10000) / 10000.0f;
 			tmod = (rand() % 10000) / 10000.0f;
 		}
 		// position	

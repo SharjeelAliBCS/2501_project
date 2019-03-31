@@ -21,6 +21,7 @@ Particle::Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumEl
 	rotation = angle;
 
 	particlesize = n;
+	time = 0.0;
 
 }
 
@@ -28,13 +29,17 @@ Particle::Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumEl
 // Update function for moving the bullet object around
 void Particle::update(double deltaTime) {
 
+	time = fmod(deltaTime, 2);
+
 	GameObject::update(deltaTime);
+
 }
 
 void Particle::render(Shader& shader) {
 
+	
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFunc(GL_ONE, GL_ONE);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	GLuint particleprogram = shader.getShaderID();
 	// Select proper shader program to use
@@ -56,7 +61,7 @@ void Particle::render(Shader& shader) {
 	glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, &rot[0][0]);
 	glUniform1f(timeLocation, k);
 	glBindTexture(GL_TEXTURE_2D, texture);
-
+	
 	// Draw 
 	//glDepthMask(GL_FALSE); // draw particles without writing to depth buffer
 	glDrawElements(GL_TRIANGLES, 6 * particlesize, GL_UNSIGNED_INT, 0);

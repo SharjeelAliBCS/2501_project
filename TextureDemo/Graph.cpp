@@ -395,12 +395,12 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 	std::cout << "got here 1\n\n";
 	if (creeps != NULL) {
 		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
-			std::cout << id << "   " << (*it)->getCurDestId() << std::endl;
-			std::cout << "changed: " << (changedNode.getNextNode((*it)->getCurDestId()) != NULL) << std::endl;
+			//std::cout << id << "   " << (*it)->getCurDestId() << std::endl;
+			//std::cout << "changed: " << (changedNode.getNextNode((*it)->getCurDestId()) != NULL) << std::endl;
 			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL || true) {
 				setStart((*it)->getCur()->getId());
 				setEnd((*it)->getCurDestId());
-				std::cout << startNodeId << " => " << endNodeId << std::endl;
+				//std::cout << startNodeId << " => " << endNodeId << std::endl;
 				if (startNodeId == endNodeId) { continue; }
 				if (getEndId() == -1) {
 					std::cout << std::endl << "Houston we have a problem, creep dest = -1" << std::endl << std::endl;
@@ -417,7 +417,7 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 			setStart(it->first);
 			setEnd(it->second);
 			if (changedNode.getNextNode(endNodeId) != NULL) {
-				std::cout << "\nStart: " << startNodeId << " End: " << endNodeId << " ID: " << id << std::endl;
+				//std::cout << "\nStart: " << startNodeId << " End: " << endNodeId << " ID: " << id << std::endl;
 				pathFound = pathFound ? pathfind(endNodeId, pathCount) : false;
 			}
 		}

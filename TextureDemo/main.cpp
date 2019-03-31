@@ -58,6 +58,7 @@ std::vector<GameObject*>buttonEnemyPanel;
 std::vector<GameObject*>buttonPowerUpsPanel;
 std::vector<GameObject*>button;
 std::vector<EnemyObject*> enemyBlueprint;
+std::vector<Shader> shaders;
 
 
 
@@ -168,6 +169,8 @@ void setallTexture(void)
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/0_enemy.png"));
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/1_enemy.png"));
 
+	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
+
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_tower.png"));//0
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_turret.png"));//1
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_projectile.png"));//2
@@ -178,7 +181,7 @@ void setallTexture(void)
 	textures["Tower"].push_back(createTexture("Graphics/Tower/02_towerIcon.png"));//7
 	textures["Tower"].push_back(createTexture("Graphics/Tower/03_tower.png"));//8
 	textures["Tower"].push_back(createTexture("Graphics/Tower/03_turret.png"));//9
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_projectile.png"));//10
+	textures["Tower"].push_back(textures["Particle"][0]);//10
 	textures["Tower"].push_back(createTexture("Graphics/Tower/03_towerIcon.png"));//11
 
 
@@ -196,7 +199,7 @@ void setallTexture(void)
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
 
-	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
+	
 
 	textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
 	textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
@@ -205,7 +208,7 @@ void setallTexture(void)
 
 	textures["Button"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 
-	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@";
+	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@-";
 	
 	for (int i = 0; i < characters.size(); i++) {
 		
@@ -268,6 +271,7 @@ int main(void){
 		char turnArr[2] = { 'B','T' };
 		long income[2] = { 0,0 };
 		long credits[2] = { 20,20 };
+		int hp[2] = { 20,20 };
 		int turnIndex = 0;
 		char turn = turnArr[turnIndex];
 
@@ -278,7 +282,6 @@ int main(void){
 		int start = 1149;
 		int end = 122;
 
-		float hp = 5;
 		float enemyHealth = 60.0f;
 
 		bool gameOver = false;
@@ -296,7 +299,7 @@ int main(void){
 
 		float enemyX, enemyY, oldEnemyX, oldEnemyY;
 		int pathCount = 1;
-		int spawnCount = 0;
+		float spawnCount = 0;
 		bool startWave;
 		bool toggleBlock = false;
 
@@ -431,8 +434,10 @@ int main(void){
 		hudObjects[2]->addText(new Text(glm::vec3(-6.6f,-8.4f,0.0f), fontTexture, "Enemies Remaining: ", size, 0.07f, glm::vec3(50,175,255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-6.8f, -12.5f, 0.0f), fontTexture, "Credits: ", size, 0.07f, glm::vec3(50, 175, 255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -11.5f, 0.0f), fontTexture, "Income: ", size, 0.07f, glm::vec3(50, 175, 255)));
+		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -10.5f, 0.0f), fontTexture, "P1 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
+		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -9.5f, 0.0f), fontTexture, "P2 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
 
-		Particle* particle = new Particle(glm::vec3(0.0f, 0.0f, 0.0f), textures["Particle"][0], size, "particle", NULL, 0.0f, 0.1f, 2000);
+		
 
 		/************************************************GAME LOOP************************************************/
 		int abc = 0;
@@ -560,9 +565,11 @@ int main(void){
 
 								if (g.getNode(id).getBuildable(turn)) {
 									TowerObject* selectedTower = hudObjects[1]->getSelection();
-
+									
 									TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType());
-
+									if (t->getType().compare("denderBlueprint---2") == 0) {
+										t->setShader(&shaderParticle);
+									}
 									g.getNode(id).setTowerState(true, turn);
 									if (g.rePath(enemyMap[turnIndex], id, ++pathCount, turn)) {
 										towerObjects.push_back(t);
@@ -647,6 +654,11 @@ int main(void){
 			// Setup camera to focus on zoom center
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
 			shader.setUniformMat4("viewMatrix", viewMatrix);
+			shader.disable();
+			shaderParticle.setAttribute(1);
+			shaderParticle.disable();
+			shader.enable();
+			shader.setAttribute(0);
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			
@@ -690,6 +702,14 @@ int main(void){
 						if (t->getType().compare("Credits: ") == 0) {
 							std::string temp = t->getText() + std::to_string(credits[turnIndex]);
 							t->setRenderedText(temp);
+						}						
+						if (t->getType().compare("P1 HP: ") == 0) {
+							std::string temp = t->getText() + std::to_string(hp[0]) + "/20";
+							t->setRenderedText(temp);
+						}						
+						if (t->getType().compare("P2 HP: ") == 0) {
+							std::string temp = t->getText() + std::to_string(hp[1]) + "/20";
+							t->setRenderedText(temp);
 						}
 					}
 
@@ -718,19 +738,7 @@ int main(void){
 						glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 				}
 
-				shader.disable();
-				shaderParticle.enable();
-				shaderParticle.setAttribute(1);
-
-				shaderParticle.setUniformMat4("viewMatrix", viewMatrix);
-				particle->setRotation(particle->getRotation() + 1);
-				//particle->setPosition(particle->getPosition() + 0.01f);
-				particle->update(deltaTime);
-				particle->render(shaderParticle);
-
-				shaderParticle.disable();
-				shader.enable();
-				shader.setAttribute(0);
+				
 
 				//**********Tower**********
 				for (TowerObject* t : towerObjects) {
@@ -770,12 +778,12 @@ int main(void){
 				//**********Enemy**********
 				std::deque<int> deleteEnemies;
 				int delIndex = 0;
-				++spawnCount;
+				spawnCount+=0.25;
 				int count = 0;
 				//for (EnemyObject* e : *enemyMap[turnIndex]) {
 				for (std::vector<EnemyObject*>::iterator it = enemyMap[turnIndex]->begin(); it != enemyMap[turnIndex]->end(); ++it) {
 					if (!startWave) {
-						--spawnCount;
+						spawnCount-=0.25;
 						break;
 					}
 					if (count > spawnCount) { break; }
@@ -892,14 +900,15 @@ int main(void){
 					}
 
 					//stop moving if we're done
-					if (cur->getId() == g.getEndPoints(turnIndex) || cur->getNextNode(e->getCurDestId()) == NULL) {
-						hp -= 0.5;
-						std::cout << "hp = " << hp << std::endl;
+					if (e->getExists() && (cur->getId() == g.getEndPoints(turnIndex) || cur->getNextNode(e->getCurDestId()) == NULL)) {
+						hp[turnIndex] -= 1;
+						std::cout << "hp = " << hp[turnIndex] << std::endl;
 
 						e->setExists(false);
-						if (hp == 0) {
+						if (hp[turnIndex] == 0) {
 							gameOver = true;
 							std::cout << "GAME OVER" << std::endl;
+							std::cout << "PLAYER " << (turnIndex^1+1) << " WINS" << std::endl;
 							hudObjects[2]->setTex(textures["UI"][1]);
 
 						}

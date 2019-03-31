@@ -35,6 +35,9 @@ public:
 	inline void setRotation(float r) { rotation = r; }
 	inline void setTargetPos(glm::vec3& newTarPos) { targetPos = newTarPos; }
 	inline void setType(std::string t) { type = t; }
+	inline void setShader(Shader* s) { otherShader = s; }
+
+
 	
 	inline void setTex(GLuint t) { texture = t; }
 	inline void setExists(bool e) {exists = e; }
@@ -55,7 +58,7 @@ protected:
 	GLint numElements;
 	float objectSize; // Not currently being used (will be needed for collision detection when objects have a different scale)
 	std::string type;
-
+	Shader* otherShader;
 	// Object's texture
 	GLuint texture;
 };

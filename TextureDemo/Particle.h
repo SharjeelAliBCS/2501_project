@@ -32,7 +32,7 @@ private:
 
 	glm::vec3 scale;
 	int particlesize;
-	
+	double time;
 	// Source code of vertex shader
 
 
