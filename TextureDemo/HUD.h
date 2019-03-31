@@ -22,6 +22,7 @@ public:
 	inline float getZoom() { return zoom; }
 	inline std::vector<Text*> getTextObjects() { return textObjects; }
 	inline bool getFlag() { return flag; }
+	inline bool getDeselect() { return deselect; }
 	inline TowerObject* getSelection() { return outSelection; }
 	inline GLuint getCursor() { return currentCursor; }
 
@@ -40,6 +41,7 @@ private:
 	std::vector<Text*> textObjects;
 
 	bool flag;
+	bool deselect;
 	std::vector<TowerObject*> blueprints;
 	TowerObject* outSelection;
 	GLuint currentCursor;

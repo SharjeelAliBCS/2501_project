@@ -8,6 +8,8 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	scale = objectScale;
 	flag = false;
 	outSelection = NULL;
+	deselect = false;
+	currentCursor = NULL;
 
 }
 
@@ -22,17 +24,33 @@ void HUD::selection(double x, double y) {
 	if ((635 <= x && x <= 667) && (472 <= y && y <= 497)) {
 		outSelection = blueprints[0];
 		flag = true;
+		if (currentCursor == blueprints[0]->getIcon()) {
+			std::cout << "selected same" << std::endl;
+			deselect = true;
+			//flag = false;
+		}
+		else deselect = false;
 		currentCursor = blueprints[0]->getIcon();
 
 	}
 	else if ((676 <= x && x <= 708) && (472 <= y && y <= 497)) {
 		outSelection = blueprints[1];
 		flag = true;
+		if (currentCursor == blueprints[1]->getIcon()) {
+			deselect = true;
+			//flag = false;
+		}
+		else deselect = false;
 		currentCursor = blueprints[1]->getIcon();
 	}
 	else if ((716 <= x && x <= 748) && (472 <= y && y <= 497)) {
 		outSelection = blueprints[2];
 		flag = true;
+		if (currentCursor == blueprints[2]->getIcon()) {
+			deselect = true;
+			//flag = false;
+		}
+		else deselect = false;
 		currentCursor = blueprints[2]->getIcon();
 	}
 }

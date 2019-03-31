@@ -477,13 +477,23 @@ int main(void){
 						}
 					}
 					hudObjects[1]->selection(xpos, ypos);
+					
 					if (hudObjects[1]->getFlag()) {
 						cursor->setTex(hudObjects[1]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 						selectionGraphic->setPosition(hudObjects[1]->getSelection()->getPosition());
 					}
+					
+					
 
 					//--------end of click button------------ 
 				}
+
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS || glfwGetKey(Window::getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ){
+					cursor->setTex(textures["Cursor"][0]);
+					hudObjects[1]->setFlag(false);
+				}
+				
+
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
 					(timeOfLastMove + 0.15 < glfwGetTime())) { 
 					
