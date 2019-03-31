@@ -22,7 +22,7 @@ public:
 
 	//connects two nodes with an edge of 'edgeCost'
 	void addNode(Node& n, int edgeCost);
-	
+
 	//determines the opposing node on an edge.
 	//if the edge does not contain the current node, it will return the current node
 	Node getOtherNode(Edge e);
@@ -31,9 +31,15 @@ public:
 	inline void addEdge(Edge e) { edges.push_back(e); }
 
 	//setters
-	inline void setNextNode(int key, Node* n) { nextNodeMap[key] = n; }
-	inline void setBuildable(bool b) { buildable = b; }
-	inline void setPathable(bool p) { pathable= p; }
+	inline void clearNextNodeMap() { nextNodeMap.clear(); }
+	inline void clearLastUpdateMap() { lastUpdateMap.clear(); }
+
+
+	inline void setNextNode(int key, Node* n) {nextNodeMap[key] = n;}
+	inline void setLastUpdate(int key, int n) {lastUpdateMap[key] = n;}
+
+	inline void setBuildable(bool b, char side) { buildable[side] = b; }
+	inline void setPathable(bool p) { pathable = p; }
 
 	//inline void setVisited(bool v) { visited= v; }
 	inline GLuint getTex() { return texture; }
@@ -53,8 +59,11 @@ public:
 	inline Node* getNextNode(int key) const {
 		return nextNodeMap.find(key) != nextNodeMap.end() ? nextNodeMap.at(key) : NULL;
 	}
+	inline int getLastUpdate(int key) const {
+		return lastUpdateMap.find(key) != lastUpdateMap.end() ? lastUpdateMap.at(key) : -1;
+	}
 
-	inline bool getBuildable() const { return buildable; }
+	inline bool getBuildable(char side) const { return buildable.at(side); }
 	inline bool getPathable() const { return pathable; }
 
 	//inline bool isVisited() const { return visited; }
@@ -71,16 +80,20 @@ public:
 	inline std::vector<Edge> getEdges() { return edges; }
 	inline TowerObject* getTower() { return tower; }
 
-	void setTowerState(bool);
+	void setTowerState(bool, char);
+
+	inline void setIsCur(bool pathStatus) { isCur = pathStatus; }
+	bool isCur;
 
 	//vector containing all edges the connect connects to.
 	//this can be used to create a graph with any number of connectivity
 	std::vector<Edge> edges;
 protected:
-	
+
 	//id used to compare nodes.
 	const int id;
-	std::map<int,Node*> nextNodeMap;
+	std::map<int, Node*> nextNodeMap;
+	std::map<int, int> lastUpdateMap;
 
 	TowerObject *tower;
 	int nextId;
@@ -88,12 +101,12 @@ protected:
 	bool onPath;
 	//bool visited;
 	bool pathable;
-	bool buildable;
+	std::map<char, bool> buildable;
 	bool towerHere;
 	bool highlight;
 	float x, y;
 	Node* prev;
-
+	
 	GLuint texture;
 
-}; 
+};

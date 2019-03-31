@@ -11,13 +11,16 @@ Node::Node(float _x, float _y, GLuint tex) : id(globalId++) {
 	cost = INT_MAX;
 	prev = NULL;
 	//onPath = false;
-	buildable = false;
+	buildable['T'] = false;
+	buildable['B'] = false;
 	pathable = true;
 	highlight = false;
 	towerHere = false;
 	texture = tex;
 	nextId = -1;
 	tower = NULL;
+
+	isCur = false;
 }
 
 //determines the opposing node on an edge.
@@ -44,8 +47,8 @@ void Node::addNode(Node& n, int edgeCost) {
 	n.addEdge(e);
 }
 
-void Node::setTowerState(bool b) {
-	buildable = !b;
+void Node::setTowerState(bool b, char side) {
+	buildable[side] = !b;
 	pathable = !b;
 	towerHere = b;
 }

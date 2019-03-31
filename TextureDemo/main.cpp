@@ -25,11 +25,6 @@
 #include "Text.h"
 #include "Particle.h"
 
-#include "windows.h"
-#include "mmsystem.h"
-#pragma comment(lib, "winmm.lib")
-
-
 
 // Macro for printing exceptions
 #define PrintException(exception_object)\
@@ -49,7 +44,7 @@ std::map<char, GLuint > fontTexture;
 
 // Global game object info
 
-std::map<std::string, std::vector<EnemyObject*>*> enemyMap;
+std::map<int, std::vector<EnemyObject*>*> enemyMap;
 
 
 std::vector<TowerObject*> towerObjects;
@@ -100,6 +95,23 @@ int CreateSquare(void) {
 }
 
 
+void setthisTexture(GLuint w, char *fname)
+{
+	glBindTexture(GL_TEXTURE_2D, w);
+
+	int width, height;
+	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGBA);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	SOIL_free_image_data(image);
+
+	// Texture Wrapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Texture Filtering
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+}
 
 GLuint createTexture(char *fname)
 {
@@ -136,8 +148,7 @@ GLuint createTexture(char *fname)
 
 void setallTexture(void)
 {
-	std::map < std::string, std::vector<GLuint> >newTex;
-	textures = newTex;
+	
 	textures["Map"].push_back(createTexture("Graphics/Map/0_0_boundary.png"));
 	textures["Map"].push_back(createTexture("Graphics/Map/0_1_boundary.png"));
 	textures["Map"].push_back(createTexture("Graphics/Map/1_empty.png"));
@@ -193,46 +204,10 @@ void setallTexture(void)
 
 }
 
-LPCWSTR to_LPCWSTR(std::string s) {
-	std::wstring stemp = std::wstring(s.begin(), s.end());
-	return stemp.c_str();
-}
-/*
-void drawParticles(GLuint particleprogram, int particlesize)
-{
-
-	// Select proper shader program to use
-	glUseProgram(particleprogram);
-
-	//set displacement
-	int matrixLocation = glGetUniformLocation(particleprogram, "x");
-	int timeLocation = glGetUniformLocation(particleprogram, "time");
-
-	glm::mat4 rot = glm::mat4();
-	glm::mat4 world = glm::mat4();
-
-	float k = glfwGetTime();
-	//rot = glm::rotate(rot, -k * 360 / 6.283f, glm::vec3(0, 0, 1));
-	rot = glm::translate(rot, glm::vec3(0.0, 0, 0));
-	rot = glm::scale(rot, glm::vec3(0.05, 0.05, 0.5));
-	// get ready to draw, load matrix
-	glUniformMatrix4fv(matrixLocation, 1, GL_FALSE, &rot[0][0]);
-	glUniform1f(timeLocation, k);
-	glBindTexture(GL_TEXTURE_2D, textures["Explosion"][2]);
-
-	// Draw 
-	glDrawElements(GL_TRIANGLES, 6 * particlesize, GL_UNSIGNED_INT, 0);
-
-}*/
-
 // Main function that builds and runs the game
 int main(void){
 	try {
-		
-		
-		mciSendString(to_LPCWSTR("open waveaudio!warlords.wav alias warlords"), NULL, 0, 0);
-		mciSendString(to_LPCWSTR("play warlords wait"), NULL, 0, 0);
-		mciSendString(to_LPCWSTR("close warlords"), NULL, 0, 0);
+
 		/************************************************OPENGL INIT************************************************/
 
 		// Seed for generating random numbers with rand()
@@ -253,30 +228,35 @@ int main(void){
 		int size = CreateSquare();
 
 		// Set up shaders
-		
-		
-		Shader shaderParticle("shaderParticle.vert", "shader.frag",1);
+		Shader shaderParticle("shaderParticle.vert", "shaderParticle.frag", 1);
 		shaderParticle.CreateParticleArray();
 		shaderParticle.disable();
 		Shader shader("shader.vert", "shader.frag", 0);
+
 		/************************************************TEXTURE INIT************************************************/
 		setallTexture();
 
-		std::map<std::string,GLuint> texMap = std::map<std::string, GLuint>();
+		std::map<std::string, GLuint> texMap = std::map<std::string, GLuint>();
 		texMap.insert(std::pair<std::string, GLuint >("0.5", textures["Map"][0]));//cliff
 		texMap.insert(std::pair<std::string, GLuint >("0", textures["Map"][1]));//snow area
-		texMap.insert(std::pair<std::string, GLuint >("1", textures["Map"][2]));//empty, buildable grass plains
+		texMap.insert(std::pair<std::string, GLuint >("T", textures["Map"][2]));//empty, buildable grass plains
+		texMap.insert(std::pair<std::string, GLuint >("B", textures["Map"][2]));//empty, buildable grass plains
 		texMap.insert(std::pair<std::string, GLuint >("4", textures["Map"][6]));//unbuildable trees
 		texMap.insert(std::pair<std::string, GLuint >("6", textures["Map"][5]));//enemy spawn portal
 		texMap.insert(std::pair<std::string, GLuint >("checkpoint", textures["Map"][3]));//checkpoint
 		texMap.insert(std::pair<std::string, GLuint >("hp", textures["Map"][4]));//end health
-		
+
 		GLuint cursorTex = textures["Cursor"][0];
 		GLuint selectGraphicTex = textures["Cursor"][1];
 
 		/************************************************VARIABLES INIT************************************************/
+		char turnArr[2] = { 'B','T' };
+		long income[2] = { 0,0 };
+		long credits[2] = { 20,20 };
+		int turnIndex = 0;
+		char turn = turnArr[turnIndex];
 
-		int level = 1;
+		int level = 3;
 		std::string fname = "Levels/map"+std::to_string(level)+".csv";
 		int wid = 0;
 		int height = 0;
@@ -298,10 +278,11 @@ int main(void){
 		float camShiftInc = 0.5f;
 		float camZoomInc = 0.01f;
 
-		bool toggleBlock = false;
 
 		float enemyX, enemyY, oldEnemyX, oldEnemyY;
-		
+		int pathCount = 1;
+		int spawnCount = 0;
+		bool startWave;
 		/************************************************FILE INIT************************************************/
 
 		std::ifstream in(fname);
@@ -316,7 +297,7 @@ int main(void){
 			}
 			++height;
 		}
-		
+		in.close();
 
 		/************************************************GRAPH INIT************************************************/
 		
@@ -331,22 +312,17 @@ int main(void){
 	
 		/************************************************ENEMY INIT************************************************/
 
-		EnemyObject *p1 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), textures["Enemy"][0], size, enemyHealth,"enemy");
-		EnemyObject *p2 = new EnemyObject(glm::vec3(g.getNode(start).getX(), g.getNode(start).getY(), 0.0f), textures["Enemy"][0], size, enemyHealth,"enemy");
-		
-		p1->setSpeed(1.5);
-	
-		enemyMap["Origin"] = new std::vector<EnemyObject*>;
-		enemyMap["Origin"]->push_back(p1);
-		enemyMap["Origin"]->push_back(p2);
+		enemyMap[0] = new std::vector<EnemyObject*>;
+		enemyMap[1] = new std::vector<EnemyObject*>;
 
-		Node* cur = &g.getNode(start);
-		for (EnemyObject* e : *enemyMap["Origin"]) {
+
+		Node* cur;
+		/*for (EnemyObject* e : *enemyMap["Origin"]) {
 			e->oldx = round(e->getPosition().x * 100) / 100;
 			e->oldy = round(e->getPosition().y * 100) / 100;
 			e->setCur(cur);
 			e->setCurDestId(cur->getNextId());
-		}
+		}*/
 
 		/************************************************blueprints INIT************************************************/
 		int index = 0;
@@ -374,16 +350,23 @@ int main(void){
 		/************************************************TEXT INIT************************************************/
 
 		//Parameters: Text(coordinates, fontTexture, text, size, scale, RGBcolor)
-		hudObjects[2]->addText(new Text(glm::vec3(1.5, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f,glm::vec3(255, 255, 255)));
-		hudObjects[2]->addText(new Text(glm::vec3(-4.5f,-6.0f,0.0f), fontTexture, "Enemies = ", size, 0.1f, glm::vec3(50,175,255)));
-		
-		
+		hudObjects[2]->addText(new Text(glm::vec3(0.5f, 4.5f, 0.0f), fontTexture, "Player ", size, 0.2f,glm::vec3(0, 0, 153)));
+		hudObjects[2]->addText(new Text(glm::vec3(-6.6f,-8.4f,0.0f), fontTexture, "Enemies Remaining: ", size, 0.07f, glm::vec3(50,175,255)));
+		hudObjects[2]->addText(new Text(glm::vec3(-6.8f, -12.5f, 0.0f), fontTexture, "Credits: ", size, 0.07f, glm::vec3(50, 175, 255)));
+		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -11.5f, 0.0f), fontTexture, "Income: ", size, 0.07f, glm::vec3(50, 175, 255)));
 
-		Particle* particle = new Particle(glm::vec3(0.0f, 0.0f, 0.0f), textures["Particle"][0], size, "particle", NULL, 0.0f, 0.1f,2000);
+		Particle* particle = new Particle(glm::vec3(0.0f, 0.0f, 0.0f), textures["Particle"][0], size, "particle", NULL, 0.0f, 0.1f, 2000);
+
 		/************************************************GAME LOOP************************************************/
-	
+		int abc = 0;
+		int oldTime = 0;
 		while (!glfwWindowShouldClose(window.getWindow())) {
-			
+			abc++;
+			if (int(glfwGetTime())>oldTime) {
+				oldTime = int(glfwGetTime());
+				std::cout << abc << std::endl;
+				abc = 0;
+			}
 			/************************************************KEY INPUT********************************************/
 		
 			if (timeOfLastMove + 0.05 < glfwGetTime()) {
@@ -426,13 +409,40 @@ int main(void){
 					for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 					selectionGraphic->setZoom(cameraZoom);
 				}
+				if (glfwGetKey(Window::getWindow(), GLFW_KEY_B) == GLFW_PRESS) {
+					startWave = 1;
+				}
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_T) == GLFW_PRESS && 
-					(timeOfLastMove + 0.15 < glfwGetTime())) {
-					toggleBlock = !toggleBlock;
+					  enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					pathCount = 1;
+					spawnCount = 0;
+					startWave = 0;
+					turnIndex = turnIndex ^ 1;
 					timeOfLastMove = glfwGetTime();
+					std::cout << "T \n";
+					turn = turnArr[turnIndex];
+					credits[turnIndex] += income[turnIndex];
+					g.clearNextNodeMaps();
+					g.startPaths();
+
+
+				}
+				if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+					std::cout << g.getHover() << std::endl;
+					Node* tttt = g.getNode(g.getHover()).getNextNode(2024);
+					if (tttt == NULL) {
+						tttt = g.getNode(g.getHover()).getNextNode(314);
+					}
+					if (tttt != NULL) {
+						std::cout << tttt->getId() << std::endl;
+					}
+					else {
+						std::cout << "null\n";
+					}
 
 				}
 				if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+
 					double xpos, ypos;
 					glfwGetCursorPos(window.getWindow(), &xpos, &ypos);
 
@@ -445,20 +455,20 @@ int main(void){
 					if (ypos <= 440) {//prints on map
 						if (hudObjects[1]->getFlag()) {
 
-							if (g.getNode(id).getBuildable()) {
+							if (g.getNode(id).getBuildable(turn)) {
 								TowerObject* selectedTower = hudObjects[1]->getSelection();
 
 								TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType());
 
-								g.getNode(id).setTowerState(true);
-								if (g.rePath(enemyMap["Origin"], id)) {
+								g.getNode(id).setTowerState(true,turn);
+								if (g.rePath(enemyMap[turnIndex], id,++pathCount,turn)) {
 									towerObjects.push_back(t);
 									g.getNode(id).setTower(t);
 								}
 								else {
 									std::cout << "\n\n\nINVALID TOWER PLACEMENT";
-									g.getNode(id).setTowerState(false);
-									g.rePath(enemyMap["Origin"], id);
+									g.getNode(id).setTowerState(false,turn);
+									g.rePath(enemyMap[turnIndex], id,--pathCount,turn);
 									delete(t);
 								}
 								std::cout << "Repath" << std::endl;
@@ -477,16 +487,34 @@ int main(void){
 				if (glfwGetKey(Window::getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
 					(timeOfLastMove + 0.15 < glfwGetTime())) { 
 					
-					std::cout << "Spawned new enemy. Total: " << enemyMap["Origin"]->size()+1 <<  std::endl;
-					Node* cur = &g.getNode(*g.getBotStartSet().begin());
-					EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth,"enemy");
-					enemyMap["Origin"]->push_back(e);
-					
-					e->setSpeed(1);
-					e->oldx = round(e->getPosition().x * 100) / 100;
-					e->oldy = round(e->getPosition().y * 100) / 100;
-					e->setCur(cur);
-					e->setCurDestId(cur->getNextId());
+					/////////////////////////////////
+					/////////////////////////////////
+					/////////////////////////////////
+					/////////////////////////////////
+					/////////////////////////////////
+					/////////////////////////////////
+					/////////////////////////////////
+					/////////////////////////////////
+					std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex^1]->size()+1 <<  std::endl;
+					income[turnIndex] += 5;
+					Node* cur;
+					for (int s : g.getStartSet(turnArr[turnIndex^1])) {
+						cur = &g.getNode(s);
+						EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy");
+						enemyMap[turnIndex^1]->push_back(e);
+						/////////////////////////////////
+						/////////////////////////////////
+						/////////////////////////////////
+						/////////////////////////////////
+						/////////////////////////////////
+						/////////////////////////////////
+
+						e->setSpeed(1);
+						e->oldx = round(e->getPosition().x * 100) / 100;
+						e->oldy = round(e->getPosition().y * 100) / 100;
+						e->setCur(cur);
+						e->setCurDestId(cur->getNextId());
+					}
 					timeOfLastMove = glfwGetTime();
 				}
 
@@ -500,19 +528,16 @@ int main(void){
 			lastTime = currentTime;
 
 			// Select proper shader program to use
-			
+			shader.enable();
 
 			// Setup camera to focus on zoom center
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
 			shader.setUniformMat4("viewMatrix", viewMatrix);
-			
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			
 			
-			
-			//shader =  Shader("shader.vert", "shader.frag");
-		
+
 			//**********HUD**********
 			for (HUD* h : hudObjects) {
 				h->update(deltaTime);
@@ -523,8 +548,20 @@ int main(void){
 			
 				for (Text* t : h->getTextObjects()) {
 					
-					if (t->getType().compare("Enemies = ")==0) {
-						std::string temp = t->getText() + std::to_string(enemyMap["Origin"]->size());
+					if (t->getType().compare("Enemies Remaining: ") == 0) {
+						std::string temp = t->getText() + std::to_string(enemyMap[turnIndex]->size());
+						t->setRenderedText(temp);
+					}
+					if (t->getType().compare("Player ") == 0) {
+						std::string temp = t->getText() + std::to_string(turnIndex+1);
+						t->setRenderedText(temp);
+					}
+					if (t->getType().compare("Income: ") == 0) {
+						std::string temp = t->getText() + std::to_string(income[turnIndex]);
+						t->setRenderedText(temp);
+					}
+					if (t->getType().compare("Credits: ") == 0) {
+						std::string temp = t->getText() + std::to_string(credits[turnIndex]);
 						t->setRenderedText(temp);
 					}
 				}
@@ -537,7 +574,7 @@ int main(void){
 			int id = g.getHover();
 			g.getHoverCoords(x, y);
 			cursor->setPosition(glm::vec3(x,y,0.0f));
-			if (g.getNode(id).getBuildable()) {
+			if (g.getNode(id).getBuildable(turn)) {
 
 				cursor->render(shader);
 			}
@@ -554,38 +591,33 @@ int main(void){
 				glUniform3f(glGetUniformLocation(shader.getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 			}
 
-			
-			
 			shader.disable();
 			shaderParticle.enable();
 			shaderParticle.setAttribute(1);
-			
+
 			shaderParticle.setUniformMat4("viewMatrix", viewMatrix);
 			particle->setRotation(particle->getRotation() + 1);
 			//particle->setPosition(particle->getPosition() + 0.01f);
 			particle->update(deltaTime);
 			particle->render(shaderParticle);
-			
+
 			shaderParticle.disable();
 			shader.enable();
 			shader.setAttribute(0);
-			
-			//glBlendEquation(GL_FUNC_ADD);*/
+
 			//**********Tower**********
-
-
 			for (TowerObject* t : towerObjects) {
 
 				EnemyObject* closestEnemy;
 
-				if (enemyMap["Origin"]->size() == 0)closestEnemy = NULL;
+				if (enemyMap[turnIndex]->size() == 0 || !startWave) { closestEnemy = NULL; }
 				else {
 
 					//get the closest enemy to the tower and point to it using closestEnemy
-					closestEnemy = enemyMap["Origin"]->front();
+					closestEnemy = enemyMap[turnIndex]->front();
 					float enemyDistance = glm::length(t->getPosition() - closestEnemy->getPosition());
 
-					for (EnemyObject* e : *enemyMap["Origin"]) {
+					for (EnemyObject* e : *enemyMap[turnIndex]) {
 
 						float tempDistance = glm::length(t->getPosition() - e->getPosition());
 						if (tempDistance < enemyDistance) {
@@ -606,12 +638,22 @@ int main(void){
 				// Render game objects
 				t->render(shader);
 			}
+			
 
 			//**********Enemy**********
 			std::deque<int> deleteEnemies;
 			int delIndex = 0;
-
-			for (EnemyObject* e : *enemyMap["Origin"]) {
+			++spawnCount;
+			int count = 0;
+			//for (EnemyObject* e : *enemyMap[turnIndex]) {
+			for(std::vector<EnemyObject*>::iterator it = enemyMap[turnIndex]->begin(); it != enemyMap[turnIndex]->end(); ++it){
+				if (!startWave) {
+					--spawnCount;
+					break;
+				}
+				if (count > spawnCount) { break; }
+				++count;
+				EnemyObject* e = *it;
 				oldEnemyX = e->oldx;
 				oldEnemyY = e->oldy;
 
@@ -622,9 +664,10 @@ int main(void){
 				e->oldy = enemyY;
 
 				cur = e->getCur();
+				cur->setIsCur(true);
 				
 				if (!e->getExists()) {
-					std::cout << "Enemy despawned/destroyed. Total: " << enemyMap["Origin"]->size()-1 << std::endl;
+					std::cout << "Enemy despawned/destroyed. Total: " << enemyMap[turnIndex]->size()-1 << std::endl;
 					deleteEnemies.push_front(delIndex);
 				}
 
@@ -632,7 +675,7 @@ int main(void){
 
 
 
-				if (cur->getId() != g.getEndId() && cur->getNextNode(e->getCurDestId())!=NULL) {
+				if (cur->getId() != g.getEndPoints(turnIndex) && cur->getNextNode(e->getCurDestId())!=NULL) {
 
 					Node* next = cur->getNextNode(e->getCurDestId());
 					float nextx = next->getX();
@@ -648,15 +691,20 @@ int main(void){
 					e->setDirection(dir);
 					
 					if ((oldEnemyY <= nexty && nexty <= enemyY) || (oldEnemyY >= nexty && nexty >= enemyY)) {
-						
+
 						glm::vec3 pos = e->getPosition();
 						pos.y = nexty;
 						e->setPosition(pos);
-						cur = next;
+						cur->setIsCur(false);
+						if (abs(oldEnemyX - next->getX()) < 0.2 && 
+							  abs(oldEnemyY- next->getY()) < 0.2) {
+							cur = next;
+						}
+						cur->setIsCur(true);
 						e->setCur(cur);
 						e->setCurDestId(cur->getNextId());
 					
-						if (next->getNextNode(e->getCurDestId()) != NULL) {
+						if (cur->getNextNode(e->getCurDestId()) != NULL) {
 
 							next = cur->getNextNode(e->getCurDestId());
 							nextx = next->getX();
@@ -672,7 +720,7 @@ int main(void){
 							
 						}
 						else {
-						
+							std::cout << "here";
 							e->setDirection(glm::vec3(0.0f, 0.0f, 0.0f));
 						}
 				
@@ -682,11 +730,16 @@ int main(void){
 						glm::vec3 pos = e->getPosition();
 						pos.x = nextx;
 						e->setPosition(pos);
-						cur = next;
+						cur->setIsCur(false);
+						if (abs(oldEnemyX - next->getX()) < 0.2 &&
+							abs(oldEnemyY - next->getY()) < 0.2) {
+							cur = next;
+						}
+						cur->setIsCur(true);
 						e->setCur(cur);
 						e->setCurDestId(cur->getNextId());
 					
-						if (next->getNextNode(e->getCurDestId()) != NULL) {
+						if (cur->getNextNode(e->getCurDestId()) != NULL) {
 
 							next = cur->getNextNode(e->getCurDestId());
 							nextx = next->getX();
@@ -712,7 +765,7 @@ int main(void){
 				}
 
 				//stop moving if we're done
-				if (cur->getId() == g.getEndId() || cur->getNextNode(e->getCurDestId()) == NULL) {
+				if (cur->getId() == g.getEndPoints(turnIndex) || cur->getNextNode(e->getCurDestId()) == NULL) {
 					hp -= 0.5;
 					std::cout << "hp = " << hp <<  std::endl;
 					
@@ -737,14 +790,11 @@ int main(void){
 
 			}
 
-
-
 			//using the indecies, delete the enemies that should be deleted. 
-			for (int i = 0; i < deleteEnemies.size(); i++)enemyMap["Origin"]->erase(enemyMap["Origin"]->begin() + deleteEnemies[i]);
+			for (int i = 0; i < deleteEnemies.size(); i++)enemyMap[turnIndex]->erase(enemyMap[turnIndex]->begin() + deleteEnemies[i]);
 		
-			
 			//**********Graph**********
-			g.update(p2->getCur(),toggleBlock, false);
+			g.update(NULL);
 			//render graph
 			g.render(shader);
 			

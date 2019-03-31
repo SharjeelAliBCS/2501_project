@@ -35,6 +35,7 @@ void GameObject::render(Shader &shader) {
 	//glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.75f, 1.0f, 1.0f));
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though
 
+
 	// Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix = translationMatrix * rotationMatrix * scaleMatrix;
 	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;

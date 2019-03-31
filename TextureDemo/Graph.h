@@ -30,7 +30,7 @@ public:
 	void printData();
 
 	//gets mouse input, updates start and end position using that information
-	void update(Node*, bool block, bool clear=true);
+	void update(Node*);
 	//renders all the nodes in the graph
 	void render(Shader &shader);
 
@@ -43,9 +43,9 @@ public:
 	void highlight(int n);
 
 	
-	bool rePath(std::vector<EnemyObject*>* creeps, int id, bool T = false);
+	bool rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, char side);
 	//creates and marks a path from start to end
-	bool pathfind(int destId, bool clear=true);
+	bool pathfind(int destId, int pathCount);
 
 	//setters
 	inline void setStart(int nodeId) { startNodeId = nodeId; }
@@ -64,7 +64,12 @@ public:
 
 	inline std::set<int> getTopStartSet() { return topStartSet; }
 	inline std::set<int> getBotStartSet() { return botStartSet; }
+	inline std::set<int> getStartSet(char side) { return side == 'B' ? botStartSet : topStartSet; }
 
+	inline int getEndPoints(int i) { return endPoints[i]; }
+
+	void clearNextNodeMaps();
+	void startPaths();
 
 private:
 	//node sprite used to draw each node.
@@ -83,7 +88,7 @@ private:
 	//id of start and endnode
 	int startNodeId, endNodeId;
 
-	//int oldEndNodeId;
+	int endPoints[2];
 
 	//2d vector containing all the nodes in the graph
 	std::vector<std::vector<Node*>> nodes;
@@ -96,6 +101,5 @@ private:
 	std::map<int, int> botDestMap;
 	std::set<int> topStartSet;
 	std::set<int> botStartSet;
-
 
 };

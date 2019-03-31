@@ -2,6 +2,8 @@
 
 #include <iostream>	//used for debug purposes
 using namespace std;
+int window_width_g;
+int window_height_g;
 
 //class used to compare 2 nodeTuple structs
 class compareNode
@@ -91,6 +93,14 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	int row = 0;
 	int col = 0;
 
+	std::cout << "\n\n\n";
+
+	for (std::map<std::string, GLuint>::iterator it = texMap.begin(); it != texMap.end(); ++it) {
+		std::cout << it->first << std::endl;
+	}
+	std::cout << "\n\n\n";
+
+
 	while (getline(in, line))    // get next line in file
 	{
 		stringstream ss(line);
@@ -105,8 +115,11 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			}
 			else if (texMap.find(field) != texMap.end()) {
 				nodeMap[id]->setTex(texMap[field]);
-				if (field.compare("1") == 0) {
-					getNode(id).setBuildable(true);
+				if (field.compare("T") == 0) {
+					getNode(id).setBuildable(true, 'T');
+				}
+				if (field.compare("B") == 0) {
+					getNode(id).setBuildable(true, 'B');
 				}
 				if (field.substr(0, 1).compare("0") == 0 || field.substr(0, 1).compare("6") == 0) {
 					getNode(id).setPathable(false);
@@ -183,10 +196,11 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(endNodeId,false);
+			pathfind(endNodeId,0);
 		}
 		else {
 			setEnd(it->first);
+			endPoints[1] = it->first;
 		}
 	}
 	std::cout << "B\n";
@@ -196,10 +210,11 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(endNodeId, false);
+			pathfind(endNodeId,0);
 		}
 		else {
 			setEnd(it->first);
+			endPoints[0] = it->first;
 		}
 		
 	}
@@ -239,16 +254,17 @@ void Graph::highlight(int n) {
 }
 //gets mouse input, updates start and end position using that information
 
-void Graph::update(Node* s, bool block, bool clear) {
-
-	int sid = s->getId();
-	if (sid != -1 && sid != endNodeId) {
-		setStart(sid);
+void Graph::update(Node* s) {
+	if (s != NULL) {
+		int sid = s->getId();
+		if (sid != -1 && sid != endNodeId) {
+			setStart(sid);
+		}
 	}
 	double xpos, ypos;
 	glfwGetCursorPos(Window::getWindow(), &xpos, &ypos);
 	int n = selectNode(xpos, ypos);
-	if (n != -1 && n != endNodeId && n != sid) {
+	if (n != -1 && n != endNodeId && n != startNodeId) {
 		highlight(n);
 	}
 
@@ -262,9 +278,8 @@ void Graph::getHoverCoords(float &x, float &y) {
 }
 
 int Graph::selectNode(double x, double y) {
-	unsigned int window_width_g = 800;
-	unsigned int window_height_g = 600;
-
+	int window_width_g = 800;
+	int window_height_g = 600;
 	//if the mouse is outside the window, return -1
 	if (x < 0 || x > window_width_g || y < 0 || y > window_height_g) {
 		return -1;
@@ -310,6 +325,24 @@ void Graph::render(Shader &shader) {
 		for (int i = 0; i < nodes.at(j).size(); i++) {
 			//gets the current node to draw
 			Node* currentNode = nodes.at(j).at(i);
+			
+			/*
+			if (currentNode->getX() < (-0.986f / zoom - camPos.x) ||
+				currentNode->getX() > (((float)(window_width_g / 2) - 0.986f) / zoom - camPos.x) ||
+				currentNode->getY() < (-0.986f / zoom + camPos.y) ||
+				currentNode->getY() > (((float)(window_height_g / 2) - 0.986f) / zoom + camPos.y)) {
+				continue;
+			}*/
+
+			if (currentNode->getX() < -1/zoom - camPos.x ||
+				currentNode->getX() > 1/zoom  - camPos.x ||
+				currentNode->getY() < -0.5/zoom - camPos.y ||
+				currentNode->getY() > 1/zoom  - camPos.y) {
+				continue;
+			}
+
+
+
 
 			//set the node 'pen' to the position of the current node.
 			nodeObj.setPosition(glm::vec3(currentNode->getX(), currentNode->getY(), 0.0f));
@@ -328,7 +361,9 @@ void Graph::render(Shader &shader) {
 			}else if (currentNode->isOnPath()) {
 				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = on path
 			}
-			
+			if (currentNode->isCur) {
+				glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//dark green
+			}
 			nodeObj.render(shader);
 		}
 	}
@@ -336,23 +371,33 @@ void Graph::render(Shader &shader) {
 
 //returns a reference to the node with the supplied id.
 Node& Graph::getNode(int id) {
-	
 	//because we also store the graph as a map with the id as the key, we can easily reference each node.
 	return *nodeMap.at(id);
+}
+
+void Graph::clearNextNodeMaps() {
+	for (std::map<int, Node*>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it) {
+		it->second->clearNextNodeMap();
+		it->second->clearLastUpdateMap();
+		it->second->setOnPath(false);
+	}
 }
 
 /*TODO
 create map for each node to store path based on dest, otherwise overwritten
 */
-bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, bool T) {
-	map<int, int> mapInUse = T ? topDestMap : botDestMap;
+bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, char side) {
+	map<int, int> mapInUse = side == 'T' ? topDestMap : botDestMap;
 	bool pathFound = true;
 	Node changedNode = getNode(id);
 
-	std::cout << "got here 1\n";
+
+	std::cout << "got here 1\n\n";
 	if (creeps != NULL) {
 		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
-			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL) {
+			std::cout << id << "   " << (*it)->getCurDestId() << std::endl;
+			std::cout << "changed: " << (changedNode.getNextNode((*it)->getCurDestId()) != NULL) << std::endl;
+			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL || true) {
 				setStart((*it)->getCur()->getId());
 				setEnd((*it)->getCurDestId());
 				std::cout << startNodeId << " => " << endNodeId << std::endl;
@@ -360,9 +405,9 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, bool T) {
 				if (getEndId() == -1) {
 					std::cout << std::endl << "Houston we have a problem, creep dest = -1" << std::endl << std::endl;
 				}
-				pathFound = pathFound ? pathfind((*it)->getCurDestId(), false) : false;
+				pathFound = pathFound ? pathfind((*it)->getCurDestId(), pathCount) : false;
 				std::cout << pathFound << std::endl;
-			}			
+			}
 		}
 	}
 	std::cout << "got here 2\n";
@@ -371,22 +416,61 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, bool T) {
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
+			if (changedNode.getNextNode(endNodeId) != NULL) {
+				std::cout << "\nStart: " << startNodeId << " End: " << endNodeId << " ID: " << id << std::endl;
+				pathFound = pathFound ? pathfind(endNodeId, pathCount) : false;
+			}
 		}
 		else {
 			setEnd(it->first);
 		}
 		if (startNodeId == endNodeId) { continue; }
-		if (changedNode.getNextNode(endNodeId) != NULL) {
-			pathFound = pathFound ? pathfind(endNodeId, false) : false;
-		}
+
 	}
+
+
 	std::cout << "got here 3\n";
 	return pathFound;
 }
 
+void Graph::startPaths() {
+	std::cout << "startPaths\n";
+	std::cout << "T\n";
+
+	for (std::map<int, int>::iterator it = topDestMap.begin(); it != topDestMap.end(); ++it) {
+		//std::cout << it->first << " => " << it->second << '\n';
+		getNode(it->first).setNextId(it->second);
+		if (it->second != -1) {
+			setStart(it->first);
+			setEnd(it->second);
+			pathfind(endNodeId,0);
+		}
+		else {
+			setEnd(it->first);
+		}
+	}
+
+	std::cout << "B\n";
+	for (std::map<int, int>::iterator it = botDestMap.begin(); it != botDestMap.end(); ++it) {
+		//std::cout << it->first << " => " << it->second << '\n';
+		getNode(it->first).setNextId(it->second);
+		if (it->second != -1) {
+			setStart(it->first);
+			setEnd(it->second);
+			pathfind(endNodeId,0);
+		}
+		else {
+			setEnd(it->first);
+		}
+
+	}
+
+}
+
 
 //using zombie-key based approach to Djikstra's algorithm
-bool Graph::pathfind(int destId, bool clear) {
+bool Graph::pathfind(int destId, int pathCount) {
+
 
 	//priority queue used in pathfinding.
 	//it is created using the NodeTuple struct with a min compare function called compareNode
@@ -396,10 +480,7 @@ bool Graph::pathfind(int destId, bool clear) {
 	for (int i = 0; i < nodes.size(); i++) {
 		for (int j = 0; j < nodes.at(i).size(); j++) {
 			nodes.at(i).at(j)->setCost(INT_MAX);
-			if (clear) {
-				nodes.at(i).at(j)->setOnPath(false);
-				//nodes.at(i).at(j).setVisited(false);
-			}
+			nodes.at(i).at(j)->setPrev(NULL);
 		}
 	}
 
@@ -413,6 +494,7 @@ bool Graph::pathfind(int destId, bool clear) {
 	//some function calls will use pointer syntax (->) 
 	
 	bool endFound = false;
+	int endId = endNodeId;
 	while (!pq.empty()) {
 		//get the current lowest-cost node in pq
 		QNode lowest = pq.top();
@@ -421,6 +503,11 @@ bool Graph::pathfind(int destId, bool clear) {
 		if (lowest.node->getId() == endNodeId) {
 			endFound = true;
 			break;
+		}if (lowest.node->getLastUpdate(endNodeId) == pathCount) {
+			//std::cout << "Pathcount\n";
+			//endFound = true;
+			//endId = lowest.node->getId();
+			//break;
 		}
 
 		//OPEN NODE
@@ -453,23 +540,33 @@ bool Graph::pathfind(int destId, bool clear) {
 
 
 	if (endFound) {
-
+		std::cout << "b";
 		//queue is done, go in reverse from END to START to determine path
-		Node* nextNode = &getNode(endNodeId);
-		Node* currentNode = getNode(endNodeId).getPrev();
+		Node* nextNode = &getNode(endId);
+		Node* currentNode = getNode(endId).getPrev();
+		std::cout << "destID: " << destId << " pathCount: " << pathCount << " NextNode: " << nextNode->getId() << std::endl;
 		currentNode->setNextNode(destId,nextNode);
+		currentNode->setLastUpdate(destId, pathCount);
+		std::cout << "r";
 		//std::cout << nextNodeId << std::endl;
 		//while the current node isn't null, or the end, mark the current node as on the path
 		while (currentNode != NULL && currentNode->getId() != startNodeId) {
+			//std::cout << currentNode->getId()<<std::endl;
 			currentNode->setOnPath(true);
 			currentNode->setNextNode(destId,nextNode);
+			currentNode->setLastUpdate(destId, pathCount);
+			//std::cout << "i";
 			nextNode = currentNode;
 			//std::cout << nextNodeId << std::endl;
 			currentNode = currentNode->getPrev();
+			//std::cout << "u";
 		}
+		std::cout << "c";
 		//std::cout << nextNodeId << std::endl;
 		currentNode->setNextNode(destId,nextNode);
+		currentNode->setLastUpdate(destId, pathCount);
 		//std::cout << std::endl;
+		std::cout << "k";
 	}
 	else {
 		std::cout << "failed" << std::endl;

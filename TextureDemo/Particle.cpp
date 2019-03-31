@@ -33,9 +33,9 @@ void Particle::update(double deltaTime) {
 
 void Particle::render(Shader& shader) {
 
-	glBlendFunc(GL_ONE, GL_ONE);
-	
-
+	//glBlendFunc(GL_ONE, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
 	GLuint particleprogram = shader.getShaderID();
 	// Select proper shader program to use
 	glUseProgram(particleprogram);

@@ -41,7 +41,6 @@ public:
 
 	inline bool getExists() { return exists; }
 	inline float getRotation() { return rotation; }
-	
 
 	//inline void setTex(GLuint)
 protected:
