@@ -2,11 +2,11 @@
 
 #include "GameObject.h"
 #include "Node.h"
-
+#include "Particle.h"
 // Inherits from GameObject
 class EnemyObject : public GameObject {
 public:
-	EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type);
+	EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type, GLuint edt);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -24,10 +24,15 @@ public:
 	float oldx;
 	float oldy;
 protected:
+
 	Node * cur;
 	float speed, health;
 	int curDestId;
 	bool hit;
 
+	//These variables below are used for the enemy death particle stuff
+	GLuint enemyDeathTex;
+	int framesDeath;
+	Particle* deathParticles;
 };
 

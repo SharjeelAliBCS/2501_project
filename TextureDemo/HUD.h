@@ -12,9 +12,9 @@ public:
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
-	virtual void selection(double x, double y);
-	virtual void selectionEnemy(double x, double y);
-	virtual void selectionPowerUp(double x, double y);
+	virtual void selection(double x, double y);//Used to select towers
+	virtual void selectionEnemy(double x, double y);//Used to select enemies
+	virtual void selectionPowerUp(double x, double y);//used to select power ups
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;
 
@@ -56,12 +56,13 @@ private:
 	bool buttonFlag;
 	bool enemyFlag;
 
-
+	//vectors storing all the items in the game
 	std::vector<TowerObject*> blueprints;
 	std::vector<GameObject*> buttons;
 	std::vector<GameObject*> powerUps;
 	std::vector<EnemyObject*> enemyBlueprints2;
 
+	//These are used to store the current selected item. 
 	GameObject* outPowerUP;
 	GameObject* outButton;
 	EnemyObject* outEnemy;

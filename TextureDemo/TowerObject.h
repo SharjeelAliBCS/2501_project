@@ -10,7 +10,7 @@
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type);
+	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type, float r);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -22,6 +22,7 @@ public:
 	//getters
 	//getter for the vector of objects
 	inline std::vector<GLuint> getTexvec() { return texvec; }
+	inline float getRange() {return range;}
 	inline std::vector<GLuint> getExplosion_tex() { return explosion_tex; }
 	GLuint getIcon() { return icon; }
 	inline float getDps() { return dps; }
@@ -52,6 +53,7 @@ private:
 
 	int fireRate, frames;
 	float dps;
+	float range;
 	GLint size;
 	std::vector<ProjectileObject*> bullObjects;
 	std::vector<GLuint> explosion_tex;

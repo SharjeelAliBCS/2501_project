@@ -12,9 +12,9 @@ PlayerGameObject inherits from GameObject
 It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-Particle::Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type, EnemyObject* enemy, float angle, float s,float n)
+Particle::Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, std::string type, float angle, float s,float n,int shade)
 	: GameObject(entityPos, entityTexture, entityNumElements, type) {
-	target = enemy;
+	
 	orgCoord = entityPos;
 	
 	scale = glm::vec3(s,s,1);
@@ -22,7 +22,7 @@ Particle::Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumEl
 
 	particlesize = n;
 	time = 0.0;
-
+	shaderIndex = shade;
 }
 
 
@@ -37,16 +37,18 @@ void Particle::update(double deltaTime) {
 
 void Particle::render(std::vector<Shader*> shaders) {
 
+	//Here it's disabling and configuring the shader to match the particle system's requirements
 	shaders[0]->disable();
-	shaders[1]->enable();
-	shaders[1]->setAttribute(1);
-	std::cout << "ddd" << std::endl;
+	shaders[shaderIndex]->enable();
+	shaders[shaderIndex]->setAttribute(shaderIndex);
+	shaders[shaderIndex]->setRadius(shaderIndex);
+	//std::cout << "ddd" << std::endl;
 
 
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glBlendFunc(GL_ONE, GL_ONE);
 	glEnable(GL_BLEND);
-	GLuint particleprogram = shaders[1]->getShaderID();
+	GLuint particleprogram = shaders[shaderIndex]->getShaderID();
 	// Select proper shader program to use
 	glUseProgram(particleprogram);
 
@@ -72,11 +74,10 @@ void Particle::render(std::vector<Shader*> shaders) {
 	//glDepthMask(GL_FALSE); // draw particles without writing to depth buffer
 	glDrawElements(GL_TRIANGLES, 6 * particlesize, GL_UNSIGNED_INT, 0);
 
-
+	//reset everything back to normal. 
 	glDepthMask(GL_TRUE); // allow writes to depth buffer
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
-	shaders[1]->disable();
+	shaders[shaderIndex]->disable();
 	shaders[0]->enable();
 	shaders[0]->setAttribute(0);
 

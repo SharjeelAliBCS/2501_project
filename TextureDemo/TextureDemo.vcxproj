@@ -184,6 +184,8 @@
   <ItemGroup>
     <None Include="shader.frag" />
     <None Include="shader.vert" />
+    <None Include="shaderEnemyDeath.frag" />
+    <None Include="shaderEnemyDeath.vert" />
     <None Include="shaderParticle.frag" />
     <None Include="shaderParticle.vert" />
   </ItemGroup>

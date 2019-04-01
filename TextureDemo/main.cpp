@@ -170,6 +170,7 @@ void setallTexture(void)
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/1_enemy.png"));
 
 	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
+	textures["Particle"].push_back(createTexture("Graphics/Particles/enemyDeath.png"));
 
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_tower.png"));//0
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_turret.png"));//1
@@ -199,15 +200,20 @@ void setallTexture(void)
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
 
-	
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
+																		
 
-	textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
-	textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
-	textures["MENU"].push_back(createTexture("Graphics/MENU/Score.png"));//2
-	textures["MENU"].push_back(createTexture("Graphics/MENU/Option.png"));//3
+	//textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
+	//textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
+	//textures["MENU"].push_back(createTexture("Graphics/MENU/Score.png"));//2
+	//textures["MENU"].push_back(createTexture("Graphics/MENU/Option.png"));//3
 
 	textures["Button"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 
+	//Text is rendered by creating a map where each key is a character that corrasponds to an actual character.png file. 
 	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@-";
 	
 	for (int i = 0; i < characters.size(); i++) {
@@ -245,13 +251,18 @@ int main(void){
 		// Create geometry of the square
 		int size = CreateSquare();
 
-		// Set up shaders
+		/************************************************SHADER INIT************************************************/
 		
 		shaders.push_back(new Shader("shader.vert", "shader.frag", 0));
 		shaders[0]->disable();
 		shaders.push_back(new Shader("shaderParticle.vert", "shaderParticle.frag", 1));
-		shaders[1]->CreateParticleArray();
+		shaders[1]->CreateParticleArray(1);
 		shaders[1]->disable();
+		shaders.push_back(new Shader("shaderEnemyDeath.vert", "shaderEnemyDeath.frag", 2));
+		shaders[2]->CreateParticleArray(2);
+		shaders[2]->setRadius(2);
+		shaders[2]->disable();
+
 		shaders[0]->setAttribute(0);
 		
 		
@@ -350,24 +361,27 @@ int main(void){
 		}*/
 
 		/************************************************blueprints INIT************************************************/
+
+		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
+		//to create the actual tower object. 
 		int index = 0;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0")); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---1"));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "denderBlueprint---2"));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint"));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint"));
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0",3)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---1",2));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "denderBlueprint---2",1));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint",10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));
 		/************************************************enemyBlueprints INIT************************************************/
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//0
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//1
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//2
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//3
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//4
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//5
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//6
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy"));//7
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//1
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//2
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//3
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//4
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//5
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//7
 																																 /************************************************buttonBlueprints INIT************************************************/
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-6.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button1"));//panel1 0
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-7.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button2"));//panel1 1
@@ -569,7 +583,7 @@ int main(void){
 								if (g.getNode(id).getBuildable(turn)) {
 									TowerObject* selectedTower = hudObjects[1]->getSelection();
 									
-									TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType());
+									TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType(),selectedTower->getRange());
 									if (t->getType().compare("denderBlueprint---2") == 0) {
 										
 									}
@@ -623,7 +637,7 @@ int main(void){
 						Node* cur;
 						for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
 							cur = &g.getNode(s);
-							EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy");
+							EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]);
 							enemyMap[turnIndex ^ 1]->push_back(e);
 							/////////////////////////////////
 							/////////////////////////////////
@@ -654,18 +668,17 @@ int main(void){
 			// Select proper shader program to use
 			shaders[0]->enable();
 
-			// Setup camera to focus on zoom center
+			/************************************************SHADER CAMERA CENTERING********************************************/
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
-			shaders[0]->setUniformMat4("viewMatrix", viewMatrix);
-			shaders[0]->disable();
-
-			shaders[1]->enable();
-			shaders[1]->setUniformMat4("viewMatrix", viewMatrix);
-			shaders[1]->setAttribute(1);
-			shaders[1]->disable();
-
+			
+			//Here it is just looping over each shader and setting the viewmatrix. 
+			for (Shader* s : shaders) {
+				s->enable();
+				s->setUniformMat4("viewMatrix", viewMatrix);
+				s->disable();
+			}
 			shaders[0]->enable();
-			shaders[0]->setAttribute(0);
+			
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			

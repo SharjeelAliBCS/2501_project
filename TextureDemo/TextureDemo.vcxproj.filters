@@ -112,5 +112,11 @@
     <None Include="shaderParticle.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="shaderEnemyDeath.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="shaderEnemyDeath.vert">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

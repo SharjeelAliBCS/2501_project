@@ -7,7 +7,7 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type)
+TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type,float r)
 	: GameObject(entityPos, tex[0], entityNumElements, type) {
 
 	turretTexture = tex[1];
@@ -21,6 +21,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	explosion_tex = explosion;
 	dps = d; 
 	texvec = tex;
+	range = r;
 
 
 	
@@ -48,8 +49,8 @@ void TowerObject::update(double deltaTime) {
 
 		if (currentEnemy != NULL) {
 			float dis = glm::length(position - currentEnemy->getPosition());
-			std::cout << "dis " << dis << std::endl;
-			if (dis < 1) {
+			//std::cout << "dis " << dis << std::endl;
+			if (dis < range) {
 				currentEnemy->enemyHit(dps);
 			}
 		}
@@ -57,7 +58,7 @@ void TowerObject::update(double deltaTime) {
 	//delete the bullets that should be deleted
 	for (int i = 0; i < deleteBullets.size(); i++) bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
 
-	if (currentEnemy == NULL) {
+	if (currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) {
 		particle = NULL;
 	}
 	//state machine used to move around (right now only uses locate)
@@ -97,7 +98,11 @@ void TowerObject::locateEnemy() {
 		
 		rotation = targetAngle * (180 / 3.14f) + 180;
 
-		fireEnemy();
+		float dis = glm::length(position - currentEnemy->getPosition());
+		//std::cout << "dis " << dis << std::endl;
+		if (dis <= range) {
+			fireEnemy();
+		}
 
 	}
 
@@ -106,14 +111,16 @@ void TowerObject::locateEnemy() {
 void TowerObject::deathAnimation() {
 }
 
-//creates a single bullet object
+
 void TowerObject::fireEnemy() {
 
-	if (type.compare("denderBlueprint---2")==0) {
-		if (particle == NULL) {
-			particle = new Particle(position, projectileTex, size, "particle", NULL, 0, 0.075f, 2000);
+	//creates a single particle object (flames)
+	if (type.compare("denderBlueprint---2") == 0) {
+		if (particle == NULL){
+			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000, 1);
 		}
 	}
+	//creates a single bullet object
 	else {
 		if (frames%fireRate == 0) {
 
@@ -128,12 +135,7 @@ void TowerObject::fireEnemy() {
 
 void TowerObject::render(std::vector<Shader*> shaders) {
 
-	
-	
-
 	glBindTexture(GL_TEXTURE_2D, turretTexture);
-
-	
 
 	// Setup the transformation matrix for the shader
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
@@ -150,7 +152,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 	for (int i = 0; i < bullObjects.size(); i++) {
 		bullObjects[i]->render(shaders);
 	}
-	// Bind the entities texture
+	
 	if (particle != NULL) {
 		particle->render(shaders);
 	}

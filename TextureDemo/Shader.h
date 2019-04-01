@@ -36,12 +36,22 @@ public:
 	// Sets a uniform matrix4x4 variable in your shader program to a matrix4x4
 	void setUniformMat4(const GLchar *name, const glm::mat4 &matrix);
 
-	int CreateParticleArray(void);
+	int CreateParticleArray(int type);//creates the array from the assignment
 
 	void setAttribute(int type);
+	void setRadius(int type);//This switches between what array to use for the shader. 
 	// Getters
 	inline GLuint getShaderID() { return shaderProgram; }
 private:
 	GLuint shaderProgram;
-	int type;
+
+	//I moved the variables from the createArray function here because I needed to handle two types of particle effects,
+	//and I thought this was the easist way for me to do so. 
+	GLuint vbo, ebo;
+	GLuint manyface[1000 * 6];
+
+	int vertex_attr = 7;  // 7 attributes per vertex: 2D (or 3D) position (2), direction (2), 2D texture coordinates (2), time (1)
+								//	const int face_att = 3; // Vertex indices (3)
+	//int type;
+	GLfloat particleatt[1000 * 7];
 };

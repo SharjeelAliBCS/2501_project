@@ -2,7 +2,7 @@
 
 Shader::Shader(){}
 Shader::Shader(const char *vertPath, const char *fragPath, int t) {
-	type = t;
+
 	// Load vertex program source code
 	std::string vp = FileUtils::LoadTextFile(vertPath);
 	const char *source_vp = vp.c_str();
@@ -56,7 +56,7 @@ Shader::Shader(const char *vertPath, const char *fragPath, int t) {
 	glDeleteShader(vs);
 	glDeleteShader(fs);
 
-	this->setAttribute(type);
+	this->setAttribute(t);
 	
 }
 
@@ -77,7 +77,7 @@ void Shader::setAttribute(int inputType) {
 		glEnableVertexAttribArray(tex_att);
 
 	}
-	else if (inputType == 1) {
+	else {
 		// Set attributes for shaders
 		// Should be consistent with how we created the buffers for the particle elements
 		GLint vertex_att = glGetAttribLocation(shaderProgram, "vertex");
@@ -98,12 +98,21 @@ void Shader::setAttribute(int inputType) {
 	}
 
 }
-int Shader::CreateParticleArray(void) {
+int Shader::CreateParticleArray(int type) {
+	float min = 0.0;
+	float max = 0.0;
+	if (type == 1) {
+		min = 0.01, 
+		max = 0.1;
+	}
+	else if (type == 2) {
+		min = 0.2;
+		max = 0.8;
+	}
 	// Each particle is a square with four vertices and two triangles
 
 	// Number of attributes for vertices and faces
-	const int vertex_attr = 7;  // 7 attributes per vertex: 2D (or 3D) position (2), direction (2), 2D texture coordinates (2), time (1)
-								//	const int face_att = 3; // Vertex indices (3)
+		
 
 	GLfloat vertex[] = {
 		//  square (two triangles)
@@ -114,7 +123,7 @@ int Shader::CreateParticleArray(void) {
 		-0.5f, -0.5f,	 1.0f, 1.0f, 1.0f,		0.0f, 1.0f  // Bottom-left
 	};
 
-	GLfloat particleatt[1000 * vertex_attr];
+		
 	float theta, r, tmod;
 
 	for (int i = 0; i < 1000; i++)
@@ -122,7 +131,7 @@ int Shader::CreateParticleArray(void) {
 		if (i % 4 == 0)
 		{
 			theta = (6.28*(rand() % 1000) / 1000.0f);//(2*(rand() % 10000) / 10000.0f -1.0f)*0.13f;
-			r = 0.01f + 0.1*(rand() % 10000) / 10000.0f;
+			r = min + max*(rand() % 10000) / 10000.0f;
 			tmod = (rand() % 10000) / 10000.0f;
 		}
 		// position	
@@ -143,27 +152,19 @@ int Shader::CreateParticleArray(void) {
 
 	}
 
-
 	GLuint face[] = {
 		0, 1, 2, // t1
 		2, 3, 0  //t2
 	};
 
-	GLuint manyface[1000 * 6];
-
+	
 	for (int i = 0; i < 1000; i++)
 	{
 		for (int j = 0; j < 6; j++)
 			manyface[i * 6 + j] = face[j] + i * 4;
 	}
 
-	GLuint vbo, ebo;
-
-	// Create buffer for vertices
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(particleatt), particleatt, GL_STATIC_DRAW);
-
+		
 	// Create buffer for faces (index buffer)
 	glGenBuffers(1, &ebo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -171,8 +172,16 @@ int Shader::CreateParticleArray(void) {
 
 	// Return number of elements in array buffer
 	return sizeof(manyface);
+		
+	
 }
+void Shader::setRadius(int type) {
+	// Create buffer for vertices
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(particleatt), particleatt, GL_STATIC_DRAW);
 
+}
 // Sets a uniform integer variable in your shader program to a value
 void Shader::setUniform1i(const GLchar *name, int value) {
 	glUniform1i(glGetUniformLocation(shaderProgram, name), value);

@@ -544,7 +544,7 @@ bool Graph::pathfind(int destId, int pathCount) {
 		//queue is done, go in reverse from END to START to determine path
 		Node* nextNode = &getNode(endId);
 		Node* currentNode = getNode(endId).getPrev();
-		std::cout << "destID: " << destId << " pathCount: " << pathCount << " NextNode: " << nextNode->getId() << std::endl;
+		//std::cout << "destID: " << destId << " pathCount: " << pathCount << " NextNode: " << nextNode->getId() << std::endl;
 		currentNode->setNextNode(destId,nextNode);
 		currentNode->setLastUpdate(destId, pathCount);
 		std::cout << "r";
