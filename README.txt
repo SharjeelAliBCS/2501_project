@@ -53,6 +53,7 @@ Particle system: Uses the shader.cpp/.h file, then is used in the towerobject an
 
 ********************BUGS/GLITCHES********************
 -hud turns red when at a certain horizantal coordinate with the camera
+-flames use the explosion vertex shader for the enemies when in close range to an exploding enemy
 
 ********************Controls********************
 MAIN MENU:
@@ -86,4 +87,3 @@ Spawn an enemy: SPACE
 8. Once the wave is over, spawn the enemies for player 1 and then press T 
 
 
--flames use the explosion vertex shader for the enemies when in close range to an exploding enemy
