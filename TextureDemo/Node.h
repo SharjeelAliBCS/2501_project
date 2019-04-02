@@ -32,7 +32,7 @@ public:
 
 	//setters
 	inline void clearNextNodeMap() { nextNodeMap.clear(); }
-	inline void clearLastUpdateMap() { lastUpdateMap.clear(); }
+	//inline void clearLastUpdateMap() { lastUpdateMap.clear(); }
 
 
 	inline void setNextNode(int key, Node* n) {nextNodeMap[key] = n;}

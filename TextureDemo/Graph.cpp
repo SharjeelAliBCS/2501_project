@@ -17,7 +17,7 @@ public:
 
 //main constructor
 //takes the width, height of graph, as well as a gameobject used to render each node.
-Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname):
+Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname, int x, int y, GLFWwindow* w) :
 	nodeObj(nodeSprite), camPos(glm::vec3(0.0f)) {
 	//initializes the 2d nodes array and nodeMap
 	nodes = std::vector<std::vector<Node*>>();
@@ -32,6 +32,9 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 
 	start_x = nodeWidth * movementX * -0.5;
 	start_y = nodeHeight * movementY * -0.5;
+	window_height_g = y;
+	window_width_g = x;
+	window = w;
 
 
 	//fills the 2d nodes array with nodes.
@@ -262,7 +265,7 @@ void Graph::update(Node* s) {
 		}
 	}
 	double xpos, ypos;
-	glfwGetCursorPos(Window::getWindow(), &xpos, &ypos);
+	glfwGetCursorPos(window, &xpos, &ypos);
 	int n = selectNode(xpos, ypos);
 	if (n != -1 && n != endNodeId && n != startNodeId) {
 		highlight(n);
@@ -278,8 +281,7 @@ void Graph::getHoverCoords(float &x, float &y) {
 }
 
 int Graph::selectNode(double x, double y) {
-	int window_width_g = 800;
-	int window_height_g = 600;
+	glfwGetWindowSize(window, &window_width_g, &window_height_g);
 	//if the mouse is outside the window, return -1
 	if (x < 0 || x > window_width_g || y < 0 || y > window_height_g) {
 		return -1;
@@ -326,19 +328,13 @@ void Graph::render(std::vector<Shader*> shaders) {
 			//gets the current node to draw
 			Node* currentNode = nodes.at(j).at(i);
 			
-			/*
-			if (currentNode->getX() < (-0.986f / zoom - camPos.x) ||
-				currentNode->getX() > (((float)(window_width_g / 2) - 0.986f) / zoom - camPos.x) ||
-				currentNode->getY() < (-0.986f / zoom + camPos.y) ||
-				currentNode->getY() > (((float)(window_height_g / 2) - 0.986f) / zoom + camPos.y)) {
-				continue;
-			}*/
+
 
 			if (currentNode->getX() < -1/zoom - camPos.x ||
 				currentNode->getX() > 1/zoom  - camPos.x ||
 				currentNode->getY() < -0.5/zoom - camPos.y ||
 				currentNode->getY() > 1/zoom  - camPos.y) {
-				continue;
+				continue; //uncomment for fps boost based on zoom
 			}
 
 
@@ -378,7 +374,7 @@ Node& Graph::getNode(int id) {
 void Graph::clearNextNodeMaps() {
 	for (std::map<int, Node*>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it) {
 		it->second->clearNextNodeMap();
-		it->second->clearLastUpdateMap();
+		//it->second->clearLastUpdateMap();
 		it->second->setOnPath(false);
 	}
 }
@@ -397,7 +393,7 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
 			//std::cout << id << "   " << (*it)->getCurDestId() << std::endl;
 			//std::cout << "changed: " << (changedNode.getNextNode((*it)->getCurDestId()) != NULL) << std::endl;
-			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL || true) {
+			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL) {
 				setStart((*it)->getCur()->getId());
 				setEnd((*it)->getCurDestId());
 				//std::cout << startNodeId << " => " << endNodeId << std::endl;
@@ -407,6 +403,9 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 				}
 				pathFound = pathFound ? pathfind((*it)->getCurDestId(), pathCount) : false;
 				std::cout << pathFound << std::endl;
+			}
+			else {
+				std::cout << "IT WAS NULL\n";
 			}
 		}
 	}

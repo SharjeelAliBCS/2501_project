@@ -8,13 +8,14 @@
 class HUD : public GameObject {
 public:
 	//constructor
-	HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, std::string type);
+	HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, float fact, std::string type);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
 	virtual void selection(double x, double y);//Used to select towers
 	virtual void selectionEnemy(double x, double y);//Used to select enemies
 	virtual void selectionPowerUp(double x, double y);//used to select power ups
+	virtual void NewCoordinates(float&x, float&y, float objecWidth, float objectHeight);
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;
 
@@ -45,11 +46,12 @@ public:
 	inline void setEnemyFlag(bool newEnemyFlag) { enemyFlag = newEnemyFlag; }
 	inline void setButtons(std::vector<GameObject*> butt) { buttons = butt; }
 	inline void setPowerUPs(std::vector<GameObject*> power) { powerUps = power; }
+	inline void setFactor(float newFact) { factor = newFact; }
 private:
 	float zoom;
 	glm::vec3 camPos;
 	glm::vec3 scale;
-
+	float factor;
 	std::vector<Text*> textObjects;
 	bool flag;//only important flag becuase its flag for selection of towers /////the other flags are just for the selection square demonstration
 	bool powerUpFlag;

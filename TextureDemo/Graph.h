@@ -23,7 +23,7 @@ struct QNode{
 class Graph {
 public:
 	//constructor. 
-	Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname);
+	Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname, int x, int y, GLFWwindow* w);
 
 	
 	//Loops through array and prints out associated data for each node.
@@ -101,5 +101,10 @@ private:
 	std::map<int, int> botDestMap;
 	std::set<int> topStartSet;
 	std::set<int> botStartSet;
+
+	GLFWwindow* window;
+
+	int window_width_g = 800;
+	int window_height_g = 600;
 
 };

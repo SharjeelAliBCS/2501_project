@@ -31,11 +31,14 @@
 	std::cerr << exception_object.what() << std::endl
 
 // Globals that define the OpenGL window and viewport
-const std::string window_title_g = "Pathfinding Demo";
-const unsigned int window_width_g = 800;
-const unsigned int window_height_g = 600;
-const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
+const std::string window_title_g = "RTS GAME";
+float ratio = 0.75f;
+float window_width_g = 800;//*1.5
+float window_height_g = window_width_g * ratio;//*1.5
+int Wwidth, Wheight;
+float factor = window_width_g / 800;//*1.5
 //const glm::vec3 viewport_background_color_g(1, 1, 1);
+const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
 
 // Global texture info
 
@@ -61,7 +64,20 @@ std::vector<EnemyObject*> enemyBlueprint;
 std::vector<Shader*> shaders;
 
 
+void ResizeCallback(GLFWwindow*window, int width, int height) {
+	if (width != window_width_g) {
+		height = width * ratio;
+	}
+	if (height != window_height_g) {
+		width = height / ratio;
+	}
+	//gluOrtho2D(-0.5f*ratio, 0.5*ratio, 0, 1);
+	std::cout << width << "," << height << std::endl;
+	window_width_g = width;
+	window_height_g = height;
+	glViewport(0, 0, width, height);
 
+}
 
 // Create the geometry for a square (with two triangles)
 // Return the number of array elements that form the square
@@ -237,8 +253,28 @@ int main(void){
 		// Seed for generating random numbers with rand()
 		srand((unsigned int)time(0));
 
+		if (!glfwInit()) {
+			throw(std::runtime_error(std::string("Could not initialize the GLFW library")));
+		}
 		// Setup window
-		Window window(window_width_g, window_height_g, window_title_g);
+		//Window window(window_width_g, window_height_g, window_title_g);
+		GLFWwindow* window;
+		window = glfwCreateWindow(window_width_g, window_height_g, window_title_g.c_str(), NULL, NULL);
+		if (!window) {
+			glfwTerminate();
+			throw(std::runtime_error(std::string("Could not create window")));
+		}
+
+		/* Make the window's OpenGL context the current one */
+		glfwMakeContextCurrent(window);
+
+
+		glewExperimental = GL_TRUE;
+		GLenum err = glewInit();
+		if (err != GLEW_OK) {
+			throw(std::runtime_error(std::string("Could not initialize the GLEW library: ") + std::string((const char *)glewGetErrorString(err))));
+		}
+		glfwSetWindowAspectRatio(window, 4, 3);
 
 		// Set up z-buffer for rendering
 		glEnable(GL_DEPTH_TEST);
@@ -337,7 +373,7 @@ int main(void){
 
 		/************************************************GRAPH INIT************************************************/
 		
-		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0],size,"map"),texMap, fname);
+		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
 	
 		start = *(g.getBotStartSet().begin());
 		g.setZoom(cameraZoom);
@@ -408,16 +444,13 @@ int main(void){
 
 		button.push_back(new GameObject(glm::vec3(-7.5f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));
 		/************************************************HUD INIT************************************************/
-
 		GameObject* cursor = new GameObject(glm::vec3(0.0f), cursorTex, size, "cursor");
-		HUD* selectionGraphic = new HUD(glm::vec3(0.0f, 0.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, "selection");
-		HUD* selectionGraphic2 = new HUD(glm::vec3(0.0f, 0.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, "selection");
-		HUD* selectionGraphic3 = new HUD(glm::vec3(0.0f, 0.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, "selection");
-		HUD* selectionGraphic4 = new HUD(glm::vec3(0.0f, 0.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, "selection");
+		HUD* selectionGraphic = new HUD(glm::vec3(50.0f, 50.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, factor, "selection");
+
 
 		glm::vec3 objectS = glm::vec3(0.5f, 0.8f, 0.0f);//this handels the size(scale) of the HUD panel 
-		hudObjects.push_back(new HUD(glm::vec3(1.55f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD1"));//0(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
-		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD3"));//1
+		hudObjects.push_back(new HUD(glm::vec3(1.55f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD1"));//0(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
+		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD3"));//1
 
 
 
@@ -428,23 +461,23 @@ int main(void){
 
 
 		objectS.x = 1.25f;//this handels the size(scale) of the HUD panel
-		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD2"));//2
+		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD2"));//2
 		objectS.x = 0.5f;
 		objectS.y = 0.2f;
-		hudObjects.push_back(new HUD(glm::vec3(1.55f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD5"));//3
-		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD5"));//4//this is the start/end hud
+		hudObjects.push_back(new HUD(glm::vec3(1.55f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//3
+		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//4//this is the start/end hud
 		hudObjects[4]->setButtons(button);
 		objectS.x = 1.25f;
 		objectS.y = 0.2f;
-		hudObjects.push_back(new HUD(glm::vec3(0.01f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, "HUD4"));//5
+		hudObjects.push_back(new HUD(glm::vec3(0.01f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD4"));//5
 		hudObjects[5]->setPowerUPs(buttonPowerUpsPanel);
 
 		/************************************************MENU INIT************************************************/
 		glm::vec3 buttonScale = glm::vec3(0.5f, 0.5f, 0.0f);
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, "PLAY"));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, "SCORE"));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, "OPTION"));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, "QUIT"));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, factor, "PLAY"));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, factor, "SCORE"));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, factor, "OPTION"));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, factor, "QUIT"));
 
 		/************************************************TEXT INIT************************************************/
 
@@ -457,15 +490,23 @@ int main(void){
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -9.5f, 0.0f), fontTexture, "P2 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
 
 		/************************************************GAME LOOP************************************************/
-		int abc = 0;
+		int fps = 0;
 		int oldTime = 0;
+		float lastSpawnTime = 0;
 		gameState.push_back("menu");
-		while (!glfwWindowShouldClose(window.getWindow())) {
-			abc++;
+		//gameState.push_back("play"); // comment this line for menu
+		glfwSetFramebufferSizeCallback(window, ResizeCallback);
+		while (!glfwWindowShouldClose(window)) {
+
+			//int Wwidth, Wheight;
+			glfwGetWindowSize(window, &Wwidth, &Wheight);
+			factor = (float)Wwidth / 800;
+
+			++fps;
 			if (int(glfwGetTime())>oldTime) {
 				oldTime = int(glfwGetTime());
-				std::cout << abc << std::endl;
-				abc = 0;
+				std::cout << "FPS: "<<fps << std::endl;
+				fps = 0;
 			}
 			/************************************************KEY INPUT********************************************/
 			
@@ -473,14 +514,14 @@ int main(void){
 				for (HUD* b : HUDMenu)b->setCamPos(cameraTranslatePos);
 
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_P) == GLFW_PRESS &&
+					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
 						gameState.push_back("play");
 					}
 				}
-				if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 					double xpos, ypos;
-					glfwGetCursorPos(window.getWindow(), &xpos, &ypos);
+					glfwGetCursorPos(window, &xpos, &ypos);
 					float xOut = (float)xpos;
 					float yOut = (float)ypos;
 
@@ -495,49 +536,49 @@ int main(void){
 			//==========================================>state:play/controls
 			if (gameState.back() == "play") {
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
-						cameraTranslatePos.y -= camShiftInc * camShiftInc;
+					if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+						cameraTranslatePos.y -= (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
-						cameraTranslatePos.y += camShiftInc * camShiftInc;
+					if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+						cameraTranslatePos.y += (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
-						cameraTranslatePos.x -= camShiftInc * camShiftInc;
+					if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+						cameraTranslatePos.x -= (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
-						cameraTranslatePos.x += camShiftInc * camShiftInc;
+					if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+						cameraTranslatePos.x += (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_Z) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
 						cameraZoom = std::fmin(cameraZoom + camZoomInc, maxCamZoom);
 						g.setZoom(cameraZoom);
 						timeOfLastMove = glfwGetTime();
 						for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 						selectionGraphic->setZoom(cameraZoom);
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_X) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
 						cameraZoom = std::fmax(cameraZoom - camZoomInc, minCamZoom);
 						g.setZoom(cameraZoom);
 						timeOfLastMove = glfwGetTime();
 						for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 						selectionGraphic->setZoom(cameraZoom);
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_B) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
 						startWave = 1;
 					}
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_T) == GLFW_PRESS &&
+					if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS &&
 						enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						pathCount = 1;
 						spawnCount = 0;
@@ -552,7 +593,7 @@ int main(void){
 
 
 					}
-					if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 						std::cout << g.getHover() << std::endl;
 						Node* tttt = g.getNode(g.getHover()).getNextNode(2024);
 						if (tttt == NULL) {
@@ -566,10 +607,10 @@ int main(void){
 						}
 
 					}
-					if (glfwGetMouseButton(Window::getWindow(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 
 						double xpos, ypos;
-						glfwGetCursorPos(window.getWindow(), &xpos, &ypos);
+						glfwGetCursorPos(window, &xpos, &ypos);
 
 						float x;
 						float y;
@@ -615,13 +656,13 @@ int main(void){
 						//--------end of click button------------ 
 					}
 
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS || glfwGetKey(Window::getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 						cursor->setTex(textures["Cursor"][0]);
 						hudObjects[1]->setFlag(false);
 					}
 
 
-					if (glfwGetKey(Window::getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS &&
+					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
 
 						/////////////////////////////////
@@ -658,7 +699,11 @@ int main(void){
 				}
 			}
 		
-			window.clear(viewport_background_color_g);
+			//clear window
+			glClearColor(viewport_background_color_g[0],
+				viewport_background_color_g[1],
+				viewport_background_color_g[2], 0.0);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			// Calculate delta time
 			double currentTime = glfwGetTime();
@@ -690,20 +735,12 @@ int main(void){
 			//==========================================>state:play/render
 			if (gameState.back() == "play") {
 				//shader =  Shader("shader.vert", "shader.frag");
-
+			
 			//**********HUD**********
+				selectionGraphic->render(shaders);
 				for (HUD* h : hudObjects) {
+					h->setFactor(factor);
 					h->update(deltaTime);
-
-					if (h->getFlag() || h->getButtonFlag()) {
-						selectionGraphic->render(shaders);
-					}
-					if (h->getEnemyFlag() || h->getButtonFlag()) {
-						selectionGraphic2->render(shaders);
-					}
-					if (h->getPowerUpFlag()) {
-						selectionGraphic3->render(shaders);
-					}
 
 					for (Text* t : h->getTextObjects()) {
 
@@ -798,12 +835,24 @@ int main(void){
 				//**********Enemy**********
 				std::deque<int> deleteEnemies;
 				int delIndex = 0;
-				spawnCount+=0.25;
+				bool tick = false;
+				//spawnCount+=0.25;
+				
+				if (glfwGetTime() > lastSpawnTime + 0.075) {
+					//std::cout << "\n\n\n\nHERE"<<spawnCount<<"\n\n\n";
+					spawnCount += 1;
+					lastSpawnTime = glfwGetTime();
+					tick = true;
+				}
+
 				int count = 0;
 				//for (EnemyObject* e : *enemyMap[turnIndex]) {
 				for (std::vector<EnemyObject*>::iterator it = enemyMap[turnIndex]->begin(); it != enemyMap[turnIndex]->end(); ++it) {
 					if (!startWave) {
-						spawnCount-=0.25;
+						if (tick) {
+							//spawnCount = std::fmax(0, spawnCount - 1);
+							spawnCount -= 1;
+						}
 						break;
 					}
 					if (count > spawnCount) { break; }
@@ -959,7 +1008,7 @@ int main(void){
 			glfwPollEvents();
 
 			// Push buffer drawn in the background onto the display
-			glfwSwapBuffers(window.getWindow());
+			glfwSwapBuffers(window);
 		}
 	}
 	catch (std::exception &e){

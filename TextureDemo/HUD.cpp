@@ -1,11 +1,13 @@
+#include "Window.h"
 #include "HUD.h"
 
-HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, std::string type)
+HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, float fact, std::string type)
 	: GameObject(entityPos, entityTexture, entityNumElements, type), camPos(glm::vec3(0.0f))
 {
 	position = entityPos;
 	zoom = zoomHUD;//fix for inital zoom pas as parameter on constructur and update inmain key values
 	scale = objectScale;
+	factor = fact;
 	flag = false;
 	enemyFlag = false;
 	buttonFlag = false;
@@ -23,178 +25,291 @@ void HUD::addText(Text* t) {
 	textObjects.push_back(t);
 }
 
+void HUD::NewCoordinates(float &x, float &y, float objecWidth, float objectHeight) {
+
+	float movementX = 1.0f;
+	float movementY = -1.0f;
+	float start_x = movementX * -1.0;
+	float start_y = movementY * -1.0;
+
+
+	float cursor_x_pos = (x / (float)(objecWidth / 2)) - 1.0f;	//transforms cursor position to screen coordinates
+	float cursor_y_pos = (y / (float)(objectHeight / 2)) - 1.0f;
+
+
+	//cursor_x_pos /= zoom;
+	//cursor_y_pos /= zoom;	//transforms cursor position based on screen scale. used to be const 0.2
+	//cursor_x_pos -= camPos.x;
+	//cursor_y_pos += camPos.y; // transform cursor position based on screen pos
+
+	x = (int)((cursor_x_pos) / movementX);
+	y = (int)((-cursor_y_pos) / movementY);
+
+}
+
+
 void HUD::selection(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
-	if ((635 <= x && x <= 667) && (472 <= y && y <= 497)) {//start first row
+	if ((635 * factor <= x && x <= 667 * factor) && (472 * factor <= y && y <= 497 * factor)) {//start first row
 		outSelection = blueprints[0];
 		flag = true;
-		currentCursor = blueprints[0]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[0]->getIcon();
 	}
-	else if ((676 <= x && x <= 708) && (472 <= y && y <= 497)) {
+	else if ((676 * factor <= x && x <= 708 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outSelection = blueprints[1];
 		flag = true;
-		currentCursor = blueprints[1]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[1]->getIcon();
+
 	}
-	else if ((716 <= x && x <= 748) && (472 <= y && y <= 497)) {
+	else if ((716 * factor <= x && x <= 748 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outSelection = blueprints[2];
 		flag = true;
-		currentCursor = blueprints[2]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[2]->getIcon();
+
 	}
-	else if ((757 <= x && x <= 798) && (472 <= y && y <= 497)) {
+	else if ((757 * factor <= x && x <= 798 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outSelection = blueprints[3];
 		flag = true;
-		currentCursor = blueprints[3]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[3]->getIcon();
+
 	}
-	else if ((635 <= x && x <= 667) && (502 <= y && y <= 527)) {//start of second row
+	else if ((635 * factor <= x && x <= 667 * factor) && (502 * factor <= y && y <= 527 * factor)) {//start of second row
 		outSelection = blueprints[4];
 		flag = true;
-		currentCursor = blueprints[4]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[4]->getIcon();
+
 	}
-	else if ((676 <= x && x <= 708) && (502 <= y && y <= 527)) {
+	else if ((676 * factor <= x && x <= 708 * factor) && (502 * factor <= y && y <= 527 * factor)) {
 		outSelection = blueprints[5];
 		flag = true;
-		currentCursor = blueprints[5]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[5]->getIcon();
+
 	}
-	else if ((716 <= x && x <= 748) && (502 <= y && y <= 527)) {
+	else if ((716 * factor <= x && x <= 748 * factor) && (502 * factor <= y && y <= 527 * factor)) {
 		outSelection = blueprints[6];
 		flag = true;
-		currentCursor = blueprints[6]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[6]->getIcon();
+
 	}
-	else if ((757 <= x && x <= 798) && (502 <= y && y <= 527)) {
+	else if ((757 * factor <= x && x <= 798 * factor) && (502 * factor <= y && y <= 527 * factor)) {
 		outSelection = blueprints[7];
 		flag = true;
-		currentCursor = blueprints[7]->getIcon();
+		enemyFlag = false;
 		buttonFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[7]->getIcon();
+
 	}
-	if ((635 <= x && x <= 667) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	if ((635 * factor <= x && x <= 667 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[0];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((676 <= x && x <= 708) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((676 * factor <= x && x <= 708 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[1];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((716 <= x && x <= 748) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((716 * factor <= x && x <= 748 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[2];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((757 <= x && x <= 798) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((757 * factor <= x && x <= 798 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[3];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
 }
 
 void HUD::selectionEnemy(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
-	if ((15 <= x && x <= 50) && (472 <= y && y <= 497)) {
+	if ((15 * factor <= x && x <= 50 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outEnemy = enemyBlueprints2[3];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((55 <= x && x <= 90) && (472 <= y && y <= 497)) {
+	else if ((55 * factor <= x && x <= 90 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outEnemy = enemyBlueprints2[2];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((95 <= x && x <= 130) && (472 <= y && y <= 497)) {
+	else if ((95 * factor <= x && x <= 130 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outEnemy = enemyBlueprints2[1];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((135 <= x && x <= 170) && (472 <= y && y <= 497)) {
+	else if ((135 * factor <= x && x <= 170 * factor) && (472 * factor <= y && y <= 497 * factor)) {
 		outEnemy = enemyBlueprints2[0];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((15 <= x && x <= 50) && (500 <= y && y <= 525)) {
+	else if ((15 * factor <= x && x <= 50 * factor) && (500 * factor <= y && y <= 525 * factor)) {
 		outEnemy = enemyBlueprints2[7];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((55 <= x && x <= 90) && (500 <= y && y <= 525)) {
+	else if ((55 * factor <= x && x <= 90 * factor) && (500 * factor <= y && y <= 525 * factor)) {
 		outEnemy = enemyBlueprints2[6];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((95 <= x && x <= 130) && (500 <= y && y <= 525)) {
+	else if ((95 * factor <= x && x <= 130 * factor) && (500 * factor <= y && y <= 525 * factor)) {
 		outEnemy = enemyBlueprints2[5];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((135 <= x && x <= 170) && (500 <= y && y <= 525)) {
+	else if ((135 * factor <= x && x <= 170 * factor) && (500 * factor <= y && y <= 525 * factor)) {
 		outEnemy = enemyBlueprints2[4];
+		flag = false;
 		enemyFlag = true;
 		buttonFlag = false;
+		powerUpFlag = false;
 	}
-	else if ((15 <= x && x <= 47) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((15 * factor <= x && x <= 47 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[3];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((56 <= x && x <= 88) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((56 * factor <= x && x <= 88 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[2];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((97 <= x && x <= 129) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((97 * factor <= x && x <= 129 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[1];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((138 <= x && x <= 170) && (532 <= y && y <= 557)) {//=========================================================forom here down its just to show its selecting the button/demontration
+	else if ((138 * factor <= x && x <= 170 * factor) && (532 * factor <= y && y <= 557 * factor)) {//=========================================================forom here down its just to show its selecting the button/demontration
 		outButton = buttons[0];
+		flag = false;
+		enemyFlag = false;
 		buttonFlag = true;
+		powerUpFlag = false;
 	}
 
 }
 
 void HUD::selectionPowerUp(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
-	if ((244 <= x && x <= 256) && (408 <= y && y <= 432)) {//start first row
+	if ((244 * factor <= x && x <= 256 * factor) && (408 * factor <= y && y <= 432 * factor)) {//start first row
 		outPowerUP = powerUps[0];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 	}
-	else if ((263 <= x && x <= 295) && (408 <= y && y <= 432)) {
+	else if ((263 * factor <= x && x <= 295 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[1];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((302 <= x && x <= 334) && (408 <= y && y <= 432)) {
+	else if ((302 * factor <= x && x <= 334 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[2];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((341 <= x && x <= 373) && (408 <= y && y <= 432)) {
+	else if ((341 * factor <= x && x <= 373 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[3];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((380 <= x && x <= 412) && (408 <= y && y <= 432)) {
+	else if ((380 * factor <= x && x <= 412 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[4];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((419 <= x && x <= 451) && (408 <= y && y <= 432)) {
+	else if ((419 * factor <= x && x <= 451 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[5];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((458 <= x && x <= 490) && (408 <= y && y <= 432)) {
+	else if ((458 * factor <= x && x <= 490 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[6];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((497 <= x && x <= 529) && (408 <= y && y <= 432)) {
+	else if ((497 * factor <= x && x <= 529 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[7];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
-	else if ((536 <= x && x <= 568) && (408 <= y && y <= 432)) {
+	else if ((536 * factor <= x && x <= 568 * factor) && (408 * factor <= y && y <= 432 * factor)) {
 		outPowerUP = powerUps[8];
+		flag = false;
+		enemyFlag = false;
+		buttonFlag = false;
 		powerUpFlag = true;
 
 	}
