@@ -22,6 +22,7 @@ public:
 	inline void setRenderedText(std::string t) { renderText = t; }
 	inline void setCamPos(glm::vec3 newPosition) { camPos = newPosition; }
 	inline void setCamZoom(float newZoom) { zoom = newZoom; }
+	inline void setColor(glm::vec3 c) { color = c; }
 
 	//getters
 	inline std::string getText() {return text; }

@@ -209,8 +209,8 @@ void setallTexture(void)
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_5.png"));
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_6.png"));
 
-	textures["UI"].push_back(createTexture("Graphics/HUD/panel.png"));
-	textures["UI"].push_back(createTexture("Graphics/HUD/panelGameOver.png"));
+	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player1.png"));
+	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player2.png"));
 
 
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
@@ -448,9 +448,9 @@ int main(void){
 		HUD* selectionGraphic = new HUD(glm::vec3(50.0f, 50.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, factor, "selection");
 
 
-		glm::vec3 objectS = glm::vec3(0.5f, 0.8f, 0.0f);//this handels the size(scale) of the HUD panel 
-		hudObjects.push_back(new HUD(glm::vec3(1.55f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD1"));//0(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
-		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD3"));//1
+		glm::vec3 objectS = glm::vec3(0.45f, 0.5f, 0.0f);//this handels the size(scale) of the HUD panel 
+		hudObjects.push_back(new HUD(glm::vec3(1.73f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD1"));//0(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
+		hudObjects.push_back(new HUD(glm::vec3(-1.73f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD3"));//1
 
 
 
@@ -460,12 +460,12 @@ int main(void){
 		hudObjects[0]->setButtons(buttonEnemyPanel);
 
 
-		objectS.x = 1.25f;//this handels the size(scale) of the HUD panel
-		hudObjects.push_back(new HUD(glm::vec3(0.01f, 0.91f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD2"));//2
-		objectS.x = 0.5f;
+		objectS.x = 1.12f;//this handels the size(scale) of the HUD panel
+		hudObjects.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD2"));//2
+		objectS.x = 0.45f;
 		objectS.y = 0.2f;
-		hudObjects.push_back(new HUD(glm::vec3(1.55f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//3
-		hudObjects.push_back(new HUD(glm::vec3(-1.56f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//4//this is the start/end hud
+		hudObjects.push_back(new HUD(glm::vec3(1.73f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//3
+		hudObjects.push_back(new HUD(glm::vec3(-1.73f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//4//this is the start/end hud
 		hudObjects[4]->setButtons(button);
 		objectS.x = 1.25f;
 		objectS.y = 0.2f;
@@ -494,7 +494,7 @@ int main(void){
 		int oldTime = 0;
 		float lastSpawnTime = 0;
 		gameState.push_back("menu");
-		//gameState.push_back("play"); // comment this line for menu
+		gameState.push_back("play"); // comment this line for menu
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
 
@@ -739,10 +739,22 @@ int main(void){
 			//**********HUD**********
 				selectionGraphic->render(shaders);
 				for (HUD* h : hudObjects) {
+					if (turn == 'B') {
+						h->setTex(textures["UI"][0]);
+					}
+					else{
+						h->setTex(textures["UI"][1]);
+					}
 					h->setFactor(factor);
 					h->update(deltaTime);
 
 					for (Text* t : h->getTextObjects()) {
+						if (turn == 'B') {
+							t->setColor(glm::vec3(50, 175, 255));
+						}
+						else {
+							t->setColor(glm::vec3(179, 0, 0));
+						}
 
 						if (t->getType().compare("Enemies Remaining: ") == 0) {
 							std::string temp = t->getText() + std::to_string(enemyMap[turnIndex]->size());
@@ -978,7 +990,7 @@ int main(void){
 							gameOver = true;
 							std::cout << "GAME OVER" << std::endl;
 							std::cout << "PLAYER " << (turnIndex^1+1) << " WINS" << std::endl;
-							hudObjects[2]->setTex(textures["UI"][1]);
+							//hudObjects[2]->setTex(textures["UI"][1]);
 
 						}
 
