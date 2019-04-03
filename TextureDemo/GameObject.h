@@ -11,7 +11,7 @@
 
 class GameObject {
 public:
-	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements, std::string t);
+	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements, std::string t, int c=0);
 
 	// Updates the GameObject's state. Can be overriden for children
 	virtual void update(double deltaTime);
@@ -43,10 +43,14 @@ public:
 	inline bool getExists() { return exists; }
 	inline float getRotation() { return rotation; }
 
+	inline int getCost() { return cost; }
+	inline void setCost(int c) { cost = c; }
+
 	//inline void setTex(GLuint)
 protected:
 	// Object's Transform Variables
 	// TODO: Add more transformation variables
+	int cost;
 	glm::vec3 position;
 	glm::vec3 direction;
 	float speed,rotation=0.0f;
@@ -58,4 +62,5 @@ protected:
 	std::string type;
 	// Object's texture
 	GLuint texture;
+	std::string uniqueID;
 };

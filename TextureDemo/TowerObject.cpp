@@ -7,8 +7,8 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type,float r)
-	: GameObject(entityPos, tex[0], entityNumElements, type) {
+TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type,float r,int c)
+	: GameObject(entityPos, tex[0], entityNumElements, type,c) {
 
 	turretTexture = tex[1];
 	projectileTex = tex[2];
@@ -22,6 +22,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	dps = d; 
 	texvec = tex;
 	range = r;
+
 
 
 	
@@ -117,13 +118,15 @@ void TowerObject::fireEnemy() {
 	//creates a single particle object (flames)
 	if (type.compare("denderBlueprint---2") == 0) {
 		if (particle == NULL){
+			
 			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000, 1);
 		}
 	}
 	//creates a single bullet object
 	else {
 		if (frames%fireRate == 0) {
-
+			audio->playAgain("bullet");
+			
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, dps, 0.1));
 		}
 		frames += 1;

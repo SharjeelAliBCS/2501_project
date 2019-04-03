@@ -17,6 +17,12 @@
 #include <chrono>
 #include <thread>
 
+#include <windows.h>
+#include <mmsystem.h>
+
+#pragma comment(lib, "Winmm.lib")
+
+
 #include "Shader.h"
 #include "Window.h"
 #include "Graph.h"
@@ -24,6 +30,8 @@
 #include "HUD.h"
 #include "Text.h"
 #include "Particle.h"
+#include "Audio.h"
+
 
 
 // Macro for printing exceptions
@@ -234,7 +242,6 @@ void setallTexture(void)
 	
 	for (int i = 0; i < characters.size(); i++) {
 		
-		 
 		std::string s = "Graphics/Text/text_"+ std::to_string(i + 1)+".png";
 	
 		char *cstr = &s[0u];
@@ -244,10 +251,44 @@ void setallTexture(void)
 
 }
 
+LPCWSTR s2ws(const std::string& s)
+{
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	
+	LPCWSTR result = r.c_str();
+	return result;
+}
+
 // Main function that builds and runs the game
 int main(void){
 	try {
 
+		/************************************************AUDIO INIT************************************************/
+
+		//PlaySound(TEXT("Audio/warlords.wav"), NULL, SND_FILENAME | SND_ASYNC); // remember you need 2 slashes these "\\"
+		//system("pause");
+		//PlaySound(L"Audio/warlords.wav", NULL, SND_ASYNC);
+		//mciSendString(s2ws("play \"Audio/warlords.wav\" repeat"), NULL, 0, NULL);
+		//mciSendString(s2ws("open Audio/warlords.wav alias MY_SND"), NULL, 0, NULL);
+		//mciSendString(s2ws("play MY_SND"), NULL, 0, NULL);
+
+		//mciSendString(L"open Audio/warlords.wav alias t", NULL, 0, 0);
+		//mciSendString(L"open Audio/warlords.wav alias h", NULL, 0, 0);
+		//mciSendString(L"play t", NULL, 0, 0);
+
+		Audio* audioObject = new Audio();
+		audioObject->addAudio("Audio/test.mp3","background");
+		
+		audioObject->playRepeat("background");
+
+
+		std::cout << L"dd";
 		/************************************************OPENGL INIT************************************************/
 
 		// Seed for generating random numbers with rand()
@@ -323,6 +364,8 @@ int main(void){
 		char turnArr[2] = { 'B','T' };
 		long income[2] = { 0,0 };
 		long credits[2] = { 20,20 };
+		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
+
 		int hp[2] = { 20,20 };
 		int turnIndex = 0;
 		char turn = turnArr[turnIndex];
@@ -401,7 +444,7 @@ int main(void){
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
 		//to create the actual tower object. 
 		int index = 0;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0",3)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0",3,5)); index += 4; //the final 5 here is the cost
 		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---1",2));index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "denderBlueprint---2",1));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
@@ -410,7 +453,7 @@ int main(void){
 		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));
 		/************************************************enemyBlueprints INIT************************************************/
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1],5));//0
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//1
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//2
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//3
@@ -494,7 +537,7 @@ int main(void){
 		int oldTime = 0;
 		float lastSpawnTime = 0;
 		gameState.push_back("menu");
-		gameState.push_back("play"); // comment this line for menu
+		//gameState.push_back("play"); // comment this line for menu
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
 
@@ -517,6 +560,7 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
 						gameState.push_back("play");
+						
 					}
 				}
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -623,24 +667,27 @@ int main(void){
 
 								if (g.getNode(id).getBuildable(turn)) {
 									TowerObject* selectedTower = hudObjects[1]->getSelection();
-									
-									TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType(),selectedTower->getRange());
-									if (t->getType().compare("denderBlueprint---2") == 0) {
-										
-									}
-									g.getNode(id).setTowerState(true, turn);
-									if (g.rePath(enemyMap[turnIndex], id, ++pathCount, turn)) {
-										towerObjects.push_back(t);
-										g.getNode(id).setTower(t);
-									}
-									else {
-										std::cout << "\n\n\nINVALID TOWER PLACEMENT";
-										g.getNode(id).setTowerState(false, turn);
-										g.rePath(enemyMap[turnIndex], id, --pathCount, turn);
-										delete(t);
-									}
-									std::cout << "Repath" << std::endl;
+									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
+									if (credits[turnIndex] >= selectedTower->getCost()) {
+										TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType(), selectedTower->getRange(), selectedTower->getCost());
+										t->setAudio(audioObject);
+										if (t->getType().compare("denderBlueprint---2") == 0) {
 
+										}
+										g.getNode(id).setTowerState(true, turn);
+										if (g.rePath(enemyMap[turnIndex], id, ++pathCount, turn)) {
+											towerObjects.push_back(t);
+											g.getNode(id).setTower(t);
+											credits[turnIndex] -= selectedTower->getCost();
+										}
+										else {
+											std::cout << "\n\n\nINVALID TOWER PLACEMENT";
+											g.getNode(id).setTowerState(false, turn);
+											g.rePath(enemyMap[turnIndex], id, --pathCount, turn);
+											delete(t);
+										}
+										std::cout << "Repath" << std::endl;
+									}
 								}
 							}
 						}
@@ -669,31 +716,30 @@ int main(void){
 						/////////////////////////////////
 						/////////////////////////////////
 						/////////////////////////////////
+						//code for getting from hud here
 						/////////////////////////////////
 						/////////////////////////////////
 						/////////////////////////////////
 						/////////////////////////////////
-						std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-						income[turnIndex] += 5;
-						Node* cur;
-						for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
-							cur = &g.getNode(s);
-							EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]);
-							enemyMap[turnIndex ^ 1]->push_back(e);
-							/////////////////////////////////
-							/////////////////////////////////
-							/////////////////////////////////
-							/////////////////////////////////
-							/////////////////////////////////
-							/////////////////////////////////
+						
+						if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
+							std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
+							income[turnIndex] += 5;
+							credits[turnIndex] -= 5;
+							Node* cur;
+							for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
+								cur = &g.getNode(s);
+								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 5);
+								enemyMap[turnIndex ^ 1]->push_back(e);
 
-							e->setSpeed(1);
-							e->oldx = round(e->getPosition().x * 100) / 100;
-							e->oldy = round(e->getPosition().y * 100) / 100;
-							e->setCur(cur);
-							e->setCurDestId(cur->getNextId());
+								e->setSpeed(1);
+								e->oldx = round(e->getPosition().x * 100) / 100;
+								e->oldy = round(e->getPosition().y * 100) / 100;
+								e->setCur(cur);
+								e->setCurDestId(cur->getNextId());
+							}
+							timeOfLastMove = glfwGetTime();
 						}
-						timeOfLastMove = glfwGetTime();
 					}
 
 				}
@@ -739,22 +785,12 @@ int main(void){
 			//**********HUD**********
 				selectionGraphic->render(shaders);
 				for (HUD* h : hudObjects) {
-					if (turn == 'B') {
-						h->setTex(textures["UI"][0]);
-					}
-					else{
-						h->setTex(textures["UI"][1]);
-					}
+					h->setTex(textures["UI"][turnIndex]);
 					h->setFactor(factor);
 					h->update(deltaTime);
 
 					for (Text* t : h->getTextObjects()) {
-						if (turn == 'B') {
-							t->setColor(glm::vec3(50, 175, 255));
-						}
-						else {
-							t->setColor(glm::vec3(179, 0, 0));
-						}
+						t->setColor(hudColors[turnIndex]);
 
 						if (t->getType().compare("Enemies Remaining: ") == 0) {
 							std::string temp = t->getText() + std::to_string(enemyMap[turnIndex]->size());
@@ -1008,7 +1044,12 @@ int main(void){
 				}
 
 				//using the indecies, delete the enemies that should be deleted. 
-				for (int i = 0; i < deleteEnemies.size(); i++)enemyMap[turnIndex]->erase(enemyMap[turnIndex]->begin() + deleteEnemies[i]);
+				for (int i = 0; i < deleteEnemies.size(); i++) {
+					if (enemyMap[turnIndex]->at(deleteEnemies[i])->getKilled()) {
+						credits[turnIndex] += enemyMap[turnIndex]->at(deleteEnemies[i])->getCost();
+					}
+					enemyMap[turnIndex]->erase(enemyMap[turnIndex]->begin() + deleteEnemies[i]);
+				}
 
 				//**********Graph**********
 				g.update(NULL);

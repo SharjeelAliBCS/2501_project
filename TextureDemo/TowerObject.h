@@ -5,12 +5,12 @@
 #include "ProjectileObject.h"
 #include "Particle.h"
 #include <deque>
-
+#include "Audio.h"
 
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type, float r);
+	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type, float r, int c=0);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -18,6 +18,7 @@ public:
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;
 	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
+	inline void setAudio(Audio* a) { audio = a; audio->addAudio("Audio/rocket.wav", "bullet");}
 
 	//getters
 	//getter for the vector of objects
@@ -61,6 +62,8 @@ private:
 	Particle* particle;
 	std::vector<GLuint> texvec;
 	std::vector<GLuint> texvecExplosion;
+
+	Audio* audio;
 
 
 
