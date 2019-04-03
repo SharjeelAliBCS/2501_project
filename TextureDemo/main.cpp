@@ -38,8 +38,9 @@
 #define PrintException(exception_object)\
 	std::cerr << exception_object.what() << std::endl
 
+
 // Globals that define the OpenGL window and viewport
-const std::string window_title_g = "RTS GAME";
+const std::string window_title_g = "Assault on Terra";
 float ratio = 0.75f;
 float window_width_g = 800;//*1.5
 float window_height_g = window_width_g * ratio;//*1.5
@@ -560,7 +561,6 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
 						gameState.push_back("play");
-						
 					}
 				}
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -580,39 +580,39 @@ int main(void){
 			//==========================================>state:play/controls
 			if (gameState.back() == "play") {
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
-					if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
 						cameraTranslatePos.y -= (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 
 					}
-					if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 						cameraTranslatePos.y += (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
 						cameraTranslatePos.x -= (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 						cameraTranslatePos.x += (1 - camShiftInc)*(1 - camShiftInc);
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
 						cameraZoom = std::fmin(cameraZoom + camZoomInc, maxCamZoom);
 						g.setZoom(cameraZoom);
 						timeOfLastMove = glfwGetTime();
 						for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 						selectionGraphic->setZoom(cameraZoom);
 					}
-					if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+					if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
 						cameraZoom = std::fmax(cameraZoom - camZoomInc, minCamZoom);
 						g.setZoom(cameraZoom);
 						timeOfLastMove = glfwGetTime();
@@ -721,7 +721,7 @@ int main(void){
 						/////////////////////////////////
 						/////////////////////////////////
 						/////////////////////////////////
-						
+
 						if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
 							std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
 							income[turnIndex] += 5;
@@ -744,7 +744,7 @@ int main(void){
 
 				}
 			}
-		
+
 			//clear window
 			glClearColor(viewport_background_color_g[0],
 				viewport_background_color_g[1],
