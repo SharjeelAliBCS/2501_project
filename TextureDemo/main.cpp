@@ -272,6 +272,8 @@ void setAudioTracks(Audio* audioObject) {
 	audioObject->volume("menuClick", 100);
 	audioObject->addAudio("Audio/HUD/teamChange.mp3", "teamChange");
 	audioObject->volume("teamChange", 200);
+	audioObject->addAudio("Audio/HUD/enemySelected.mp3", "enemySelected");
+	audioObject->volume("enemySelected", 100);
 
 	audioObject->addAudio("Audio/Enemy/enemy.mp3", "enemyDeath");
 	audioObject->volume("enemyDeath", 100);
@@ -765,7 +767,7 @@ int main(void){
 						}
 						hudObjects[1]->selection(xpos, ypos);
 
-						if (hudObjects[1]->getFlag()) {
+						if (hudObjects[1]->getFlag() && cursor->getTex()!=hudObjects[1]->getCursor()) {
 							audioObject->playAgain("menuClick");
 							cursor->setTex(hudObjects[1]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 							selectionGraphic->setPosition(hudObjects[1]->getSelection()->getPosition());
@@ -796,6 +798,7 @@ int main(void){
 						/////////////////////////////////
 
 						if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
+							audioObject->playAgain("enemySelected");
 							std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
 							income[turnIndex] += 5;
 							credits[turnIndex] -= 5;
