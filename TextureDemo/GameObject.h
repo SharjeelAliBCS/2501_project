@@ -43,6 +43,7 @@ public:
 	inline void setExists(bool e) {exists = e; }
 
 	inline void setAudio(Audio* a) { audio = a; ; }
+	inline void setImgScale(glm::vec3 s) { imgScale = s; }
 
 	inline bool getExists() { return exists; }
 	inline float getRotation() { return rotation; }
@@ -60,7 +61,7 @@ protected:
 	float defaultSpeed, curSpeed,rotation=0.0f;
 	float effectDur;
 	float effectTimeLeft;
-
+	glm::vec3 imgScale;
 	glm::vec3 targetPos;
 	bool exists;
 	// Object's details

@@ -229,6 +229,8 @@ void setallTexture(void)
 	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
+
+	textures["Background"].push_back(createTexture("Graphics/Background/menu.png"));//0
 																		
 
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
@@ -252,18 +254,39 @@ void setallTexture(void)
 
 }
 
-LPCWSTR s2ws(const std::string& s)
-{
-	int len;
-	int slength = (int)s.length() + 1;
-	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
-	wchar_t* buf = new wchar_t[len];
-	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
-	std::wstring r(buf);
-	delete[] buf;
-	
-	LPCWSTR result = r.c_str();
-	return result;
+void setAudioTracks(Audio* audioObject) {
+
+	audioObject->addAudio("Audio/Soundtrack/test.mp3", "background");
+	audioObject->volume("background", 50);
+	//audioObject->playRepeat("background");
+	audioObject->addAudio("Audio/Soundtrack/mainMenu.mp3", "menu");
+	audioObject->volume("menu", 100);
+	audioObject->playRepeat("menu");
+
+	audioObject->addAudio("Audio/Towers/rocket.mp3", "bullet");
+	audioObject->volume("bullet", 100);
+	audioObject->addAudio("Audio/Towers/place.mp3", "towerPlaced");
+	audioObject->volume("towerPlaced", 30);
+
+	audioObject->addAudio("Audio/HUD/menuClick.mp3", "menuClick");
+	audioObject->volume("menuClick", 100);
+	audioObject->addAudio("Audio/HUD/teamChange.mp3", "teamChange");
+	audioObject->volume("teamChange", 200);
+
+	audioObject->addAudio("Audio/Enemy/enemy.mp3", "enemyDeath");
+	audioObject->volume("enemyDeath", 100);
+
+	audioObject->addAudio("Audio/Voice/BaseUnderAttack.mp3", "baseAttack");
+	audioObject->volume("baseAttack", 100);
+	audioObject->addAudio("Audio/Voice/EnemiesApproaching.mp3", "enemiesComing");
+	audioObject->volume("EnemiesComing", 100);
+	audioObject->addAudio("Audio/Voice/EnemyEliminated.mp3", "enemiesDestroyed");
+	audioObject->volume("EnemiesDestroyed", 100);
+	audioObject->addAudio("Audio/Voice/UnitReady.mp3", "unitReady");
+	audioObject->volume("unitReady", 100);
+
+
+
 }
 
 // Main function that builds and runs the game
@@ -284,22 +307,10 @@ int main(void){
 		//mciSendString(L"play t", NULL, 0, 0);
 
 		Audio* audioObject = new Audio();
-		audioObject->addAudio("Audio/test.mp3","background");
-		audioObject->volume("background", 30);
-		audioObject->playRepeat("background");
+		setAudioTracks(audioObject);
+		
 
-		audioObject->addAudio("Audio/rocket.mp3", "bullet");
-		audioObject->volume("bullet", 30);
-		audioObject->addAudio("Audio/menuClick.mp3", "menuClick");
-		audioObject->volume("menuClick", 100);
-		audioObject->addAudio("Audio/teamChange.mp3", "teamChange");
-		audioObject->volume("teamChange", 200);
-		audioObject->addAudio("Audio/place.mp3", "towerPlaced");
-		audioObject->volume("towerPlaced", 30);
-		audioObject->addAudio("Audio/fire.mp3", "fire");
-		audioObject->volume("fire", 30);
-		audioObject->addAudio("Audio/enemy.mp3", "enemyDeath");
-		audioObject->volume("enemyDeath", 30);
+
 		
 		
 		
@@ -418,6 +429,9 @@ int main(void){
 		float spawnCount = 0;
 		bool startWave;
 		bool toggleBlock = false;
+
+		GameObject* background = new GameObject(glm::vec3(3.0f,-6.3f,0.0f), textures["Background"][0], size, "map");
+		background->setImgScale(glm::vec3(90, 46, 46));
 
 		/************************************************FILE INIT************************************************/
 
@@ -556,8 +570,9 @@ int main(void){
 		int fps = 0;
 		int oldTime = 0;
 		float lastSpawnTime = 0;
+		bool roundOver = true;
 		gameState.push_back("menu");
-		gameState.push_back("play"); // comment this line for menu
+		//gameState.push_back("play"); // comment this line for menu
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
 
@@ -580,6 +595,9 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
 						gameState.push_back("play");
+						
+						audioObject->stop("menu");
+						audioObject->playRepeat("background");
 					}
 				}
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -652,6 +670,8 @@ int main(void){
 					}
 					if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS) {
 						startWave = 1;
+						audioObject->playAgain("enemiesComing");
+						roundOver = false;
 					}
 					if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS &&
 						enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -712,6 +732,7 @@ int main(void){
 									
 									if (credits[turnIndex] >= selectedTower->getCost()) {
 										audioObject->playAgain("towerPlaced");
+										audioObject->playAgain("unitReady");
 										TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), 
 																		 selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
 											                             selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
@@ -824,6 +845,7 @@ int main(void){
 				for (HUD* b : HUDMenu) {
 					b->render(shaders);
 				}
+				background->render(shaders);
 			}
 			//==========================================>state:play/render
 			if (gameState.back() == "play") {
@@ -933,6 +955,10 @@ int main(void){
 				bool tick = false;
 				//spawnCount+=0.25;
 				
+				if (enemyMap[turnIndex]->size() == 0 && !roundOver) {
+					roundOver = true;
+					audioObject->playAgain("enemiesDestroyed");
+				}
 				if (glfwGetTime() > lastSpawnTime + 0.075) {
 					//std::cout << "\n\n\n\nHERE"<<spawnCount<<"\n\n\n";
 					spawnCount += 1;
@@ -1068,7 +1094,7 @@ int main(void){
 					if (e->getExists() && (cur->getId() == g.getEndPoints(turnIndex) || cur->getNextNode(e->getCurDestId()) == NULL)) {
 						hp[turnIndex] -= 1;
 						std::cout << "hp = " << hp[turnIndex] << std::endl;
-
+						audioObject->playAgain("baseAttack");
 						e->setExists(false);
 						if (hp[turnIndex] == 0) {
 							gameOver = true;

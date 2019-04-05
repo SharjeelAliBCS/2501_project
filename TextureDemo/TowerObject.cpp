@@ -127,7 +127,7 @@ void TowerObject::fireEnemy() {
 	//creates a single particle object (flames)
 	if (type.compare("denderBlueprint---2") == 0) {
 		if (particle == NULL){
-			audio->addAudio("Audio/fire.mp3", uniqueID);
+			audio->addAudio("Audio/Towers/fire.mp3", uniqueID);
 			audio->volume(uniqueID, 30);
 			audio->playRepeat(uniqueID);
 			
