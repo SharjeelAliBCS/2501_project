@@ -7,9 +7,18 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type, GLuint edt, int c)
-	: GameObject(entityPos, entityTexture, entityNumElements,type,c),
-	hit(false),killed(false),health(h),enemyDeathTex(edt), framesDeath(-1),deathParticles(NULL){}
+EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type, GLuint edt, float speed, int c)
+	: GameObject(entityPos, entityTexture, entityNumElements,type,speed, c),
+	enemyDeathTex(edt), framesDeath(-1),deathParticles(NULL){
+	health = h;
+	defaultHealthCap = h;
+	curHealthCap = h;
+	hit = false;
+	killed = false;
+	spawned = false;
+
+
+}
 
 void EnemyObject::enemyHit(float damage) {
 	health -= damage;
@@ -17,10 +26,14 @@ void EnemyObject::enemyHit(float damage) {
 }
 // Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
-
+	if (effectTimeLeft < 0) {
+		curHealthCap = defaultHealthCap;
+		health = std::fmin(curHealthCap, health);
+	}
 	//Here if the health is zero,spawn the particle system for the death animation. 
 	if (health <= 0.0f && framesDeath ==-1) {
 		deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
+		audio->playAgain("enemyDeath");
 		framesDeath++;
 		//std::cout << " death " << std::endl;
 	}

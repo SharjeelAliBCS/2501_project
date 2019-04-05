@@ -7,8 +7,8 @@
 	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type,float r,int c)
-	: GameObject(entityPos, tex[0], entityNumElements, type,c) {
+TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type,float r, float ROF, int c)
+	: GameObject(entityPos, tex[0], entityNumElements, type,0,c) {
 
 	turretTexture = tex[1];
 	projectileTex = tex[2];
@@ -16,12 +16,17 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	rotation = 0.0f;
 	size = numElements;
 	_state = Init;
-	fireRate = 10;
+	curROF = ROF;
+	defaultROF = ROF;
+	lastShotTime = 0;
 	frames = 0;
 	explosion_tex = explosion;
-	dps = d; 
+	damage = d; 
 	texvec = tex;
 	range = r;
+
+	std::cout << "Cost: " << cost << " ROF: " << ROF << " range: " << range<<std::endl;
+	std::cout << type << std::endl;
 
 
 
@@ -52,15 +57,19 @@ void TowerObject::update(double deltaTime) {
 			float dis = glm::length(position - currentEnemy->getPosition());
 			//std::cout << "dis " << dis << std::endl;
 			if (dis < range) {
-				currentEnemy->enemyHit(dps);
+				currentEnemy->enemyHit(damage);
 			}
 		}
 	}
 	//delete the bullets that should be deleted
 	for (int i = 0; i < deleteBullets.size(); i++) bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
-
-	if (currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) {
+	if (effectTimeLeft < 0) {
+		curROF = defaultROF;
+	}
+	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range ) && type.compare("denderBlueprint---2")==0) {
 		particle = NULL;
+		std::cout << "fdire"<<std::endl;
+		audio->close(uniqueID);
 	}
 	//state machine used to move around (right now only uses locate)
 	switch (_state) {
@@ -118,18 +127,21 @@ void TowerObject::fireEnemy() {
 	//creates a single particle object (flames)
 	if (type.compare("denderBlueprint---2") == 0) {
 		if (particle == NULL){
+			audio->addAudio("Audio/fire.mp3", uniqueID);
+			audio->volume(uniqueID, 30);
+			audio->playRepeat(uniqueID);
 			
 			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000, 1);
 		}
 	}
 	//creates a single bullet object
 	else {
-		if (frames%fireRate == 0) {
+		if(lastShotTime+curROF<glfwGetTime()){
 			audio->playAgain("bullet");
+			lastShotTime = glfwGetTime();
 			
-			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, dps, 0.1));
+			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, damage, 0.1));
 		}
-		frames += 1;
 	}
 	
 

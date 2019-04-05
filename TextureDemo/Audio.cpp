@@ -66,3 +66,8 @@ void Audio::close(std::string alias) {
 	std::string inputStr = "close " + alias;
 	mciSendString(strToLPCWSTR(inputStr), NULL, 0, 0);
 }
+
+void Audio::volume(std::string alias, int volume) {
+	std::string inputStr = "setaudio " + alias + " volume to " + std::to_string(volume);
+	mciSendString(strToLPCWSTR(inputStr), NULL, 0, 0);
+}

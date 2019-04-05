@@ -23,6 +23,7 @@ public:
 	void playAgain(std::string alias);
 	void stop(std::string alias);
 	void close(std::string alias);
+	void volume(std::string alias, int volume);
 
 
 private:

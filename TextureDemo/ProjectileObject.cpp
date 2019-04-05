@@ -13,11 +13,10 @@
 */
 
 ProjectileObject::ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, std::vector<GLuint> explosion,GLint entityNumElements, std::string type, EnemyObject* enemy, float angle, float d, float s)
-	: GameObject(entityPos, entityTexture, entityNumElements, type) {
+	: GameObject(entityPos, entityTexture, entityNumElements, type, s) {
 	target = enemy;
 	orgCoord = entityPos;
 	damage = 10.0f;
-	speed = s;
 	rotation = angle;
 	explosion_tex = explosion;
 	explosion_num = -1;
@@ -44,8 +43,8 @@ void ProjectileObject::update(double deltaTime) {
 			//follows the enemy around
 			float vX = 0;
 			float vY = 0;
-			vX = speed * cos(rotation*3.14159 / 180);
-			vY = speed * sin(rotation*3.14159 / 180);
+			vX = curSpeed * cos(rotation*3.14159 / 180);
+			vY = curSpeed * sin(rotation*3.14159 / 180);
 			position.x += vX;
 			position.y += vY;
 

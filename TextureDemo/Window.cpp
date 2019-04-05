@@ -1,5 +1,4 @@
 #include "Window.h"
-
 GLFWwindow* Window::window;
 
 Window::Window(const unsigned int windowWidth, const unsigned int windowHeight, const std::string &windowTitle) {

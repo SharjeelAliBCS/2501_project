@@ -67,6 +67,7 @@ public:
 	inline std::set<int> getStartSet(char side) { return side == 'B' ? botStartSet : topStartSet; }
 
 	inline int getEndPoints(int i) { return endPoints[i]; }
+	inline glm::vec3 getFocalPoint(int i) { return focalPoints[i]; }
 
 	void clearNextNodeMaps();
 	void startPaths();
@@ -89,6 +90,7 @@ private:
 	int startNodeId, endNodeId;
 
 	int endPoints[2];
+	glm::vec3 focalPoints[2];
 
 	//2d vector containing all the nodes in the graph
 	std::vector<std::vector<Node*>> nodes;

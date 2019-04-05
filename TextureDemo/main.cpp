@@ -42,10 +42,10 @@
 // Globals that define the OpenGL window and viewport
 const std::string window_title_g = "Assault on Terra";
 float ratio = 0.75f;
-float window_width_g = 800;//*1.5
+float window_width_g = 1000;//*1.5
 float window_height_g = window_width_g * ratio;//*1.5
 int Wwidth, Wheight;
-float factor = window_width_g / 800;//*1.5
+float factor = window_width_g / window_width_g;//*1.5
 //const glm::vec3 viewport_background_color_g(1, 1, 1);
 const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
 
@@ -285,8 +285,28 @@ int main(void){
 
 		Audio* audioObject = new Audio();
 		audioObject->addAudio("Audio/test.mp3","background");
-		
+		audioObject->volume("background", 30);
 		audioObject->playRepeat("background");
+
+		audioObject->addAudio("Audio/rocket.mp3", "bullet");
+		audioObject->volume("bullet", 30);
+		audioObject->addAudio("Audio/menuClick.mp3", "menuClick");
+		audioObject->volume("menuClick", 100);
+		audioObject->addAudio("Audio/teamChange.mp3", "teamChange");
+		audioObject->volume("teamChange", 200);
+		audioObject->addAudio("Audio/place.mp3", "towerPlaced");
+		audioObject->volume("towerPlaced", 30);
+		audioObject->addAudio("Audio/fire.mp3", "fire");
+		audioObject->volume("fire", 30);
+		audioObject->addAudio("Audio/enemy.mp3", "enemyDeath");
+		audioObject->volume("enemyDeath", 30);
+		
+		
+		
+		
+		
+		
+
 
 
 		std::cout << L"dd";
@@ -371,7 +391,7 @@ int main(void){
 		int turnIndex = 0;
 		char turn = turnArr[turnIndex];
 
-		int level = 3;
+		int level = 2;
 		std::string fname = "Levels/map"+std::to_string(level)+".csv";
 		int wid = 0;
 		int height = 0;
@@ -387,9 +407,9 @@ int main(void){
 
 		float maxCamZoom = 0.60f;
 		float minCamZoom = 0.07f;
-		float cameraZoom = 0.19f;
-		glm::vec3 cameraTranslatePos(glm::vec3(0.0f));
-		float camShiftInc = 0.5f;
+		float cameraZoom = 0.15f;
+		
+		float camShiftInc = 0.05f;
 		float camZoomInc = 0.01f;
 
 
@@ -418,11 +438,11 @@ int main(void){
 		/************************************************GRAPH INIT************************************************/
 		
 		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
-	
+		glm::vec3 cameraTranslatePos = g.getFocalPoint(turnIndex);
 		start = *(g.getBotStartSet().begin());
 		g.setZoom(cameraZoom);
 		g.setCamPos(cameraTranslatePos);
-	
+
 		g.setStart(start);
 
 	
@@ -433,35 +453,29 @@ int main(void){
 
 
 		Node* cur;
-		/*for (EnemyObject* e : *enemyMap["Origin"]) {
-			e->oldx = round(e->getPosition().x * 100) / 100;
-			e->oldy = round(e->getPosition().y * 100) / 100;
-			e->setCur(cur);
-			e->setCurDestId(cur->getNextId());
-		}*/
 
 		/************************************************blueprints INIT************************************************/
 
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
 		//to create the actual tower object. 
 		int index = 0;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint---0",3,5)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint---1",2));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "denderBlueprint---2",1));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint",10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",10));
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,  "baseBlueprint---0",   3, 0.5,   5)); index += 4; //the final 5 here is the cost
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 15, "denderBlueprint---1",  2, 1, 10));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 4,  "denderBlueprint---2",  1, 0.1, 15));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",     10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "baseBlueprint",       10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",     10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",     10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",     10));
 		/************************************************enemyBlueprints INIT************************************************/
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1],5));//0
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//1
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//2
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//3
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//4
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//5
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//6
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1]));//7
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//1
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//2
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//3
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//4
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//5
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//7
 																																 /************************************************buttonBlueprints INIT************************************************/
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-6.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button1"));//panel1 0
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-7.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button2"));//panel1 1
@@ -516,6 +530,11 @@ int main(void){
 		hudObjects.push_back(new HUD(glm::vec3(0.01f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD4"));//5
 		hudObjects[5]->setPowerUPs(buttonPowerUpsPanel);
 
+		for (HUD* h : hudObjects) {
+			h->setCamPos(cameraTranslatePos);
+		}
+		selectionGraphic->setCamPos(cameraTranslatePos);
+
 		/************************************************MENU INIT************************************************/
 		glm::vec3 buttonScale = glm::vec3(0.5f, 0.5f, 0.0f);
 		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, factor, "PLAY"));
@@ -538,7 +557,7 @@ int main(void){
 		int oldTime = 0;
 		float lastSpawnTime = 0;
 		gameState.push_back("menu");
-		//gameState.push_back("play"); // comment this line for menu
+		gameState.push_back("play"); // comment this line for menu
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
 
@@ -579,28 +598,40 @@ int main(void){
 			}
 			//==========================================>state:play/controls
 			if (gameState.back() == "play") {
+
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
-					if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-						cameraTranslatePos.y -= (1 - camShiftInc)*(1 - camShiftInc);
+					double xpos, ypos;
+					int window_width_g, window_height_g;
+					glfwGetWindowSize(window, &window_width_g, &window_height_g);
+					glfwGetCursorPos(window, &xpos, &ypos);
+					//std::cout << "x: " << xpos << " y: " << ypos << std::endl;
+					//std::cout << "w: " << window_width_g << " h: " << window_height_g << std::endl;
+					bool inWindow = ypos > 0 && xpos > 0 && ypos < window_height_g && xpos < window_width_g;
+					if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || 
+					   ((ypos > 0 && ypos<30) && inWindow)) {
+						cameraTranslatePos.y -= camShiftInc/cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 
 					}
-					if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-						cameraTranslatePos.y += (1 - camShiftInc)*(1 - camShiftInc);
+					if ( glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || 
+					   ((ypos > window_height_g - 30 && ypos < window_height_g) && inWindow)) {
+						cameraTranslatePos.y += camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-						cameraTranslatePos.x -= (1 - camShiftInc)*(1 - camShiftInc);
+					if ( glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || 
+					   ((xpos > window_width_g-30 && xpos < window_width_g) && inWindow)) {
+						cameraTranslatePos.x -= camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-						cameraTranslatePos.x += (1 - camShiftInc)*(1 - camShiftInc);
+					if ( glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || 
+					   ((xpos > 0 && xpos < 30) && inWindow)) {
+						cameraTranslatePos.x += camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
@@ -624,10 +655,17 @@ int main(void){
 					}
 					if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS &&
 						enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						audioObject->playAgain("teamChange");
 						pathCount = 1;
 						spawnCount = 0;
 						startWave = 0;
 						turnIndex = turnIndex ^ 1;
+						cameraTranslatePos = g.getFocalPoint(turnIndex);
+						g.setCamPos(cameraTranslatePos);
+						for (HUD* h : hudObjects) {
+							h->setCamPos(cameraTranslatePos);
+						}
+						selectionGraphic->setCamPos(cameraTranslatePos);
 						timeOfLastMove = glfwGetTime();
 						std::cout << "T \n";
 						turn = turnArr[turnIndex];
@@ -663,13 +701,21 @@ int main(void){
 
 
 						if (ypos <= 440) {//prints on map
+
 							if (hudObjects[1]->getFlag()) {
+								
+
 
 								if (g.getNode(id).getBuildable(turn)) {
 									TowerObject* selectedTower = hudObjects[1]->getSelection();
 									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
+									
 									if (credits[turnIndex] >= selectedTower->getCost()) {
-										TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), selectedTower->getExplosion_tex(), size, selectedTower->getDps(), selectedTower->getType(), selectedTower->getRange(), selectedTower->getCost());
+										audioObject->playAgain("towerPlaced");
+										TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(), 
+																		 selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
+											                             selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
+																		 selectedTower->getCost());
 										t->setAudio(audioObject);
 										if (t->getType().compare("denderBlueprint---2") == 0) {
 
@@ -694,6 +740,7 @@ int main(void){
 						hudObjects[1]->selection(xpos, ypos);
 
 						if (hudObjects[1]->getFlag()) {
+							audioObject->playAgain("menuClick");
 							cursor->setTex(hudObjects[1]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 							selectionGraphic->setPosition(hudObjects[1]->getSelection()->getPosition());
 						}
@@ -729,10 +776,10 @@ int main(void){
 							Node* cur;
 							for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
 								cur = &g.getNode(s);
-								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 5);
+								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5);
+								e->setAudio(audioObject);
 								enemyMap[turnIndex ^ 1]->push_back(e);
 
-								e->setSpeed(1);
 								e->oldx = round(e->getPosition().x * 100) / 100;
 								e->oldy = round(e->getPosition().y * 100) / 100;
 								e->setCur(cur);
@@ -761,7 +808,7 @@ int main(void){
 
 			/************************************************SHADER CAMERA CENTERING********************************************/
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
-			
+
 			//Here it is just looping over each shader and setting the viewmatrix. 
 			for (Shader* s : shaders) {
 				s->enable();
@@ -906,6 +953,7 @@ int main(void){
 					if (count > spawnCount) { break; }
 					++count;
 					EnemyObject* e = *it;
+					e->setSpawned(true);
 					oldEnemyX = e->oldx;
 					oldEnemyY = e->oldy;
 

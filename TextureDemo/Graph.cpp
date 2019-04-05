@@ -129,6 +129,20 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 				}
 
 			}
+			else if (field.length()==4 && field.substr(2, 2).compare("FP") == 0) {
+	
+				if (field.substr(0, 1).compare("T") == 0) {
+					std::cout << "\n\n\n\n\n" << field << "\n\n\n\n";
+					getNode(id).setBuildable(true, 'T');
+					nodeMap[id]->setTex(texMap["T"]);
+					focalPoints[1] = glm::vec3(-getNode(id).getX(), -getNode(id).getY(), 0);
+				}
+				else {
+					getNode(id).setBuildable(true, 'B');
+					nodeMap[id]->setTex(texMap["B"]);
+					focalPoints[0] = glm::vec3(-getNode(id).getX(), -getNode(id).getY(), 0);
+				}
+			}
 			else if (field.substr(1, 1).compare("_") == 0) {
 				std::string cur = field.substr(0, 4);
 				std::string next = field.substr(6);
@@ -354,7 +368,9 @@ void Graph::render(std::vector<Shader*> shaders) {
 			}
 			else if (currentNode->getId() == endNodeId) {
 				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = end
-			}else if (currentNode->isOnPath()) {
+			}else if (currentNode->isOnPath() && 
+				topDestMap.count(currentNode->getId())==0 && botDestMap.count(currentNode->getId()) == 0) {
+				
 				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = on path
 			}
 			/*if (currentNode->isCur) {
@@ -391,6 +407,9 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 	std::cout << "got here 1\n\n";
 	if (creeps != NULL) {
 		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
+			if ((*it)->getSpawned() == false || (*it)->getExists() == false) {
+				continue;
+			}
 			//std::cout << id << "   " << (*it)->getCurDestId() << std::endl;
 			//std::cout << "changed: " << (changedNode.getNextNode((*it)->getCurDestId()) != NULL) << std::endl;
 			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL) {
@@ -539,14 +558,14 @@ bool Graph::pathfind(int destId, int pathCount) {
 
 
 	if (endFound) {
-		std::cout << "b";
+		//std::cout << "b";
 		//queue is done, go in reverse from END to START to determine path
 		Node* nextNode = &getNode(endId);
 		Node* currentNode = getNode(endId).getPrev();
 		//std::cout << "destID: " << destId << " pathCount: " << pathCount << " NextNode: " << nextNode->getId() << std::endl;
 		currentNode->setNextNode(destId,nextNode);
 		currentNode->setLastUpdate(destId, pathCount);
-		std::cout << "r";
+		//std::cout << "r";
 		//std::cout << nextNodeId << std::endl;
 		//while the current node isn't null, or the end, mark the current node as on the path
 		while (currentNode != NULL && currentNode->getId() != startNodeId) {
@@ -560,12 +579,12 @@ bool Graph::pathfind(int destId, int pathCount) {
 			currentNode = currentNode->getPrev();
 			//std::cout << "u";
 		}
-		std::cout << "c";
+		//std::cout << "c";
 		//std::cout << nextNodeId << std::endl;
 		currentNode->setNextNode(destId,nextNode);
 		currentNode->setLastUpdate(destId, pathCount);
 		//std::cout << std::endl;
-		std::cout << "k";
+		//std::cout << "k";
 	}
 	else {
 		std::cout << "failed" << std::endl;

@@ -7,11 +7,12 @@
 #include <iostream>
 
 #include "Shader.h"
+#include "Audio.h"
 #include <vector>
 
 class GameObject {
 public:
-	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements, std::string t, int c=0);
+	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements, std::string t, float speed=1, int c=0);
 
 	// Updates the GameObject's state. Can be overriden for children
 	virtual void update(double deltaTime);
@@ -23,7 +24,8 @@ public:
 	// Getters
 	inline glm::vec3& getPosition() { return position; }
 	inline glm::vec3& getDirection() { return direction; }
-	inline float getSpeed() { return speed; }
+	inline float getDefaultSpeed() { return defaultSpeed; }
+	inline float getCurSpeed() { return curSpeed; }
 	inline glm::vec3& getTargetPos() { return targetPos; }
 	inline std::string getType() { return type; }
 
@@ -32,13 +34,15 @@ public:
 	// Setters
 	inline void setPosition(glm::vec3& newPosition) { position = newPosition; }
 	inline void setDirection(glm::vec3& newDir) { direction = newDir; }
-	inline void setSpeed(float s) { speed = s; }
+	inline void setCurSpeed(float s) { curSpeed = s; }
 	inline void setRotation(float r) { rotation = r; }
 	inline void setTargetPos(glm::vec3& newTarPos) { targetPos = newTarPos; }
 	inline void setType(std::string t) { type = t; }
 	
 	inline void setTex(GLuint t) { texture = t; }
 	inline void setExists(bool e) {exists = e; }
+
+	inline void setAudio(Audio* a) { audio = a; ; }
 
 	inline bool getExists() { return exists; }
 	inline float getRotation() { return rotation; }
@@ -53,7 +57,10 @@ protected:
 	int cost;
 	glm::vec3 position;
 	glm::vec3 direction;
-	float speed,rotation=0.0f;
+	float defaultSpeed, curSpeed,rotation=0.0f;
+	float effectDur;
+	float effectTimeLeft;
+
 	glm::vec3 targetPos;
 	bool exists;
 	// Object's details
@@ -63,4 +70,5 @@ protected:
 	// Object's texture
 	GLuint texture;
 	std::string uniqueID;
+	Audio* audio;
 };

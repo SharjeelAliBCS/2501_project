@@ -5,12 +5,12 @@
 #include "ProjectileObject.h"
 #include "Particle.h"
 #include <deque>
-#include "Audio.h"
+
 
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type, float r, int c=0);
+	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type, float r, float ROF=1, int c=0);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -18,7 +18,7 @@ public:
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;
 	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
-	inline void setAudio(Audio* a) { audio = a; audio->addAudio("Audio/rocket.wav", "bullet");}
+	
 
 	//getters
 	//getter for the vector of objects
@@ -26,7 +26,10 @@ public:
 	inline float getRange() {return range;}
 	inline std::vector<GLuint> getExplosion_tex() { return explosion_tex; }
 	GLuint getIcon() { return icon; }
-	inline float getDps() { return dps; }
+	inline float getDamage() { return damage; }
+
+	inline float getROF() { return curROF; }
+	inline void setCurROF(float rof) { curROF = rof; }
 	
 	
 private:
@@ -52,8 +55,9 @@ private:
 
 	EnemyObject* currentEnemy;
 
-	int fireRate, frames;
-	float dps;
+	float curROF,defaultROF, frames;
+	double lastShotTime;
+	float damage;
 	float range;
 	GLint size;
 	std::vector<ProjectileObject*> bullObjects;
@@ -63,7 +67,7 @@ private:
 	std::vector<GLuint> texvec;
 	std::vector<GLuint> texvecExplosion;
 
-	Audio* audio;
+	
 
 
 
