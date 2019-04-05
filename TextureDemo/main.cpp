@@ -572,6 +572,8 @@ int main(void){
 		float lastSpawnTime = 0;
 		bool roundOver = true;
 		gameState.push_back("menu");
+		int enemiesDestroyed = 0;
+		int numEnemiesSpawned = 0;
 		//gameState.push_back("play"); // comment this line for menu
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
@@ -672,6 +674,8 @@ int main(void){
 						startWave = 1;
 						audioObject->playAgain("enemiesComing");
 						roundOver = false;
+						enemiesDestroyed = 0;
+						numEnemiesSpawned = enemyMap[turnIndex]->size();
 					}
 					if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS &&
 						enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -679,6 +683,7 @@ int main(void){
 						pathCount = 1;
 						spawnCount = 0;
 						startWave = 0;
+						enemiesDestroyed = 0;
 						turnIndex = turnIndex ^ 1;
 						cameraTranslatePos = g.getFocalPoint(turnIndex);
 						g.setCamPos(cameraTranslatePos);
@@ -955,8 +960,9 @@ int main(void){
 				bool tick = false;
 				//spawnCount+=0.25;
 				
-				if (enemyMap[turnIndex]->size() == 0 && !roundOver) {
+				if (enemyMap[turnIndex]->size() == 0 && !roundOver && enemiesDestroyed == numEnemiesSpawned ) {
 					roundOver = true;
+					std::cout << enemiesDestroyed << "-" << numEnemiesSpawned << std::endl;
 					audioObject->playAgain("enemiesDestroyed");
 				}
 				if (glfwGetTime() > lastSpawnTime + 0.075) {
@@ -993,6 +999,9 @@ int main(void){
 					cur->setIsCur(true);
 
 					if (!e->getExists()) {
+						if (e->getHealth() <= 0.0) {
+							enemiesDestroyed++;
+						}
 						std::cout << "Enemy despawned/destroyed. Total: " << enemyMap[turnIndex]->size() - 1 << std::endl;
 						deleteEnemies.push_front(delIndex);
 					}

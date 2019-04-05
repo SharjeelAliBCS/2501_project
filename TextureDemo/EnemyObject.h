@@ -15,6 +15,7 @@ public:
 	void enemyHit(float damage);
 	inline bool getKilled() { return killed; }
 	inline bool getSpawned() { return spawned; }
+	inline float getHealth() { return health; }
 
 	//setters
 	inline void setCur(Node* n) { cur = n; }
