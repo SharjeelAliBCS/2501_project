@@ -17,6 +17,7 @@ EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entit
 	killed = false;
 	spawned = false;
 
+	_state = Init;
 
 }
 
@@ -26,37 +27,64 @@ void EnemyObject::enemyHit(float damage) {
 }
 // Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
-	if (effectTimeLeft <= 0) {
-		curHealthCap = defaultHealthCap;
-		health = std::fmin(curHealthCap, health);
+
+	switch (_state) {
+	case Init: {
+		_state = Move;
+		break;
 	}
-	else if(!spawned){
-		effectTimeLeft += deltaTime;
+	case Move: {
+		if (effectTimeLeft <= 0) {
+			curHealthCap = defaultHealthCap;
+			health = std::fmin(curHealthCap, health);
+		}
+		else if (!spawned) {
+			effectTimeLeft += deltaTime;
+		}
+		//Here if the health is zero,spawn the particle system for the death animation. 
+		if (health <= 0.0f && framesDeath == -1) {
+			deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
+			framesDeath++;
+			audio->playAgain("enemyDeath");
+			//std::cout << " death " << std::endl;
+			_state = Dying;
+		}
+		if (framesDeath >= 0) {
+			
+		}
+		break;
 	}
-	//Here if the health is zero,spawn the particle system for the death animation. 
-	if (health <= 0.0f && framesDeath ==-1) {
-		deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
-		framesDeath++;
-		audio->playAgain("enemyDeath");
-		//std::cout << " death " << std::endl;
-	}
-	if (framesDeath >=0) {
+
+	case Dying: {
 		//std::cout << "time : " << framesDeath << std::endl;
-		
+
 		//Once the frames reaches 10, stop and remove the enemy/particles. 
 		if (framesDeath >= 10) {
-			exists = false;
-			killed = true;
+			_state = Dead;
 		}
 		framesDeath++;
+		break;
 	}
+	case Dead: {
+		exists = false;
+		killed = true;
+		break;
+	}
+	default:
+		break;
+
+	}
+
+	
 	// Call the parent's update method to move the object
 	GameObject::update(deltaTime);
 }
 
 void EnemyObject::render(std::vector<Shader*> shaders) {
 
-	if (framesDeath == -1) {
+	switch (_state) {
+
+	case Move: {
 		if (hit) {
 			//Sets the shader to red to signify damage. 
 			GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
@@ -64,11 +92,16 @@ void EnemyObject::render(std::vector<Shader*> shaders) {
 			hit = false;
 		}
 		GameObject::render(shaders);
-		
+		break;
+	}
+
+	case Dying: {
+		deathParticles->render(shaders);
+		break;
+	}
+	default:
+		break;
 
 	}
-	else if(exists){
-		
-		deathParticles->render(shaders);
-	}
+
 }

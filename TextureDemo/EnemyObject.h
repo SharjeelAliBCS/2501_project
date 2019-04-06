@@ -41,5 +41,16 @@ protected:
 	GLuint enemyDeathTex;
 	int framesDeath;
 	Particle* deathParticles;
+
+	enum State {
+		Init,
+		Hit,
+		Dying,
+		Dead,
+		Move
+	};
+
+
+	State _state;
 };
 

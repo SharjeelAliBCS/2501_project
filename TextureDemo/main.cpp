@@ -62,7 +62,6 @@ std::map<int, std::vector<TowerObject*>*> towerMap;
 
 std::vector<HUD*> hudObjects;
 std::vector<TowerObject*> blueprints;
-std::vector<std::string> gameState;
 std::vector<HUD*> HUDMenu;
 std::vector<GameObject*>buttonTowerPanel;
 std::vector<GameObject*>buttonEnemyPanel;
@@ -71,6 +70,15 @@ std::vector<GameObject*>button;
 std::vector<EnemyObject*> enemyBlueprint;
 std::vector<Shader*> shaders;
 
+enum State {
+	MainMenu,
+	Game,
+	Pause,
+	GameOver,
+};
+
+
+State _state;
 
 void ResizeCallback(GLFWwindow*window, int width, int height) {
 	if (width != window_width_g) {
@@ -610,10 +618,13 @@ int main(void){
 		int doubleClick = 0;
 		glm::vec3 targetPos;
 		bool roundOver = true;
-		gameState.push_back("menu");
 		int enemiesDestroyed = 0;
 		int numEnemiesSpawned = 0;
-		gameState.push_back("play"); // comment this line for menu
+
+		
+		_state = MainMenu;
+		_state = Game;//comment out to see menu. 
+
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
 
@@ -631,13 +642,14 @@ int main(void){
 			}
 			/************************************************KEY INPUT********************************************/
 			
-			if (gameState.back() == "menu") {
+			switch (_state) {
+			case MainMenu: {
 				for (HUD* b : HUDMenu)b->setCamPos(cameraTranslatePos);
 
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
-						gameState.push_back("play");
+						_state = Game;
 						audioObject->stop("menu");
 						audioObject->playRepeat("background");
 					}
@@ -655,10 +667,9 @@ int main(void){
 
 					std::cout << xOut << "," << yOut << std::endl;
 				}
+				break;
 			}
-			//==========================================>state:play/controls
-			if (gameState.back() == "play") {
-
+			case Game: {
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 					double xpos, ypos;
 					int window_width_g, window_height_g;
@@ -667,30 +678,30 @@ int main(void){
 					//std::cout << "x: " << xpos << " y: " << ypos << std::endl;
 					//std::cout << "w: " << window_width_g << " h: " << window_height_g << std::endl;
 					bool inWindow = ypos > 0 && xpos > 0 && ypos < window_height_g && xpos < window_width_g;
-					if ( glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || 
-					   ((ypos > 0 && ypos<30) && inWindow)) {
-						cameraTranslatePos.y -= camShiftInc/cameraZoom;
+					if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS ||
+						((ypos > 0 && ypos < 30) && inWindow)) {
+						cameraTranslatePos.y -= camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 
 					}
-					if ( glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || 
-					   ((ypos > window_height_g - 30 && ypos < window_height_g) && inWindow)) {
+					if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS ||
+						((ypos > window_height_g - 30 && ypos < window_height_g) && inWindow)) {
 						cameraTranslatePos.y += camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if ( glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || 
-					   ((xpos > window_width_g-30 && xpos < window_width_g) && inWindow)) {
+					if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS ||
+						((xpos > window_width_g - 30 && xpos < window_width_g) && inWindow)) {
 						cameraTranslatePos.x -= camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
-					if ( glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || 
-					   ((xpos > 0 && xpos < 30) && inWindow)) {
+					if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS ||
+						((xpos > 0 && xpos < 30) && inWindow)) {
 						cameraTranslatePos.x += camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
@@ -721,8 +732,8 @@ int main(void){
 						showRadius ^= 1;
 						timeOfLastMove = glfwGetTime();
 					}
-					
-					
+
+
 					//powerups:
 					//kill all in 1.5 range
 					if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -744,7 +755,7 @@ int main(void){
 					//Inc outgoing creep hp 100% for 20 seconds.
 					if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						hpUp = true;
-						for (EnemyObject* e : *(enemyMap[turnIndex^1])) {
+						for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
 							e->modCurHealthCap(2);
 							e->setEffectDuration(20);
 						}
@@ -753,7 +764,7 @@ int main(void){
 					//Inc outgoing creep speed 100% for 20 seconds.
 					if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						gottaGoFast = true;
-						for (EnemyObject* e : *(enemyMap[turnIndex^1])) {
+						for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
 							e->modCurSpeed(2);
 							e->setEffectDuration(20);
 						}
@@ -762,7 +773,7 @@ int main(void){
 					//inc allied tower rof by 100% for 15 seconds
 					if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						rainingLead = true;
-						rainingLeadEnd = glfwGetTime()+15;
+						rainingLeadEnd = glfwGetTime() + 15;
 						for (TowerObject* t : *(towerMap[turnIndex])) {
 							t->modCurROF(0.5);
 							t->setEffectDuration(15);
@@ -826,7 +837,7 @@ int main(void){
 											doubleClick++;
 
 										}
-										else{
+										else {
 											doubleClick = 1;
 											TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(),
 												selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
@@ -861,7 +872,7 @@ int main(void){
 
 											audioObject->playAgain("towerPlaced");
 											audioObject->playAgain("unitReady");
-											}
+										}
 									}
 
 
@@ -935,7 +946,22 @@ int main(void){
 					}
 
 				}
+				break;
 			}
+			case Pause: {
+				break;
+			}
+			case GameOver: {
+				break;
+			}
+			default:
+				break;
+
+
+
+			}
+			
+			//==========================================>state:play/controls
 
 			//clear window
 			glClearColor(viewport_background_color_g[0],
@@ -965,17 +991,18 @@ int main(void){
 		
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
 			
-			if (gameState.back() == "menu") {
+			switch(_state) {
+			case MainMenu: {
 				for (HUD* b : HUDMenu) {
 					b->render(shaders);
 				}
 				background->render(shaders);
+				break;
 			}
-			//==========================================>state:play/render
-			if (gameState.back() == "play") {
+			case Game: {
 				//shader =  Shader("shader.vert", "shader.frag");
-			
-			//**********HUD**********
+
+				//**********HUD**********
 				selectionGraphic->render(shaders);
 				for (HUD* h : hudObjects) {
 					h->setTex(textures["UI"][turnIndex]);
@@ -1005,11 +1032,11 @@ int main(void){
 						if (t->getType().compare("Credits: ") == 0) {
 							std::string temp = t->getText() + std::to_string(credits[turnIndex]);
 							t->setRenderedText(temp);
-						}						
+						}
 						if (t->getType().compare("P1 HP: ") == 0) {
 							std::string temp = t->getText() + std::to_string(hp[0]) + "/20";
 							t->setRenderedText(temp);
-						}						
+						}
 						if (t->getType().compare("P2 HP: ") == 0) {
 							std::string temp = t->getText() + std::to_string(hp[1]) + "/20";
 							t->setRenderedText(temp);
@@ -1041,13 +1068,13 @@ int main(void){
 						glUniform3f(glGetUniformLocation(shaders[0]->getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 				}
 
-				
+
 
 				//**********Tower**********
 				for (TowerObject* t : *(towerMap[turnIndex])) {
 					t->setEnemies(*enemyMap[turnIndex]);
 
-					
+
 					EnemyObject* closestEnemy;
 
 					if (enemyMap[turnIndex]->size() == 0 || !startWave) { closestEnemy = NULL; }
@@ -1078,7 +1105,7 @@ int main(void){
 					// Render game objects
 					t->render(shaders);
 				}
-				for (TowerObject* t : *(towerMap[turnIndex^1])) {
+				for (TowerObject* t : *(towerMap[turnIndex ^ 1])) {
 					// Updates game objects
 					t->update(deltaTime);
 					//reset color uniform.
@@ -1258,7 +1285,7 @@ int main(void){
 						if (hp[turnIndex] == 0) {
 							gameOver = true;
 							std::cout << "GAME OVER" << std::endl;
-							std::cout << "PLAYER " << (turnIndex^1+1) << " WINS" << std::endl;
+							std::cout << "PLAYER " << (turnIndex ^ 1 + 1) << " WINS" << std::endl;
 							//hudObjects[2]->setTex(textures["UI"][1]);
 
 						}
@@ -1285,11 +1312,23 @@ int main(void){
 				}
 
 				//**********Graph**********
-				g.update(showRadius,selectionRadius);
+				g.update(showRadius, selectionRadius);
 				//render graph
 				g.render(shaders);
 
+				break;
 			}
+			case Pause: {
+				break;
+			}
+			case GameOver: {
+				break;
+			}
+			default:
+				break;
+
+			}
+		
 			// Update other events like input handling
 			glfwPollEvents();
 

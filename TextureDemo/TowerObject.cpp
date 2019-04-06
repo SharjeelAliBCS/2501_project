@@ -77,29 +77,29 @@ void TowerObject::update(double deltaTime) {
 	}
 	//state machine used to move around (right now only uses locate)
 	switch (_state) {
-	case Init:
+	case Init: {
 		_state = Locate;
 		positions[0] = targetPos;
 		positions[1] = position;
 		break;
-	case Idle:
+	}
+	case Idle: {
 		if (allEnemies.size() > 0) {
 
 			if (type.compare("Autonomous") == 0) _state = SpeedUp;
 			else _state = Locate;
 		}
-
-
 		break;
-	case Locate:
-
+	}
+	case Locate: {
 		locateEnemy();
 		break;
-	case Fire:
+	}
+	case Fire: {
 		fireEnemy();
-
 		break;
-	case Stop:
+	}
+	case Stop: {
 		//std::cout << "speed  = " << projectileSpeed << std::endl;
 		if (projectileSpeed <= 0.005) {
 			projectileSpeed = 0.0f;
@@ -110,7 +110,8 @@ void TowerObject::update(double deltaTime) {
 			move();
 		}
 		break;
-	case SlowDown:
+	}
+	case SlowDown: {
 		//std::cout << "speed  = " << projectileSpeed << std::endl;
 		if (projectileSpeed <= orgSpeed * 0.5) {
 			_state = SpeedUp;
@@ -120,8 +121,8 @@ void TowerObject::update(double deltaTime) {
 			move();
 		}
 		break;
-
-	case SpeedUp:
+	}
+	case SpeedUp: {
 		if (projectileSpeed >= orgSpeed) {
 			projectileSpeed = orgSpeed;
 			_state = Locate;
@@ -132,6 +133,7 @@ void TowerObject::update(double deltaTime) {
 		}
 
 		break;
+	}
 	default:
 		break;
 	}
