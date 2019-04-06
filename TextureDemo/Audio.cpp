@@ -21,11 +21,11 @@ wchar_t* Audio::strToLPCWSTR(const std::string& s)
 }
 
 void Audio::addAudio(std::string file, std::string alias) {
-	
+
 	audiofiles[alias] = file;
 	std::string inputStr = "open " + file + " alias " + alias;
 	mciSendString(strToLPCWSTR(inputStr), NULL, 0, 0);
-	
+
 }
 void Audio::pause(std::string alias) {
 	std::string inputStr = "pause " + alias;
@@ -38,8 +38,8 @@ void Audio::resume(std::string alias) {
 }
 
 void Audio::play(std::string alias) {
-	std::string inputStr = "play "+ alias;
-	
+	std::string inputStr = "play " + alias;
+
 
 	mciSendString(strToLPCWSTR(inputStr), NULL, 0, NULL);
 }
@@ -52,7 +52,7 @@ void Audio::playRepeat(std::string alias) {
 }
 
 void Audio::playAgain(std::string alias) {
-	
+
 	std::string inputStr = "play " + alias + " from 0";
 	mciSendString(strToLPCWSTR(inputStr), NULL, 0, NULL);
 }

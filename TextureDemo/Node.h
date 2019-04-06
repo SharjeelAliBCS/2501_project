@@ -36,7 +36,6 @@ public:
 
 
 	inline void setNextNode(int key, Node* n) {nextNodeMap[key] = n;}
-	inline void setLastUpdate(int key, int n) {lastUpdateMap[key] = n;}
 
 	inline void setBuildable(bool b, char side) { buildable[side] = b; }
 	inline void setPathable(bool p) { pathable = p; }
@@ -59,9 +58,6 @@ public:
 	inline Node* getNextNode(int key) const {
 		return nextNodeMap.find(key) != nextNodeMap.end() ? nextNodeMap.at(key) : NULL;
 	}
-	inline int getLastUpdate(int key) const {
-		return lastUpdateMap.find(key) != lastUpdateMap.end() ? lastUpdateMap.at(key) : -1;
-	}
 
 	inline bool getBuildable(char side) const { return buildable.at(side); }
 	inline bool getPathable() const { return pathable; }
@@ -82,8 +78,8 @@ public:
 
 	void setTowerState(bool, char);
 
-	inline void setIsCur(bool pathStatus) { isCur = pathStatus; }
-	bool isCur;
+	//inline void setIsCur(bool pathStatus) { isCur = pathStatus; }
+	bool selected;
 
 	//vector containing all edges the connect connects to.
 	//this can be used to create a graph with any number of connectivity
@@ -93,7 +89,7 @@ protected:
 	//id used to compare nodes.
 	const int id;
 	std::map<int, Node*> nextNodeMap;
-	std::map<int, int> lastUpdateMap;
+	
 
 	TowerObject *tower;
 	int nextId;

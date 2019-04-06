@@ -13,7 +13,7 @@ class Audio
 {
 public:
 	Audio();
-	
+
 	wchar_t* strToLPCWSTR(const std::string& s);
 	void addAudio(std::string file, std::string alias);
 	void pause(std::string alias);
@@ -31,5 +31,5 @@ private:
 };
 
 
-	
+
 

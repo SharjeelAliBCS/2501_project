@@ -20,7 +20,7 @@ Node::Node(float _x, float _y, GLuint tex) : id(globalId++) {
 	nextId = -1;
 	tower = NULL;
 
-	isCur = false;
+	selected = false;
 }
 
 //determines the opposing node on an edge.

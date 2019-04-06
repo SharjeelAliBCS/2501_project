@@ -1,7 +1,7 @@
 #include "Window.h"
 #include "HUD.h"
 
-HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, float fact, std::string type)
+HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, float fact, std::string type, GLFWwindow* win)
 	: GameObject(entityPos, entityTexture, entityNumElements, type), camPos(glm::vec3(0.0f))
 {
 	position = entityPos;
@@ -16,6 +16,7 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	outButton = NULL;
 	outEnemy = NULL;
 	outPowerUP = NULL;
+	window = win;
 
 }
 
@@ -83,7 +84,6 @@ void HUD::selection(double x, double y) {
 		buttonFlag = false;
 		powerUpFlag = false;
 		currentCursor = blueprints[3]->getIcon();
-		std::cout << "ddd" << std::endl;
 
 	}
 	else if ((635 * factor <= x && x <= 667 * factor) && (502 * factor <= y && y <= 527 * factor)) {//start of second row
@@ -319,7 +319,9 @@ void HUD::selectionPowerUp(double x, double y) {
 void HUD::update(double deltaTime)// use it to compute the x and y coord of the mouse to detemine if its buildable
 								  //as well as as if you are on top of a button in the HUD menu. 
 {
-
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS){
+		std::cout << "Pressed X in hud\n";
+		}
 	for (Text* t : textObjects) {
 		t->setCamPos(camPos);
 		t->setCamZoom(zoom);
@@ -419,17 +421,17 @@ void HUD::render(std::vector<Shader*> shaders) {
 		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-		//transformationMatrix = rotationMatrix * translationMatrix  * scal eMatrix;
+		//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 
-		//glBindTexture(GL_TEXTURE_2D, blueprints[i]->getTex());
+		glBindTexture(GL_TEXTURE_2D, blueprints[i]->getTex());
 
 
-		//shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		//glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 
 	// Bind the entities texture

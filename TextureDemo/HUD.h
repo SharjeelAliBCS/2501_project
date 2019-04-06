@@ -8,7 +8,7 @@
 class HUD : public GameObject {
 public:
 	//constructor
-	HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, float fact, std::string type);
+	HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint entityTexture, GLint entityNumElements, float fact, std::string type, GLFWwindow* win);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
@@ -57,6 +57,8 @@ private:
 	bool powerUpFlag;
 	bool buttonFlag;
 	bool enemyFlag;
+
+	GLFWwindow* window;
 
 	//vectors storing all the items in the game
 	std::vector<TowerObject*> blueprints;

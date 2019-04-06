@@ -16,28 +16,25 @@ GameObject::GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint en
 	cost = c;
 	defaultSpeed = speed;
 	curSpeed = speed;
-	effectDur = 0;
-	effectTimeLeft = 0;
 	imgScale = glm::vec3(1.0f, 1.0f, 1.0f);
-	//uniqueID = std::to_string
-
+	effectTimeLeft = -1;
 
 	uniqueID = std::to_string(std::rand() % (100000000 - 0 + 1));
 
 	acceleration = 0.005f;
-	a = glm::vec3(0.0f, 0.0f, 0.0f);
-	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	vx = 0;
-	vy = 0;
+	//uniqueID = std::to_string
+
+
+	//uniqueID = std::to_string(std::rand() % (100000000 - 0 + 1));
 	
 }
 
 // Updates the GameObject's state. Can be overriden for children
 void GameObject::update(double deltaTime) {
 	// Update object position
-	if (effectTimeLeft < 0) {
+	if (effectTimeLeft <= 0) {
 		curSpeed = defaultSpeed;
-		effectTimeLeft = 0;
+		effectTimeLeft = -1;
 	}
 	effectTimeLeft -= deltaTime;
 
@@ -60,7 +57,7 @@ void GameObject::render(std::vector<Shader*> shaders) {
 	glm::mat4 imgScaleMatrix = glm::scale(glm::mat4(1.0f), imgScale); //unknown why not all same, 3:4:4 seems a good ratio though
 
 
-	// Set the transformation matrix in the shader
+																	  // Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix = translationMatrix * rotationMatrix * scaleMatrix*imgScaleMatrix;
 	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);

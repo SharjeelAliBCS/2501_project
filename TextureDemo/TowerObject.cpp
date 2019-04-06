@@ -3,12 +3,12 @@
 #include "Window.h"
 
 /*
-	PlayerGameObject inherits from GameObject
-	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
+PlayerGameObject inherits from GameObject
+It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements, float d,std::string type,float r,float ROF, int c, float speed)
-	: GameObject(entityPos, tex[0], entityNumElements, type,0,c) {
+TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion, GLint entityNumElements, float d, std::string type, float r, float ROF, int c, float speed)
+	: GameObject(entityPos, tex[0], entityNumElements, type, 0, c) {
 
 	turretTexture = tex[1];
 	projectileTex = tex[2];
@@ -21,24 +21,24 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	lastShotTime = 0;
 	frames = 0;
 	explosion_tex = explosion;
-	damage = d; 
+	damage = d;
 	texvec = tex;
 	range = r;
-	projectileSpeed = speed; 
+	projectileSpeed = speed;
 	orgCoord = position;
 	explosion_num = -1;
 	orgSpeed = speed;
 	//if (type.compare("Autonomous") == 0)curSpeed = speed;
 	std::cout << type << " Cost: " << cost << " ROF: " << ROF << " range: " << range << " speed = " << projectileSpeed << std::endl;
-	
-	
 
-	
+
+
+
 }
 
 // Update function
 void TowerObject::update(double deltaTime) {
-	
+
 
 	std::deque<int> deleteBullets;
 
@@ -50,11 +50,11 @@ void TowerObject::update(double deltaTime) {
 		if (!bullObjects[i]->getExists()) {
 			deleteBullets.push_front(i);
 		}
-		
+
 	}
 
 	if (particle != NULL) {
-		particle->setRotation(rotation-90);
+		particle->setRotation(rotation - 90);
 
 		if (currentEnemy != NULL) {
 			float dis = glm::length(position - currentEnemy->getPosition());
@@ -69,9 +69,10 @@ void TowerObject::update(double deltaTime) {
 	if (effectTimeLeft < 0) {
 		curROF = defaultROF;
 	}
-	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range ) && type.compare("Flamethrower")==0) {
+
+	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("Flamethrower") == 0) {
 		particle = NULL;
-		
+
 		audio->close(uniqueID);
 	}
 	//state machine used to move around (right now only uses locate)
@@ -87,16 +88,16 @@ void TowerObject::update(double deltaTime) {
 			if (type.compare("Autonomous") == 0) _state = SpeedUp;
 			else _state = Locate;
 		}
-		
-	
+
+
 		break;
 	case Locate:
-		
+
 		locateEnemy();
 		break;
 	case Fire:
 		fireEnemy();
-		
+
 		break;
 	case Stop:
 		//std::cout << "speed  = " << projectileSpeed << std::endl;
@@ -111,7 +112,7 @@ void TowerObject::update(double deltaTime) {
 		break;
 	case SlowDown:
 		//std::cout << "speed  = " << projectileSpeed << std::endl;
-		if (projectileSpeed <= orgSpeed*0.5) {
+		if (projectileSpeed <= orgSpeed * 0.5) {
 			_state = SpeedUp;
 		}
 		else {
@@ -121,7 +122,7 @@ void TowerObject::update(double deltaTime) {
 		break;
 
 	case SpeedUp:
-		if (projectileSpeed >=orgSpeed) {
+		if (projectileSpeed >= orgSpeed) {
 			projectileSpeed = orgSpeed;
 			_state = Locate;
 		}
@@ -134,7 +135,7 @@ void TowerObject::update(double deltaTime) {
 	default:
 		break;
 	}
-	
+
 	// Call the parent's update method to move the object
 	GameObject::update(deltaTime);
 }
@@ -163,12 +164,13 @@ void TowerObject::locateEnemy() {
 			std::cout << "idle" << std::endl;
 			_state = Stop;
 		}
-	
+
 		move();
-		
+
+		setCurrEnemies(enemiesInRange(1));
 		if (currentEnemies.size() != 0)_state = Fire;
 
-		
+
 	}
 	else {
 
@@ -196,19 +198,16 @@ void TowerObject::locateEnemy() {
 
 		}
 
-		
+
 	}
 
-}
-
-void TowerObject::deathAnimation() {
 }
 
 
 void TowerObject::fireEnemy() {
 
 	if (type.compare("Autonomous") == 0) {
-		
+
 		if (explosion_num == -1) {
 			explosion_num++;
 			std::cout << "BOMBER RUN!" << std::endl;
@@ -219,33 +218,33 @@ void TowerObject::fireEnemy() {
 			}
 			_state = SlowDown;
 		}
-		
+
 	}
-	else if(type.compare("Barrier") == 0) {
+	else if (type.compare("Barrier") == 0) {
 
 	}
 	//creates a single particle object (flames)
 	else if (type.compare("Flamethrower") == 0) {
-		if (particle == NULL){
+		if (particle == NULL) {
 			audio->addAudio("Audio/Towers/fire.mp3", uniqueID);
 			audio->volume(uniqueID, 30);
 			audio->playRepeat(uniqueID);
-			
+
 			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000, 1);
 		}
 		_state = Locate;
 	}
 	//creates a single bullet object
 	else {
-		if(lastShotTime+curROF<glfwGetTime()){
+		if (lastShotTime + curROF<glfwGetTime()) {
 			audio->playAgain("bullet");
 			lastShotTime = glfwGetTime();
-			
+
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, damage, projectileSpeed));
 		}
 		_state = Locate;
 	}
-	
+
 
 }
 
@@ -258,7 +257,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 	glm::mat4 transformationMatrix;
 
 	if (type.compare("Autonomous") == 0) {
-		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation-90, glm::vec3(0.0f, 0.0f, 1.0f));
+		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation - 90, glm::vec3(0.0f, 0.0f, 1.0f));
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.6f, 0.6f));
 	}
 	else if (type.compare("Barrier")) {
@@ -267,7 +266,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 		glBindTexture(GL_TEXTURE_2D, turretTexture);
 
 		// Setup the transformation matrix for the shader
-		
+
 		transformationMatrix = translationMatrix * rotationMatrix*scaleMatrix;
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -294,7 +293,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 
 	if (explosion_num >= 0) {
 		translationMatrix = glm::translate(glm::mat4(1.0f), explodePos);
-		glBindTexture(GL_TEXTURE_2D, explosion_tex[(int)explosion_num/2]);
+		glBindTexture(GL_TEXTURE_2D, explosion_tex[(int)explosion_num / 2]);
 		transformationMatrix = translationMatrix * rotationMatrix*scaleMatrix;
 
 
@@ -303,12 +302,28 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 		explosion_num++;
 
 		if (explosion_num == 5) {
-			
+
 			explosion_num = -1;
 		}
 
 	}
-	
+
 }
 
 
+std::vector<EnemyObject*> TowerObject::enemiesInRange(float range) {
+	if (range == -1) {
+		return allEnemies;
+	}
+	std::vector<EnemyObject*> targets;
+
+	for (EnemyObject* e : allEnemies) {
+
+		float enemyDistance = glm::length(position - e->getPosition());
+		if (enemyDistance < range) {
+			targets.push_back(e);
+		}
+	}
+	currentEnemies = targets;
+	return targets;
+}

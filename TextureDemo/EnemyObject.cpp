@@ -26,15 +26,18 @@ void EnemyObject::enemyHit(float damage) {
 }
 // Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
-	if (effectTimeLeft < 0) {
+	if (effectTimeLeft <= 0) {
 		curHealthCap = defaultHealthCap;
 		health = std::fmin(curHealthCap, health);
+	}
+	else if(!spawned){
+		effectTimeLeft += deltaTime;
 	}
 	//Here if the health is zero,spawn the particle system for the death animation. 
 	if (health <= 0.0f && framesDeath ==-1) {
 		deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
-		audio->playAgain("enemyDeath");
 		framesDeath++;
+		audio->playAgain("enemyDeath");
 		//std::cout << " death " << std::endl;
 	}
 	if (framesDeath >=0) {

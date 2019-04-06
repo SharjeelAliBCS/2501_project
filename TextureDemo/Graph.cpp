@@ -103,14 +103,17 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	}
 	std::cout << "\n\n\n";
 
-
+	//int qwer = 0;
 	while (getline(in, line))    // get next line in file
 	{
+		//qwer++;
+		int asfd=0;
 		stringstream ss(line);
 		//std::cout<< id<< std::endl;
 		while (getline(ss, field, ','))  // break line into comma delimitted fields
 		{
-
+			//asfd++;
+			//std::cout << qwer << ", " << asfd << std::endl;
 			//std::cout << "field: " << field << std::endl;
 			if (field.compare("-1") == 0) {
 				nodeMap[id]->setTex(texMap["ELSE"]);
@@ -132,7 +135,6 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			else if (field.length()==4 && field.substr(2, 2).compare("FP") == 0) {
 	
 				if (field.substr(0, 1).compare("T") == 0) {
-					std::cout << "\n\n\n\n\n" << field << "\n\n\n\n";
 					getNode(id).setBuildable(true, 'T');
 					nodeMap[id]->setTex(texMap["T"]);
 					focalPoints[1] = glm::vec3(-getNode(id).getX(), -getNode(id).getY(), 0);
@@ -213,7 +215,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(endNodeId,0);
+			pathfind();
 		}
 		else {
 			setEnd(it->first);
@@ -227,7 +229,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(endNodeId,0);
+			pathfind();
 		}
 		else {
 			setEnd(it->first);
@@ -271,18 +273,17 @@ void Graph::highlight(int n) {
 }
 //gets mouse input, updates start and end position using that information
 
-void Graph::update(Node* s) {
-	if (s != NULL) {
-		int sid = s->getId();
-		if (sid != -1 && sid != endNodeId) {
-			setStart(sid);
-		}
-	}
+void Graph::update(int showRadius, float range) {
+
 	double xpos, ypos;
 	glfwGetCursorPos(window, &xpos, &ypos);
 	int n = selectNode(xpos, ypos);
+	if (showRadius) {
+		selectRange(n, range);
+	}
 	if (n != -1 && n != endNodeId && n != startNodeId) {
 		highlight(n);
+
 	}
 
 }
@@ -317,11 +318,30 @@ int Graph::selectNode(double x, double y) {
 
 		//check if the node is 
 		int tryId = nodeWid * y + x;
-		if (tryId<0 || tryId>size) {
+		if (x<0 || x>nodeWid-1 || y>size/nodeWid || x<0 || tryId<0 || tryId>size) {
 			return -1;
 		}
 		return tryId;
 
+	}
+}
+
+void Graph::selectRange(int id, float range) {
+	std::cout<<range<<"\n";
+	if (range == -1 || id == -1) {
+		return;
+	}
+	//range += 0.25;
+	Node n = getNode(id);
+	for (int i = 0; i < nodes.size(); i++) {
+		for (int j = 0; j < nodes.at(i).size(); j++) {
+			if (pow(n.getX() - nodes.at(i).at(j)->getX(), 2) + pow(0.75*(n.getY() - nodes.at(i).at(j)->getY()), 2) < pow(range, 2)) {
+				nodes.at(i).at(j)->selected = true;
+			}
+			//else {
+			//	nodes.at(i).at(j)->selected = false;
+			//}
+		}
 	}
 }
 
@@ -344,10 +364,10 @@ void Graph::render(std::vector<Shader*> shaders) {
 			
 
 
-			if (currentNode->getX() < -1/zoom - camPos.x ||
-				currentNode->getX() > 1/zoom  - camPos.x ||
+			if (currentNode->getX() < -1.1/zoom - camPos.x ||
+				currentNode->getX() > 1.1/zoom  - camPos.x ||
 				currentNode->getY() < -0.5/zoom - camPos.y ||
-				currentNode->getY() > 1/zoom  - camPos.y) {
+				currentNode->getY() > 1.1/zoom  - camPos.y) {
 				continue; //uncomment for fps boost based on zoom
 			}
 
@@ -373,9 +393,10 @@ void Graph::render(std::vector<Shader*> shaders) {
 				
 				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = on path
 			}
-			/*if (currentNode->isCur) {
-				glUniform3f(color_loc, -1.0f, -1.0f, -1.0f);	//dark green
-			}*/
+			if (currentNode->selected) {
+				glUniform3f(color_loc, -.5f, -.5f, -.5f);	//dark green
+				currentNode->selected = false;
+			}
 			nodeObj.render(shaders);
 		}
 	}
@@ -398,36 +419,11 @@ void Graph::clearNextNodeMaps() {
 /*TODO
 create map for each node to store path based on dest, otherwise overwritten
 */
-bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, char side) {
+bool Graph::rePath(int id, char side) {
 	map<int, int> mapInUse = side == 'T' ? topDestMap : botDestMap;
 	bool pathFound = true;
 	Node changedNode = getNode(id);
 
-
-	std::cout << "got here 1\n\n";
-	if (creeps != NULL) {
-		for (std::vector<EnemyObject*>::iterator it = creeps->begin(); it != creeps->end(); ++it) {
-			if ((*it)->getSpawned() == false || (*it)->getExists() == false) {
-				continue;
-			}
-			//std::cout << id << "   " << (*it)->getCurDestId() << std::endl;
-			//std::cout << "changed: " << (changedNode.getNextNode((*it)->getCurDestId()) != NULL) << std::endl;
-			if (changedNode.getNextNode((*it)->getCurDestId()) != NULL) {
-				setStart((*it)->getCur()->getId());
-				setEnd((*it)->getCurDestId());
-				//std::cout << startNodeId << " => " << endNodeId << std::endl;
-				if (startNodeId == endNodeId) { continue; }
-				if (getEndId() == -1) {
-					std::cout << std::endl << "Houston we have a problem, creep dest = -1" << std::endl << std::endl;
-				}
-				pathFound = pathFound ? pathfind((*it)->getCurDestId(), pathCount) : false;
-				std::cout << pathFound << std::endl;
-			}
-			else {
-				std::cout << "IT WAS NULL\n";
-			}
-		}
-	}
 	std::cout << "got here 2\n";
 	for (std::map<int, int>::iterator it = mapInUse.begin(); it != mapInUse.end(); ++it) {
 		//std::cout << it->first << " => " << it->second << '\n';
@@ -436,7 +432,9 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 			setEnd(it->second);
 			if (changedNode.getNextNode(endNodeId) != NULL) {
 				//std::cout << "\nStart: " << startNodeId << " End: " << endNodeId << " ID: " << id << std::endl;
-				pathFound = pathFound ? pathfind(endNodeId, pathCount) : false;
+				if (!pathfind()) {
+					return false;
+				}
 			}
 		}
 		else {
@@ -445,10 +443,7 @@ bool Graph::rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, cha
 		if (startNodeId == endNodeId) { continue; }
 
 	}
-
-
-	std::cout << "got here 3\n";
-	return pathFound;
+	return true;
 }
 
 void Graph::startPaths() {
@@ -461,7 +456,7 @@ void Graph::startPaths() {
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(endNodeId,0);
+			pathfind();
 		}
 		else {
 			setEnd(it->first);
@@ -475,7 +470,7 @@ void Graph::startPaths() {
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind(endNodeId,0);
+			pathfind();
 		}
 		else {
 			setEnd(it->first);
@@ -487,7 +482,7 @@ void Graph::startPaths() {
 
 
 //using zombie-key based approach to Djikstra's algorithm
-bool Graph::pathfind(int destId, int pathCount) {
+bool Graph::pathfind() {
 
 
 	//priority queue used in pathfinding.
@@ -512,7 +507,6 @@ bool Graph::pathfind(int destId, int pathCount) {
 	//some function calls will use pointer syntax (->) 
 	
 	bool endFound = false;
-	int endId = endNodeId;
 	while (!pq.empty()) {
 		//get the current lowest-cost node in pq
 		QNode lowest = pq.top();
@@ -521,13 +515,7 @@ bool Graph::pathfind(int destId, int pathCount) {
 		if (lowest.node->getId() == endNodeId) {
 			endFound = true;
 			break;
-		}if (lowest.node->getLastUpdate(endNodeId) == pathCount) {
-			//std::cout << "Pathcount\n";
-			//endFound = true;
-			//endId = lowest.node->getId();
-			//break;
 		}
-
 		//OPEN NODE
 		vector<Edge> neighbours = lowest.node->getEdges();
 		for (int i = 0; i < neighbours.size(); i++) {
@@ -560,40 +548,22 @@ bool Graph::pathfind(int destId, int pathCount) {
 	if (endFound) {
 		//std::cout << "b";
 		//queue is done, go in reverse from END to START to determine path
-		Node* nextNode = &getNode(endId);
-		Node* currentNode = getNode(endId).getPrev();
-		//std::cout << "destID: " << destId << " pathCount: " << pathCount << " NextNode: " << nextNode->getId() << std::endl;
-		currentNode->setNextNode(destId,nextNode);
-		currentNode->setLastUpdate(destId, pathCount);
-		//std::cout << "r";
-		//std::cout << nextNodeId << std::endl;
+		Node* nextNode = &getNode(endNodeId);
+		Node* currentNode = getNode(endNodeId).getPrev();
+		
+		currentNode->setNextNode(endNodeId,nextNode);
+
 		//while the current node isn't null, or the end, mark the current node as on the path
 		while (currentNode != NULL && currentNode->getId() != startNodeId) {
-			//std::cout << currentNode->getId()<<std::endl;
 			currentNode->setOnPath(true);
-			currentNode->setNextNode(destId,nextNode);
-			currentNode->setLastUpdate(destId, pathCount);
-			//std::cout << "i";
+			currentNode->setNextNode(endNodeId,nextNode);
 			nextNode = currentNode;
-			//std::cout << nextNodeId << std::endl;
 			currentNode = currentNode->getPrev();
-			//std::cout << "u";
 		}
-		//std::cout << "c";
-		//std::cout << nextNodeId << std::endl;
-		currentNode->setNextNode(destId,nextNode);
-		currentNode->setLastUpdate(destId, pathCount);
-		//std::cout << std::endl;
-		//std::cout << "k";
+		currentNode->setNextNode(endNodeId,nextNode);
 	}
 	else {
 		std::cout << "failed" << std::endl;
-		//endNodeId = oldEndNodeId;
-		//setEnd(oldEndNodeId);
-		//delete this later
-		//if (!redone) {
-		//	pathfind(clear,true);
-		//}
 	}
 	return endFound;
 }

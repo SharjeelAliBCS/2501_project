@@ -26,6 +26,8 @@ public:
 	inline int getCurDestId() const { return curDestId; }
 	inline Node* getCur() { return cur; }
 
+	inline void modCurHealthCap(float hp) { curHealthCap *= hp; health = curHealthCap; }
+
 	float oldx;
 	float oldy;
 protected:

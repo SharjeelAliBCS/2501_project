@@ -57,10 +57,9 @@ std::map<char, GLuint > fontTexture;
 // Global game object info
 
 std::map<int, std::vector<EnemyObject*>*> enemyMap;
+std::map<int, std::vector<TowerObject*>*> towerMap;
 
 
-std::vector<TowerObject*> towerObjects;
-std::vector<EnemyObject*> enemyObjects;
 std::vector<HUD*> hudObjects;
 std::vector<TowerObject*> blueprints;
 std::vector<std::string> gameState;
@@ -179,10 +178,9 @@ GLuint createTexture(char *fname)
 
 	return w[0];
 }
-
 void setallTexture(void)
 {
-	
+
 	textures["Map"].push_back(createTexture("Graphics/Map/0_0_boundary.png"));
 	textures["Map"].push_back(createTexture("Graphics/Map/0_1_boundary.png"));
 	textures["Map"].push_back(createTexture("Graphics/Map/1_empty.png"));
@@ -250,24 +248,24 @@ void setallTexture(void)
 	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 
 	textures["Background"].push_back(createTexture("Graphics/Background/menu.png"));//0
-																		
 
-	//textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
-	//textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
-	//textures["MENU"].push_back(createTexture("Graphics/MENU/Score.png"));//2
-	//textures["MENU"].push_back(createTexture("Graphics/MENU/Option.png"));//3
+
+																					//textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
+																					//textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
+																					//textures["MENU"].push_back(createTexture("Graphics/MENU/Score.png"));//2
+																					//textures["MENU"].push_back(createTexture("Graphics/MENU/Option.png"));//3
 
 	textures["Button"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 
-	//Text is rendered by creating a map where each key is a character that corrasponds to an actual character.png file. 
+																					//Text is rendered by creating a map where each key is a character that corrasponds to an actual character.png file. 
 	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@-";
-	
+
 	for (int i = 0; i < characters.size(); i++) {
-		
-		std::string s = "Graphics/Text/text_"+ std::to_string(i + 1)+".png";
-	
+
+		std::string s = "Graphics/Text/text_" + std::to_string(i + 1) + ".png";
+
 		char *cstr = &s[0u];
-		std::cout << (i+1) << " " << characters[i] << " " << s << std::endl;
+		std::cout << (i + 1) << " " << characters[i] << " " << s << std::endl;
 		fontTexture[characters[i]] = createTexture(cstr);
 	}
 
@@ -312,22 +310,20 @@ void setAudioTracks(Audio* audioObject) {
 
 }
 
-std::vector<EnemyObject*> enemiesInRange(TowerObject* t, float range, std::vector<EnemyObject*> &creeps) {
+std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<EnemyObject*>* creeps) {
 	if (range == -1) {
-		return creeps;
+		return *creeps;
 	}
 	std::vector<EnemyObject*> targets;
-	
-	for (EnemyObject* e : creeps) {
-		
-		float enemyDistance = glm::length(t->getPosition() - e->getPosition());
-		if (enemyDistance < range) {
+	float x = n.getX();
+	float y = n.getY();
+	for (EnemyObject* e : *creeps) {
+		if (pow((e->getPosition().x - x),2) + pow(0.75*(e->getPosition().y - y),2) < pow(range,2)) {
 			targets.push_back(e);
 		}
 	}
 	return targets;
 }
-
 
 // Main function that builds and runs the game
 int main(void){
@@ -348,16 +344,6 @@ int main(void){
 
 		Audio* audioObject = new Audio();
 		setAudioTracks(audioObject);
-		
-
-
-		
-		
-		
-		
-		
-		
-
 
 
 		std::cout << L"dd";
@@ -434,8 +420,8 @@ int main(void){
 
 		/************************************************VARIABLES INIT************************************************/
 		char turnArr[2] = { 'B','T' };
-		long income[2] = { 0,0 };
-		long credits[2] = { 20,20 };
+		long income[2] = { 20,20 };
+		long credits[2] = { 50,30 };
 		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
 
 		int hp[2] = { 20,20 };
@@ -450,6 +436,8 @@ int main(void){
 		int end = 122;
 
 		float enemyHealth = 60.0f;
+		int showRadius = 0;
+		float selectionRadius = 1.5;
 
 		bool gameOver = false;
 
@@ -463,14 +451,18 @@ int main(void){
 		float camShiftInc = 0.05f;
 		float camZoomInc = 0.01f;
 
+		bool gottaGoFast = false;
+		bool hpUp = false;
+		bool rainingLead = false;
+		float rainingLeadEnd = 0;
+
 
 		float enemyX, enemyY, oldEnemyX, oldEnemyY;
-		int pathCount = 1;
 		float spawnCount = 0;
 		bool startWave;
 		bool toggleBlock = false;
 
-		GameObject* background = new GameObject(glm::vec3(3.0f,-6.3f,0.0f), textures["Background"][0], size, "map");
+		GameObject* background = new GameObject(glm::vec3(3.0f, -6.3f, 0.0f), textures["Background"][0], size, "map");
 		background->setImgScale(glm::vec3(90, 46, 46));
 
 		/************************************************FILE INIT************************************************/
@@ -505,6 +497,9 @@ int main(void){
 		enemyMap[0] = new std::vector<EnemyObject*>;
 		enemyMap[1] = new std::vector<EnemyObject*>;
 
+		towerMap[0] = new std::vector<TowerObject*>;
+		towerMap[1] = new std::vector<TowerObject*>;
+
 
 		Node* cur;
 
@@ -513,14 +508,14 @@ int main(void){
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
 		//to create the actual tower object. 
 		int index = 0;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,  "Basic",   3, 0.5,   5,0.15)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 15, "Defender",  2, 1, 10,0.1));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 4,  "Flamethrower",  1, 0.1, 15));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "Barrier", 0,0,1));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "Sniper",     20,2,20,0.3));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5, "Basic", 3, 0.5, 5, 0.15)); index += 4; //the final 5 here is the cost
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 15, "Defender", 2, 1, 10, 0.1));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 4, "Flamethrower", 1, 0.1, 15));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "Barrier", 0, 0, 1));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "Sniper", 20, 2, 20, 0.3));index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "Autonomous", 20, 2, 40, 0.3));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",     10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint",     10));
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint", 10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint", 10));
 		/************************************************enemyBlueprints INIT************************************************/
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//0
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//1
@@ -557,12 +552,12 @@ int main(void){
 		button.push_back(new GameObject(glm::vec3(-7.5f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));
 		/************************************************HUD INIT************************************************/
 		GameObject* cursor = new GameObject(glm::vec3(0.0f), cursorTex, size, "cursor");
-		HUD* selectionGraphic = new HUD(glm::vec3(50.0f, 50.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, factor, "selection");
+		HUD* selectionGraphic = new HUD(glm::vec3(50.0f, 50.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, factor, "selection", window);
 
 
 		glm::vec3 objectS = glm::vec3(0.45f, 0.5f, 0.0f);//this handels the size(scale) of the HUD panel 
-		hudObjects.push_back(new HUD(glm::vec3(1.73f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD1"));//0(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
-		hudObjects.push_back(new HUD(glm::vec3(-1.73f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD3"));//1
+		hudObjects.push_back(new HUD(glm::vec3(1.73f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD1", window));//0(position,camerazoom,scale,texture,numelemnets,type) **if you change the scale of the object you need to reposition it by changin it position.
+		hudObjects.push_back(new HUD(glm::vec3(-1.73f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD3", window));//1
 
 
 
@@ -573,15 +568,15 @@ int main(void){
 
 
 		objectS.x = 1.12f;//this handels the size(scale) of the HUD panel
-		hudObjects.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD2"));//2
+		hudObjects.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD2",window));//2
 		objectS.x = 0.45f;
 		objectS.y = 0.2f;
-		hudObjects.push_back(new HUD(glm::vec3(1.73f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//3
-		hudObjects.push_back(new HUD(glm::vec3(-1.73f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5"));//4//this is the start/end hud
+		hudObjects.push_back(new HUD(glm::vec3(1.73f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5", window));//3
+		hudObjects.push_back(new HUD(glm::vec3(-1.73f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD5", window));//4//this is the start/end hud
 		hudObjects[4]->setButtons(button);
 		objectS.x = 1.25f;
 		objectS.y = 0.2f;
-		hudObjects.push_back(new HUD(glm::vec3(0.01f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD4"));//5
+		hudObjects.push_back(new HUD(glm::vec3(0.01f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD4", window));//5
 		hudObjects[5]->setPowerUPs(buttonPowerUpsPanel);
 
 		for (HUD* h : hudObjects) {
@@ -591,10 +586,10 @@ int main(void){
 
 		/************************************************MENU INIT************************************************/
 		glm::vec3 buttonScale = glm::vec3(0.5f, 0.5f, 0.0f);
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, factor, "PLAY"));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, factor, "SCORE"));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, factor, "OPTION"));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, factor, "QUIT"));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, factor, "PLAY", window));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, factor, "SCORE", window));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, factor, "OPTION", window));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, factor, "QUIT", window));
 
 		/************************************************TEXT INIT************************************************/
 
@@ -605,7 +600,7 @@ int main(void){
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -11.5f, 0.0f), fontTexture, "Income: ", size, 0.07f, glm::vec3(50, 175, 255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -10.5f, 0.0f), fontTexture, "P1 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
 		hudObjects[2]->addText(new Text(glm::vec3(-6.9f, -9.5f, 0.0f), fontTexture, "P2 HP: ", size, 0.07f, glm::vec3(50, 175, 255)));
-		hudObjects[2]->addText(new Text(glm::vec3(-14.0f, 14.0f, 0.0f), fontTexture, "FPS: ", size, 0.07f, glm::vec3(0, 0, 0)));
+		hudObjects[2]->addText(new Text(glm::vec3(-14.0f, 13.9f, 0.0f), fontTexture, "FPS: ", size, 0.07f, glm::vec3(0, 0, 0)));
 
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
@@ -629,9 +624,10 @@ int main(void){
 			++fps;
 			if (int(glfwGetTime())>oldTime) {
 				oldTime = int(glfwGetTime());
-				renderedFPS = fps;
 				std::cout << "FPS: "<<fps << std::endl;
+				renderedFPS = fps;
 				fps = 0;
+
 			}
 			/************************************************KEY INPUT********************************************/
 			
@@ -642,7 +638,6 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
 						gameState.push_back("play");
-						
 						audioObject->stop("menu");
 						audioObject->playRepeat("background");
 					}
@@ -652,7 +647,7 @@ int main(void){
 					glfwGetCursorPos(window, &xpos, &ypos);
 					float xOut = (float)xpos;
 					float yOut = (float)ypos;
-					
+
 					float x;
 					float y;
 					int id = g.getHover();
@@ -721,14 +716,68 @@ int main(void){
 						roundOver = false;
 						enemiesDestroyed = 0;
 						numEnemiesSpawned = enemyMap[turnIndex]->size();
+
+					}if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						showRadius ^= 1;
+						timeOfLastMove = glfwGetTime();
 					}
+					
+					
+					//powerups:
+					//kill all in 1.5 range
+					if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						selectionRadius = 1.5;
+						for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+							e->setExists(false);
+						}
+						timeOfLastMove = glfwGetTime();
+					}
+					//Stop all in 1.5 range for 3 seconds
+					if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						selectionRadius = 1.5;
+						for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+							e->modCurSpeed(0);
+							e->setEffectDuration(4);
+						}
+						timeOfLastMove = glfwGetTime();
+					}
+					//Inc outgoing creep hp 100% for 20 seconds.
+					if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						hpUp = true;
+						for (EnemyObject* e : *(enemyMap[turnIndex^1])) {
+							e->modCurHealthCap(2);
+							e->setEffectDuration(20);
+						}
+						timeOfLastMove = glfwGetTime();
+					}
+					//Inc outgoing creep speed 100% for 20 seconds.
+					if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						gottaGoFast = true;
+						for (EnemyObject* e : *(enemyMap[turnIndex^1])) {
+							e->modCurSpeed(2);
+							e->setEffectDuration(20);
+						}
+						timeOfLastMove = glfwGetTime();
+					}
+					//inc allied tower rof by 100% for 15 seconds
+					if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						rainingLead = true;
+						rainingLeadEnd = glfwGetTime()+15;
+						for (TowerObject* t : *(towerMap[turnIndex])) {
+							t->modCurROF(0.5);
+							t->setEffectDuration(15);
+						}
+						timeOfLastMove = glfwGetTime();
+					}
+
+
 					if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS &&
 						enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						audioObject->playAgain("teamChange");
-						pathCount = 1;
 						spawnCount = 0;
 						startWave = 0;
-						enemiesDestroyed = 0;
+						gottaGoFast = false;
+						hpUp = false;
+						rainingLead = false;
 						turnIndex = turnIndex ^ 1;
 						cameraTranslatePos = g.getFocalPoint(turnIndex);
 						g.setCamPos(cameraTranslatePos);
@@ -743,23 +792,16 @@ int main(void){
 						g.clearNextNodeMaps();
 						g.startPaths();
 
-
+						audioObject->playAgain("teamChange");
 					}
 					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 						std::cout << g.getHover() << std::endl;
-						Node* tttt = g.getNode(g.getHover()).getNextNode(2024);
-						if (tttt == NULL) {
-							tttt = g.getNode(g.getHover()).getNextNode(314);
-						}
-						if (tttt != NULL) {
-							std::cout << tttt->getId() << std::endl;
-						}
-						else {
-							std::cout << "null\n";
-						}
+						//Node* tttt = &g.getNode(g.getHover());
+						g.selectRange(g.getHover(), 1.5);
+						//tttt->selected = true;
 
 					}
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 
 						double xpos, ypos;
 						glfwGetCursorPos(window, &xpos, &ypos);
@@ -771,27 +813,21 @@ int main(void){
 
 
 						if (ypos <= 440) {//prints on map
-
 							if (hudObjects[1]->getFlag()) {
-								
-
 
 								if (g.getNode(id).getBuildable(turn)) {
 									TowerObject* selectedTower = hudObjects[1]->getSelection();
 									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
-
 									if (credits[turnIndex] >= selectedTower->getCost()) {
+
 
 										if (doubleClick == 1) {
 											targetPos = glm::vec3(x, y, 0.0f);
 											doubleClick++;
-											
+
 										}
 										else{
 											doubleClick = 1;
-											std::cout << "Tower dddfd: " << targetPos.x << ","<<targetPos.y << std::endl;
-											audioObject->playAgain("towerPlaced");
-											audioObject->playAgain("unitReady");
 											TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(),
 												selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
 												selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
@@ -801,38 +837,48 @@ int main(void){
 											if (t->getType().compare("denderBlueprint---2") == 0) {
 
 											}
-
-
 											g.getNode(id).setTowerState(true, turn);
-											if (g.rePath(enemyMap[turnIndex], id, ++pathCount, turn)) {
-												towerObjects.push_back(t);
+											if (g.rePath(id, turn)) {
 												g.getNode(id).setTower(t);
 												credits[turnIndex] -= selectedTower->getCost();
+												towerMap[turnIndex]->push_back(t);
+												if (rainingLead) {
+													t->modCurROF(0.5);
+													t->setEffectDuration(rainingLeadEnd - glfwGetTime());
+													if (rainingLeadEnd - glfwGetTime() <= 0) {
+														rainingLead = false;
+													}
+												}
+
 											}
 											else {
 												std::cout << "\n\n\nINVALID TOWER PLACEMENT";
 												g.getNode(id).setTowerState(false, turn);
-												g.rePath(enemyMap[turnIndex], id, --pathCount, turn);
+												g.rePath(id, turn);
 												delete(t);
 											}
 											std::cout << "Repath" << std::endl;
-										}
+
+											audioObject->playAgain("towerPlaced");
+											audioObject->playAgain("unitReady");
+											}
 									}
+
+
 								}
 							}
 						}
 						hudObjects[1]->selection(xpos, ypos);
 
-						if (hudObjects[1]->getFlag() && cursor->getTex()!=hudObjects[1]->getCursor()) {
-							audioObject->playAgain("menuClick");
+						if (hudObjects[1]->getFlag() && cursor->getTex() != hudObjects[1]->getCursor()) {
 							if (hudObjects[1]->getSelection()->getType().compare("Autonomous") == 0)doubleClick = 1;
 							else {
 								doubleClick = 0;
 								targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
 							}
 							cursor->setTex(hudObjects[1]->getCursor());//sets the texture for the cursor with the tower icon <-----------
-							std::cout << hudObjects[1]->getSelection()->getType() << std::endl;
 							selectionGraphic->setPosition(hudObjects[1]->getSelection()->getPosition());
+							audioObject->playAgain("menuClick");
 						}
 
 
@@ -860,7 +906,6 @@ int main(void){
 						/////////////////////////////////
 
 						if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
-							
 							std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
 							income[turnIndex] += 5;
 							credits[turnIndex] -= 5;
@@ -870,13 +915,21 @@ int main(void){
 								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5);
 								e->setAudio(audioObject);
 								enemyMap[turnIndex ^ 1]->push_back(e);
-
+								if (gottaGoFast) {
+									e->modCurSpeed(2);
+									e->setEffectDuration(20);
+								}
+								if (hpUp) {
+									e->modCurHealthCap(2);
+									e->setEffectDuration(20);
+								}
 								e->oldx = round(e->getPosition().x * 100) / 100;
 								e->oldy = round(e->getPosition().y * 100) / 100;
 								e->setCur(cur);
 								e->setCurDestId(cur->getNextId());
 							}
 							timeOfLastMove = glfwGetTime();
+
 							audioObject->playAgain("enemySelected");
 						}
 					}
@@ -931,10 +984,12 @@ int main(void){
 
 					for (Text* t : h->getTextObjects()) {
 						t->setColor(hudColors[turnIndex]);
+
 						if (t->getType().compare("FPS: ") == 0) {
 							std::string temp = t->getText() + std::to_string(renderedFPS);
 							t->setRenderedText(temp);
 						}
+
 						if (t->getType().compare("Enemies Remaining: ") == 0) {
 							std::string temp = t->getText() + std::to_string(enemyMap[turnIndex]->size());
 							t->setRenderedText(temp);
@@ -989,39 +1044,41 @@ int main(void){
 				
 
 				//**********Tower**********
-				for (TowerObject* t : towerObjects) {
+				for (TowerObject* t : *(towerMap[turnIndex])) {
 					t->setEnemies(*enemyMap[turnIndex]);
+
 					
-					if (t->getType().compare("Autonomous") == 0) {
-						
+					EnemyObject* closestEnemy;
 
-						t->setCurrEnemies(enemiesInRange(t, 1, *enemyMap[turnIndex]));
-					}
+					if (enemyMap[turnIndex]->size() == 0 || !startWave) { closestEnemy = NULL; }
+					else {
 
-					else{
-						EnemyObject* closestEnemy;
+						//get the closest enemy to the tower and point to it using closestEnemy
+						closestEnemy = enemyMap[turnIndex]->front();
+						float enemyDistance = glm::length(t->getPosition() - closestEnemy->getPosition());
 
-						if (enemyMap[turnIndex]->size() == 0 || !startWave) { closestEnemy = NULL; }
-						else {
+						for (EnemyObject* e : *enemyMap[turnIndex]) {
 
-							//get the closest enemy to the tower and point to it using closestEnemy
-							closestEnemy = enemyMap[turnIndex]->front();
-							float enemyDistance = glm::length(t->getPosition() - closestEnemy->getPosition());
-
-							for (EnemyObject* e : *enemyMap[turnIndex]) {
-
-								float tempDistance = glm::length(t->getPosition() - e->getPosition());
-								if (tempDistance < enemyDistance) {
-									enemyDistance = tempDistance;
-									closestEnemy = e;
-								}
-
+							float tempDistance = glm::length(t->getPosition() - e->getPosition());
+							if (tempDistance < enemyDistance) {
+								enemyDistance = tempDistance;
+								closestEnemy = e;
 							}
+
 						}
-
-
-						t->setCurrEnemy(closestEnemy);
 					}
+
+
+					t->setCurrEnemy(closestEnemy);
+					// Updates game objects
+					t->update(deltaTime);
+					//reset color uniform.
+					GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
+					glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);
+					// Render game objects
+					t->render(shaders);
+				}
+				for (TowerObject* t : *(towerMap[turnIndex^1])) {
 					// Updates game objects
 					t->update(deltaTime);
 					//reset color uniform.
@@ -1031,14 +1088,12 @@ int main(void){
 					t->render(shaders);
 				}
 
-
 				//**********Enemy**********
 				std::deque<int> deleteEnemies;
 				int delIndex = 0;
 				bool tick = false;
 				//spawnCount+=0.25;
-				
-				if (enemyMap[turnIndex]->size() == 0 && !roundOver && enemiesDestroyed == numEnemiesSpawned ) {
+				if (enemyMap[turnIndex]->size() == 0 && !roundOver && enemiesDestroyed == numEnemiesSpawned) {
 					roundOver = true;
 					std::cout << enemiesDestroyed << "-" << numEnemiesSpawned << std::endl;
 					audioObject->playAgain("enemiesDestroyed");
@@ -1074,7 +1129,7 @@ int main(void){
 					e->oldy = enemyY;
 
 					cur = e->getCur();
-					cur->setIsCur(true);
+					//cur->setIsCur(true);
 
 					if (!e->getExists()) {
 						if (e->getHealth() <= 0.0) {
@@ -1091,6 +1146,15 @@ int main(void){
 					if (cur->getId() != g.getEndPoints(turnIndex) && cur->getNextNode(e->getCurDestId()) != NULL) {
 
 						Node* next = cur->getNextNode(e->getCurDestId());
+						if (!next->getPathable()) {
+							g.setStart(cur->getId());
+							g.setEnd(e->getCurDestId());
+							if (!g.pathfind()) {
+								std::cout << "Welll fuck";
+							}
+							next = cur->getNextNode(e->getCurDestId());
+						}
+
 						float nextx = next->getX();
 						float nexty = next->getY();
 
@@ -1108,18 +1172,26 @@ int main(void){
 							glm::vec3 pos = e->getPosition();
 							pos.y = nexty;
 							e->setPosition(pos);
-							cur->setIsCur(false);
+							//cur->setIsCur(false);
 							if (abs(oldEnemyX - next->getX()) < 0.2 &&
 								abs(oldEnemyY - next->getY()) < 0.2) {
 								cur = next;
 							}
-							cur->setIsCur(true);
+							//cur->setIsCur(true);
 							e->setCur(cur);
 							e->setCurDestId(cur->getNextId());
 
 							if (cur->getNextNode(e->getCurDestId()) != NULL) {
 
 								next = cur->getNextNode(e->getCurDestId());
+								if (!next->getPathable()) {
+									g.setStart(cur->getId());
+									g.setEnd(e->getCurDestId());
+									if (!g.pathfind()) {
+										std::cout << "Welll fuck";
+									}
+									next = cur->getNextNode(e->getCurDestId());
+								}
 								nextx = next->getX();
 								nexty = next->getY();
 
@@ -1143,12 +1215,12 @@ int main(void){
 							glm::vec3 pos = e->getPosition();
 							pos.x = nextx;
 							e->setPosition(pos);
-							cur->setIsCur(false);
+							//cur->setIsCur(false);
 							if (abs(oldEnemyX - next->getX()) < 0.2 &&
 								abs(oldEnemyY - next->getY()) < 0.2) {
 								cur = next;
 							}
-							cur->setIsCur(true);
+							//cur->setIsCur(true);
 							e->setCur(cur);
 							e->setCurDestId(cur->getNextId());
 
@@ -1213,7 +1285,7 @@ int main(void){
 				}
 
 				//**********Graph**********
-				g.update(NULL);
+				g.update(showRadius,selectionRadius);
 				//render graph
 				g.render(shaders);
 

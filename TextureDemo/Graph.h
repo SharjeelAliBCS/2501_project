@@ -30,7 +30,7 @@ public:
 	void printData();
 
 	//gets mouse input, updates start and end position using that information
-	void update(Node*);
+	void update(int showRadius, float range=-1);
 	//renders all the nodes in the graph
 	void render(std::vector<Shader*> shaders);
 
@@ -43,9 +43,9 @@ public:
 	void highlight(int n);
 
 	
-	bool rePath(std::vector<EnemyObject*>* creeps, int id, int pathCount, char side);
+	bool rePath(int id, char side);
 	//creates and marks a path from start to end
-	bool pathfind(int destId, int pathCount);
+	bool pathfind();
 
 	//setters
 	inline void setStart(int nodeId) { startNodeId = nodeId; }
@@ -71,6 +71,8 @@ public:
 
 	void clearNextNodeMaps();
 	void startPaths();
+
+	void selectRange(int id, float range);
 
 private:
 	//node sprite used to draw each node.
