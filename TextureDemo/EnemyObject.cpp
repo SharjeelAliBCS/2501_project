@@ -25,6 +25,10 @@ void EnemyObject::enemyHit(float damage) {
 	health -= damage;
 	hit = true;
 }
+void EnemyObject::enemyBurn(float b) {
+	burn = b;
+	hit = true;
+}
 // Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
 
@@ -34,6 +38,15 @@ void EnemyObject::update(double deltaTime) {
 		break;
 	}
 	case Move: {
+		if (burn > 0) {
+			if (effectTimeLeft > 0) {
+				health -= burn;
+				std::cout << "halth = " << health << std::endl;
+			}
+			else {
+				burn = 0;
+			}
+		}
 		if (effectTimeLeft <= 0) {
 			curHealthCap = defaultHealthCap;
 			health = std::fmin(curHealthCap, health);
@@ -85,7 +98,7 @@ void EnemyObject::render(std::vector<Shader*> shaders) {
 	switch (_state) {
 
 	case Move: {
-		if (hit) {
+		if (hit || burn>0) {
 			//Sets the shader to red to signify damage. 
 			GLint color_loc = glGetUniformLocation(shaders[0]->getShaderID(), "colorMod");
 			glUniform3f(color_loc, 1.0f, -1.0f, -0.6f);	//red = damaged

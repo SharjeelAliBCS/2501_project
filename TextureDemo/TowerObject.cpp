@@ -60,7 +60,9 @@ void TowerObject::update(double deltaTime) {
 			float dis = glm::length(position - currentEnemy->getPosition());
 			//std::cout << "dis " << dis << std::endl;
 			if (dis < range) {
-				currentEnemy->enemyHit(damage);
+				//currentEnemy->enemyHit(damage);
+				currentEnemy->setEffectDuration(3);
+				currentEnemy->enemyBurn(0.5);
 			}
 		}
 	}
@@ -143,6 +145,7 @@ void TowerObject::update(double deltaTime) {
 }
 
 void TowerObject::move() {
+
 	rotation = atan2(positions[currPos % 2].y - position.y, positions[currPos % 2].x - position.x);
 	position.x += projectileSpeed * cos(rotation);
 	position.y += projectileSpeed * sin(rotation);

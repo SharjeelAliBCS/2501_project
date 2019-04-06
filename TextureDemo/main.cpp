@@ -47,7 +47,7 @@ float window_height_g = window_width_g * ratio;//*1.5
 int Wwidth, Wheight;
 float factor = window_width_g / window_width_g;//*1.5
 //const glm::vec3 viewport_background_color_g(1, 1, 1);
-const glm::vec3 viewport_background_color_g(0.15, 0.17, 0.21);
+const glm::vec3 viewport_background_color_g(111.0f/255.0f,106.0f /255.0f,99.0f /255.0f);
 
 // Global texture info
 
@@ -189,13 +189,32 @@ GLuint createTexture(char *fname)
 void setallTexture(void)
 {
 
-	textures["Map"].push_back(createTexture("Graphics/Map/0_0_boundary.png"));
-	textures["Map"].push_back(createTexture("Graphics/Map/0_1_boundary.png"));
-	textures["Map"].push_back(createTexture("Graphics/Map/1_empty.png"));
-	textures["Map"].push_back(createTexture("Graphics/Map/2_checkpoint.png"));
-	textures["Map"].push_back(createTexture("Graphics/Map/3_health.png"));
-	textures["Map"].push_back(createTexture("Graphics/Map/6_spawn.png"));
-	textures["Map"].push_back(createTexture("Graphics/Map/7_destructible.png"));
+	textures["Map"].push_back(createTexture("Graphics/Map/0_0_boundary.png"));//0
+	textures["Map"].push_back(createTexture("Graphics/Map/0_1_boundary.png"));//1
+	textures["Map"].push_back(createTexture("Graphics/Map/1_empty.png"));//2
+	textures["Map"].push_back(createTexture("Graphics/Map/2_checkpoint.png"));//3
+	textures["Map"].push_back(createTexture("Graphics/Map/3_health.png"));//4
+	textures["Map"].push_back(createTexture("Graphics/Map/6_spawn.png"));//5
+	textures["Map"].push_back(createTexture("Graphics/Map/7_destructible.png"));//6
+
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_01.png"));//7
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_02.png"));//8
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_03.png"));//9
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_04.png"));//10
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_05.png"));//11
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_06.png"));//12
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_07.png"));//13
+	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_08.png"));//14
+
+	textures["Map"].push_back(createTexture("Graphics/Map/building_2/1_Boundary_01.png"));//13
+	textures["Map"].push_back(createTexture("Graphics/Map/building_2/1_Boundary_02.png"));//14
+
+	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_03.png"));//9
+	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_04.png"));//10
+	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_05.png"));//11
+	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_06.png"));//12
+	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_07.png"));//13
+	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_08.png"));//14
 
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/alien3.png"));
 	textures["Enemy"].push_back(createTexture("Graphics/Enemy/alien2.png"));
@@ -423,6 +442,26 @@ int main(void){
 		texMap.insert(std::pair<std::string, GLuint >("checkpoint", textures["Map"][3]));//checkpoint
 		texMap.insert(std::pair<std::string, GLuint >("hp", textures["Map"][4]));//end health
 
+		texMap.insert(std::pair<std::string, GLuint >("b0_1", textures["Map"][7]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_2", textures["Map"][8]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_3", textures["Map"][9]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_4", textures["Map"][10]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_5", textures["Map"][11]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_6", textures["Map"][12]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_7", textures["Map"][13]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b0_8", textures["Map"][14]));//end health
+
+		texMap.insert(std::pair<std::string, GLuint >("b1_1", textures["Map"][15]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b1_2", textures["Map"][16]));//end health
+
+		texMap.insert(std::pair<std::string, GLuint >("b2_1", textures["Map"][17]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b2_2", textures["Map"][18]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b2_3", textures["Map"][19]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b2_4", textures["Map"][20]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b2_5", textures["Map"][21]));//end health
+		texMap.insert(std::pair<std::string, GLuint >("b2_6", textures["Map"][22]));//end health
+
+
 		GLuint cursorTex = textures["Cursor"][0];
 		GLuint selectGraphicTex = textures["Cursor"][1];
 
@@ -436,7 +475,7 @@ int main(void){
 		int turnIndex = 0;
 		char turn = turnArr[turnIndex];
 
-		int level = 2;
+		int level = 1;
 		std::string fname = "Levels/map"+std::to_string(level)+".csv";
 		int wid = 0;
 		int height = 0;

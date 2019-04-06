@@ -13,6 +13,8 @@ public:
 	virtual void  render(std::vector<Shader*> shaders);
 
 	void enemyHit(float damage);
+	void enemyBurn(float b);
+
 	inline bool getKilled() { return killed; }
 	inline bool getSpawned() { return spawned; }
 	inline float getHealth() { return health; }
@@ -36,11 +38,13 @@ protected:
 	float health, defaultHealthCap, curHealthCap;
 	int curDestId;
 	bool hit,killed, spawned;
+	float curTime;
 
 	//These variables below are used for the enemy death particle stuff
 	GLuint enemyDeathTex;
 	int framesDeath;
 	Particle* deathParticles;
+	float burn;
 
 	enum State {
 		Init,

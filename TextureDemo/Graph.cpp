@@ -119,6 +119,10 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 				nodeMap[id]->setTex(texMap["ELSE"]);
 				removeNode.push_front(pair<int, int>(row, col));
 			}
+			else if (field[0]=='b') {
+				nodeMap[id]->setTex(texMap[field]);
+				
+			}
 			else if (texMap.find(field) != texMap.end()) {
 				nodeMap[id]->setTex(texMap[field]);
 				if (field.compare("T") == 0) {
@@ -391,7 +395,7 @@ void Graph::render(std::vector<Shader*> shaders) {
 			}else if (currentNode->isOnPath() && 
 				topDestMap.count(currentNode->getId())==0 && botDestMap.count(currentNode->getId()) == 0) {
 				
-				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = on path
+				glUniform3f(color_loc, -44.0f/255.0f, -133.0f/255.0f,29.0f/255.0f);	//light red = on path
 			}
 			if (currentNode->selected) {
 				glUniform3f(color_loc, -.5f, -.5f, -.5f);	//dark green
