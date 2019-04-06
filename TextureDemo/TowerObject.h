@@ -10,16 +10,19 @@
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
-	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion,GLint entityNumElements,float d,std::string type, float r, float ROF=1, int c=0);
+	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion, GLint entityNumElements, float d, std::string type,float r, float ROF = 1, int c = 0, float speed = 0.1);
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
 
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;
-	inline void setCurrEnemy(EnemyObject* enemy) {currentEnemy = enemy; }
-	
+	inline void setCurrEnemy(EnemyObject* enemy) { currentEnemy = enemy; }
 
+	//setters
+	inline void setBlueprintPos(float x, float y) { blueprintX = x; blueprintY = y; }
+	inline void setEnemies(std::vector<EnemyObject*> e) { allEnemies = e; }
+	inline void setCurrEnemies(std::vector<EnemyObject*> e) { currentEnemies = e; }
 	//getters
 	//getter for the vector of objects
 	inline std::vector<GLuint> getTexvec() { return texvec; }
@@ -29,7 +32,11 @@ public:
 	inline float getDamage() { return damage; }
 
 	inline float getROF() { return curROF; }
+	inline float getSpeed() { return projectileSpeed; }
 	inline void setCurROF(float rof) { curROF = rof; }
+
+	inline float getBlueprintX() { return blueprintX; }
+	inline float getBlueprintY() { return blueprintY; }
 	
 	
 private:
@@ -41,7 +48,10 @@ private:
 		Idle,
 		Locate,
 		Fire,
-		Death
+		Stop,
+		SpeedUp,
+		SlowDown
+
 	};
 
 	State _state;
@@ -49,23 +59,36 @@ private:
 	void deathAnimation();
 	void locateEnemy();
 	void fireEnemy();
+	void move();
 	//***********************************
 	GLuint turretTexture;
 	GLuint projectileTex;
 
+	int currPos = 0;
+	glm::vec3 positions[2];
+	glm::vec3 explodePos;
 	EnemyObject* currentEnemy;
+	std::vector<EnemyObject*> currentEnemies;
+	std::vector<EnemyObject*> allEnemies;
 
 	float curROF,defaultROF, frames;
 	double lastShotTime;
 	float damage;
+	float projectileSpeed;
+	int explosion_num;
 	float range;
+	float orgSpeed;
 	GLint size;
 	std::vector<ProjectileObject*> bullObjects;
 	std::vector<GLuint> explosion_tex;
-	GLuint icon;
+	
 	Particle* particle;
 	std::vector<GLuint> texvec;
 	std::vector<GLuint> texvecExplosion;
+
+	//blueprint stuff:
+	GLuint icon;
+	float blueprintX, blueprintY;
 
 	
 

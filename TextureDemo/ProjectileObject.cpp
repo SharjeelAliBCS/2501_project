@@ -16,11 +16,11 @@ ProjectileObject::ProjectileObject(glm::vec3 &entityPos, GLuint entityTexture, s
 	: GameObject(entityPos, entityTexture, entityNumElements, type, s) {
 	target = enemy;
 	orgCoord = entityPos;
-	damage = 10.0f;
 	rotation = angle;
 	explosion_tex = explosion;
 	explosion_num = -1;
 	damage = d;
+	std::cout << "speed = " << curSpeed << std::endl;
 }
 
 // Update function for moving the bullet object around

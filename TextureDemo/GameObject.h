@@ -58,6 +58,7 @@ protected:
 	int cost;
 	glm::vec3 position;
 	glm::vec3 direction;
+	glm::vec3 orgCoord;//stores the original coord of where it launched from. 
 	float defaultSpeed, curSpeed,rotation=0.0f;
 	float effectDur;
 	float effectTimeLeft;
@@ -72,4 +73,7 @@ protected:
 	GLuint texture;
 	std::string uniqueID;
 	Audio* audio;
+	float acceleration, vx, vy;
+	glm::vec3 velocity, a;
+
 };

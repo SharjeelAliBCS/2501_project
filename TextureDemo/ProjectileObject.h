@@ -13,7 +13,7 @@ public:
 private:
 	float damage;
 	float distance;
-	glm::vec3 orgCoord;//stores the original coord of where it launched from. 
+	
 	EnemyObject* target;
 
 	std::vector<GLuint> explosion_tex;

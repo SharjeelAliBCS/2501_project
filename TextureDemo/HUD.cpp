@@ -83,6 +83,7 @@ void HUD::selection(double x, double y) {
 		buttonFlag = false;
 		powerUpFlag = false;
 		currentCursor = blueprints[3]->getIcon();
+		std::cout << "ddd" << std::endl;
 
 	}
 	else if ((635 * factor <= x && x <= 667 * factor) && (502 * factor <= y && y <= 527 * factor)) {//start of second row
@@ -418,17 +419,17 @@ void HUD::render(std::vector<Shader*> shaders) {
 		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-		//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+		//transformationMatrix = rotationMatrix * translationMatrix  * scal eMatrix;
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 
-		glBindTexture(GL_TEXTURE_2D, blueprints[i]->getTex());
+		//glBindTexture(GL_TEXTURE_2D, blueprints[i]->getTex());
 
 
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+		//shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		//glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 
 	// Bind the entities texture
