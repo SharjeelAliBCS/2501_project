@@ -256,6 +256,11 @@ void setallTexture(void)
 	textures["Tower"].push_back(createTexture("Graphics/Tower/06_projectile.png"));//6
 	textures["Tower"].push_back(createTexture("Graphics/Tower/04_auto.png"));//7
 
+	textures["Tower"].push_back(createTexture("Graphics/Tower/07_tower.png"));//4
+	textures["Tower"].push_back(createTexture("Graphics/Tower/07_turret.png"));//5
+	textures["Tower"].push_back(createTexture("Graphics/Tower/07_projectile.png"));//6
+	textures["Tower"].push_back(createTexture("Graphics/Tower/07_towerIcon.png"));//7
+
 
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_1.png"));
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_2.png"));
@@ -563,9 +568,9 @@ int main(void){
 		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,   "Flamethrower",    1, 0.1, 10,   0.1)); index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,   "Barrier",         0, 0,   1,    0.0)); index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "Sniper",          20, 4,  100,  0.6)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50,  "Autonomous",      20, 2,  5, 0.3));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "denderBlueprint", 10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "denderBlueprint", 10));
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50,  "Autonomous",      20, 2,  5,    0.3));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "Laser",			  10, 1,  0,    30));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "Yondu", 10));
 		/************************************************enemyBlueprints INIT************************************************/
 //																								         health							          speed, cost  regen
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, 50,  "Normal",    textures["Particle"][1], 1,   10,  0));//0

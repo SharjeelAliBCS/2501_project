@@ -59,6 +59,7 @@ private:
 	void locateEnemy();
 	void fireEnemy();
 	void move();
+	
 	std::vector<EnemyObject*> enemiesInRange(float range);
 
 

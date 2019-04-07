@@ -42,15 +42,17 @@ void TowerObject::update(double deltaTime) {
 
 	std::deque<int> deleteBullets;
 
-	for (int i = 0; i < bullObjects.size(); i++) {
-		bullObjects[i]->setCurrEnemy(currentEnemy);
-		bullObjects[i]->setRotation(rotation);
-		bullObjects[i]->update(deltaTime);
+	if (type.compare("Laser")) {
+		for (int i = 0; i < bullObjects.size(); i++) {
+			bullObjects[i]->setCurrEnemy(currentEnemy);
+			bullObjects[i]->setRotation(rotation);
+			bullObjects[i]->update(deltaTime);
 
-		if (!bullObjects[i]->getExists()) {
-			deleteBullets.push_front(i);
+			if (!bullObjects[i]->getExists()) {
+				deleteBullets.push_front(i);
+			}
+
 		}
-
 	}
 
 	if (particle != NULL) {
@@ -232,6 +234,17 @@ void TowerObject::fireEnemy() {
 			}
 			_state = SlowDown;
 		}
+
+	}
+	else if (type.compare("Laser") == 0) {
+		if (bullObjects.size() == 0) {
+			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
+			bullObjects[0]->setImgScale(glm::vec3(projectileSpeed,1,1));
+		}
+		bullObjects[0]->setCurrEnemy(currentEnemy);
+		bullObjects[0]->setRotation(rotation);
+		locateEnemy();
+		
 
 	}
 	else if (type.compare("Barrier") == 0) {
