@@ -121,7 +121,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			}
 			else if (field[0]=='b') {
 				nodeMap[id]->setTex(texMap[field]);
-				
+				getNode(id).setPathable(false);
 			}
 			else if (texMap.find(field) != texMap.end()) {
 				nodeMap[id]->setTex(texMap[field]);

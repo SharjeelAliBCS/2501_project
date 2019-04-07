@@ -36,12 +36,17 @@ void Particle::update(double deltaTime) {
 }
 
 void Particle::render(std::vector<Shader*> shaders) {
-
+	if (position.x < -1.1 / cameraZoom - cameraTranslatePos.x ||
+		position.x > 1.1 / cameraZoom - cameraTranslatePos.x ||
+		position.y < -0.5 / cameraZoom - cameraTranslatePos.y ||
+		position.y > 1.1 / cameraZoom - cameraTranslatePos.y) {
+		return; //uncomment for fps boost based on zoom
+	}
 	//Here it's disabling and configuring the shader to match the particle system's requirements
 	shaders[0]->disable();
 	shaders[shaderIndex]->enable();
 	shaders[shaderIndex]->setAttribute(shaderIndex);
-	shaders[shaderIndex]->setRadius(shaderIndex);
+	//shaders[shaderIndex]->setRadius(shaderIndex);
 	//std::cout << "ddd" << std::endl;
 
 

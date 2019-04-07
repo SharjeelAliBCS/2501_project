@@ -9,11 +9,9 @@
 #include "Shader.h"
 #include <vector>
 #include "Audio.h"
-
 class GameObject {
 public:
 	GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint entityNumElements, std::string t, float speed=1, int c=0);
-
 	// Updates the GameObject's state. Can be overriden for children
 	virtual void update(double deltaTime);
 
@@ -50,6 +48,8 @@ public:
 	inline void setCost(int c) { cost = c; }
 	inline void setEffectDuration(float t) { effectTimeLeft = t; }
 
+	static float cameraZoom;
+	static glm::vec3 cameraTranslatePos;
 	//inline void setTex(GLuint)
 protected:
 	// Object's Transform Variables

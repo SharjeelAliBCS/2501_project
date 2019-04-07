@@ -38,6 +38,8 @@
 #define PrintException(exception_object)\
 	std::cerr << exception_object.what() << std::endl
 
+float GameObject::cameraZoom = 0.2f;
+glm::vec3 GameObject::cameraTranslatePos = glm::vec3(0.0f);
 
 // Globals that define the OpenGL window and viewport
 const std::string window_title_g = "Assault on Terra";
@@ -468,14 +470,14 @@ int main(void){
 		/************************************************VARIABLES INIT************************************************/
 		char turnArr[2] = { 'B','T' };
 		long income[2] = { 20,20 };
-		long credits[2] = { 50,30 };
+		long credits[2] = { 30,30 };
 		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
 
 		int hp[2] = { 20,20 };
 		int turnIndex = 0;
 		char turn = turnArr[turnIndex];
 
-		int level = 0;
+		int level = 2;
 		std::string fname = "Levels/map"+std::to_string(level)+".csv";
 		int wid = 0;
 		int height = 0;
@@ -492,8 +494,8 @@ int main(void){
 		float timeOfLastMove = 0.0f;
 
 		float maxCamZoom = 0.60f;
-		float minCamZoom = 0.07f;
-		float cameraZoom = 0.15f;
+		float minCamZoom = 0.10f;
+		float cameraZoom = 0.20f;
 		
 		float camShiftInc = 0.05f;
 		float camZoomInc = 0.01f;
@@ -503,6 +505,7 @@ int main(void){
 		bool rainingLead = false;
 		float rainingLeadEnd = 0;
 
+		EnemyObject* selectedEnemy = NULL;
 
 		float enemyX, enemyY, oldEnemyX, oldEnemyY;
 		float spawnCount = 0;
@@ -554,24 +557,25 @@ int main(void){
 
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
 		//to create the actual tower object. 
-		int index = 0;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5, "Basic", 3, 0.5, 5, 0.15)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 15, "Defender", 2, 1, 10, 0.1));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 4, "Flamethrower", 1, 0.1, 15));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "Barrier", 0, 0, 1));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "Sniper", 20, 2, 20, 0.3));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "Autonomous", 20, 2, 40, 0.3));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint", 10));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "denderBlueprint", 10));
+		int index = 0;																																																					//damage              range  rof  cost  speed								
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "Basic",           3, 0.5, 5,    0.2)); index += 4; //the final 5 here is the cost
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30,  "Defender",        2, 1,   10,   0.4)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,   "Flamethrower",    1, 0.1, 10,   0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 6.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,   "Barrier",         0, 0,   1,    0.0)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-6.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "Sniper",          20, 4,  100,  0.6)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50,  "Autonomous",      20, 2,  5, 0.3));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "denderBlueprint", 10));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.3f, 7.2f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "denderBlueprint", 10));
 		/************************************************enemyBlueprints INIT************************************************/
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//0
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//1
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//2
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//3
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//4
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//5
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//6
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 7.2f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//7
+//																								         health							          speed, cost  regen
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(6.2f, 6.2f, 0.0f), textures["Enemy"][0], size, 50,  "Normal",    textures["Particle"][1], 1,   10,  0));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 6.2f, 0.0f), textures["Enemy"][1], size, 200, "Glutton",   textures["Particle"][1], 0.8, 30,  0));//1
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 6.2f, 0.0f), textures["Enemy"][2], size, 100, "Speedster", textures["Particle"][1], 1.7, 60,  0));//2
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 6.2f, 0.0f), textures["Enemy"][3], size, 150, "Regrowth",  textures["Particle"][1], 1,   120, 10));//3
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//4
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.2f, 7.2f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//5
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.2f, 7.2f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.2f, 7.2f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//7
 																																 /************************************************buttonBlueprints INIT************************************************/
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-6.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button1"));//panel1 0
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-7.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button2"));//panel1 1
@@ -820,6 +824,13 @@ int main(void){
 						timeOfLastMove = glfwGetTime();
 					}
 
+					//centre screen
+					if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						cameraTranslatePos = glm::vec3(0.0f);
+						g.setCamPos(cameraTranslatePos);
+						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
+						selectionGraphic->setCamPos(cameraTranslatePos);
+					}
 
 					if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS &&
 						enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -851,7 +862,7 @@ int main(void){
 						//tttt->selected = true;
 
 					}
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.2 < glfwGetTime())) {
 
 						double xpos, ypos;
 						glfwGetCursorPos(window, &xpos, &ypos);
@@ -862,7 +873,7 @@ int main(void){
 						g.getHoverCoords(x, y);
 
 
-						if (ypos <= 440*factor) {//prints on map
+						if (ypos <= 400*factor) {//prints on map
 							if (hudObjects[1]->getFlag()) {
 
 								if (g.getNode(id).getBuildable(turn)) {
@@ -890,6 +901,9 @@ int main(void){
 											}
 											g.getNode(id).setTowerState(true, turn);
 											std::cout << "tower made  " << selectedTower->getCost() << std::endl;
+											//
+											g.clearNextNodeMaps();
+											g.startPaths();
 											if (g.rePath(id, turn)) {
 												g.getNode(id).setTower(t);
 												credits[turnIndex] -= selectedTower->getCost();
@@ -933,6 +947,7 @@ int main(void){
 							selectionGraphic->setPosition(hudObjects[1]->getSelection()->getPosition());
 							audioObject->playAgain("menuClick");
 						}
+						timeOfLastMove = glfwGetTime();
 
 
 
@@ -945,9 +960,20 @@ int main(void){
 					}
 
 
-					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS &&
-						(timeOfLastMove + 0.15 < glfwGetTime())) {
+					if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+						selectedEnemy = enemyBlueprint.at(0);
+					}if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+						selectedEnemy = enemyBlueprint.at(1);
+					}if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+						selectedEnemy = enemyBlueprint.at(2);
+					}if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+						selectedEnemy = enemyBlueprint.at(3);
+					}
 
+
+					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS &&
+						selectedEnemy != NULL && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						std::cout << selectedEnemy->getType() << std::endl;
 						/////////////////////////////////
 						/////////////////////////////////
 						/////////////////////////////////
@@ -958,14 +984,15 @@ int main(void){
 						/////////////////////////////////
 						/////////////////////////////////
 
-						if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
+						if (credits[turnIndex] >= selectedEnemy->getCost() && enemyMap[turnIndex ^ 1]->size() < 1000) { //>=selectedEnemy->getCost()
 							std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-							income[turnIndex] += 5;
-							credits[turnIndex] -= 5;
+							income[turnIndex] += selectedEnemy->getCost();
+							credits[turnIndex] -= selectedEnemy->getCost();
 							Node* cur;
 							for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
 								cur = &g.getNode(s);
-								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5);
+								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), selectedEnemy->getTex(), size, selectedEnemy->getHealth(),
+									selectedEnemy->getType(), selectedEnemy->getEnemyDeathTex(), selectedEnemy->getCurSpeed(), selectedEnemy->getCost(), selectedEnemy->getRegen());
 								e->setAudio(audioObject);
 								enemyMap[turnIndex ^ 1]->push_back(e);
 								if (gottaGoFast) {
@@ -1021,7 +1048,8 @@ int main(void){
 
 			/************************************************SHADER CAMERA CENTERING********************************************/
 			glm::mat4 viewMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(cameraZoom, cameraZoom, cameraZoom)) * glm::translate(glm::mat4(1.0f), cameraTranslatePos);
-
+			GameObject::cameraTranslatePos = cameraTranslatePos;
+			GameObject::cameraZoom = cameraZoom;
 			//Here it is just looping over each shader and setting the viewmatrix. 
 			for (Shader* s : shaders) {
 				s->enable();
@@ -1110,9 +1138,8 @@ int main(void){
 						glUniform3f(glGetUniformLocation(shaders[0]->getShaderID(), "colorMod"), 0.0f, 0.0f, 0.0f);	//dark green
 				}
 
-
-
 				//**********Tower**********
+				shaders[1]->setRadius(1);
 				for (TowerObject* t : *(towerMap[turnIndex])) {
 					t->setEnemies(*enemyMap[turnIndex]);
 
@@ -1156,6 +1183,7 @@ int main(void){
 					// Render game objects
 					t->render(shaders);
 				}
+				shaders[2]->setRadius(2);
 
 				//**********Enemy**********
 				std::deque<int> deleteEnemies;
@@ -1167,7 +1195,7 @@ int main(void){
 					std::cout << enemiesDestroyed << "-" << numEnemiesSpawned << std::endl;
 					audioObject->playAgain("enemiesDestroyed");
 				}
-				if (glfwGetTime() > lastSpawnTime + 0.075) {
+				if (glfwGetTime() > lastSpawnTime + 0.2) {
 					//std::cout << "\n\n\n\nHERE"<<spawnCount<<"\n\n\n";
 					spawnCount += 1;
 					lastSpawnTime = glfwGetTime();
@@ -1345,12 +1373,14 @@ int main(void){
 
 				}
 
-				//using the indecies, delete the enemies that should be deleted. 
+				//using the indices, delete the enemies that should be deleted. 
 				for (int i = 0; i < deleteEnemies.size(); i++) {
-					if (enemyMap[turnIndex]->at(deleteEnemies[i])->getKilled()) {
-						credits[turnIndex] += enemyMap[turnIndex]->at(deleteEnemies[i])->getCost();
+					EnemyObject* e = enemyMap[turnIndex]->at(deleteEnemies[i]);
+					if (e->getKilled()) {
+						credits[turnIndex] += e->getCost();
 					}
 					enemyMap[turnIndex]->erase(enemyMap[turnIndex]->begin() + deleteEnemies[i]);
+					delete(e);
 				}
 
 				//**********Graph**********

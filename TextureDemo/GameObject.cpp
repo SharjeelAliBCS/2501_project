@@ -27,13 +27,14 @@ GameObject::GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint en
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	vx = 0;
 	vy = 0;
+
+
 	//uniqueID = std::to_string
 
 
 	//uniqueID = std::to_string(std::rand() % (100000000 - 0 + 1));
 	
 }
-
 // Updates the GameObject's state. Can be overriden for children
 void GameObject::update(double deltaTime) {
 	// Update object position
@@ -50,6 +51,12 @@ void GameObject::update(double deltaTime) {
 
 // Renders the GameObject using a shader
 void GameObject::render(std::vector<Shader*> shaders) {
+	if (position.x < -1.1 / cameraZoom - cameraTranslatePos.x ||
+		position.x > 1.1 / cameraZoom - cameraTranslatePos.x ||
+		position.y < -0.5 / cameraZoom - cameraTranslatePos.y ||
+		position.y > 1.1 / cameraZoom - cameraTranslatePos.y) {
+		return; //uncomment for fps boost based on zoom
+	}
 	// Bind the entities texture
 	glBindTexture(GL_TEXTURE_2D, texture);
 

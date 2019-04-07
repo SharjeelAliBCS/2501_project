@@ -3,16 +3,17 @@
 #include "Window.h"
 
 /*
-	PlayerGameObject inherits from GameObject
-	It overrides GameObject's update method, so that you can check for input to change the velocity of the player
+PlayerGameObject inherits from GameObject
+It overrides GameObject's update method, so that you can check for input to change the velocity of the player
 */
 
-EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type, GLuint edt, float speed, int c)
-	: GameObject(entityPos, entityTexture, entityNumElements,type,speed, c),
-	enemyDeathTex(edt), framesDeath(-1),deathParticles(NULL){
+EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type, GLuint edt, float speed, int c, float regen)
+	: GameObject(entityPos, entityTexture, entityNumElements, type, speed, c),
+	enemyDeathTex(edt), framesDeath(-1), deathParticles(NULL) {
 	health = h;
 	defaultHealthCap = h;
 	curHealthCap = h;
+	this->regen = regen;
 	hit = false;
 	killed = false;
 	spawned = false;
@@ -54,6 +55,11 @@ void EnemyObject::update(double deltaTime) {
 		else if (!spawned) {
 			effectTimeLeft += deltaTime;
 		}
+		timeSinceLastHeal -= deltaTime;
+		if (timeSinceLastHeal <= 0) {
+			health = std::fmin(health + regen, curHealthCap);
+			timeSinceLastHeal = 1;
+		}
 		//Here if the health is zero,spawn the particle system for the death animation. 
 		if (health <= 0.0f && framesDeath == -1) {
 			deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
@@ -63,7 +69,7 @@ void EnemyObject::update(double deltaTime) {
 			_state = Dying;
 		}
 		if (framesDeath >= 0) {
-			
+
 		}
 		break;
 	}
@@ -88,13 +94,18 @@ void EnemyObject::update(double deltaTime) {
 
 	}
 
-	
+
 	// Call the parent's update method to move the object
 	GameObject::update(deltaTime);
 }
 
 void EnemyObject::render(std::vector<Shader*> shaders) {
-
+	if (position.x < -1.1 / cameraZoom - cameraTranslatePos.x ||
+		position.x > 1.1 / cameraZoom - cameraTranslatePos.x ||
+		position.y < -0.5 / cameraZoom - cameraTranslatePos.y ||
+		position.y > 1.1 / cameraZoom - cameraTranslatePos.y) {
+		return; //uncomment for fps boost based on zoom
+	}
 	switch (_state) {
 
 	case Move: {

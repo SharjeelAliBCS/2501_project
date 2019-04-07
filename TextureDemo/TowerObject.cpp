@@ -67,14 +67,23 @@ void TowerObject::update(double deltaTime) {
 		}
 	}
 	//delete the bullets that should be deleted
-	for (int i = 0; i < deleteBullets.size(); i++) bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
+	for (int i = 0; i < deleteBullets.size(); i++) {
+		ProjectileObject* p = bullObjects[deleteBullets[i]];
+		bullObjects.erase(bullObjects.begin() + deleteBullets[i]);
+		delete(p);
+		p = NULL;
+	}
 	if (effectTimeLeft < 0) {
 		curROF = defaultROF;
 	}
 
 	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("Flamethrower") == 0) {
-		particle = NULL;
-
+		std::cout << "Right";
+		if (particle != NULL) {
+			delete(particle);
+			particle = NULL;
+		}
+		std::cout << "Now\n";
 		audio->close(uniqueID);
 	}
 	//state machine used to move around (right now only uses locate)
