@@ -475,7 +475,7 @@ int main(void){
 		int turnIndex = 0;
 		char turn = turnArr[turnIndex];
 
-		int level = 1;
+		int level = 0;
 		std::string fname = "Levels/map"+std::to_string(level)+".csv";
 		int wid = 0;
 		int height = 0;
@@ -862,7 +862,7 @@ int main(void){
 						g.getHoverCoords(x, y);
 
 
-						if (ypos <= 440) {//prints on map
+						if (ypos <= 440*factor) {//prints on map
 							if (hudObjects[1]->getFlag()) {
 
 								if (g.getNode(id).getBuildable(turn)) {
@@ -870,14 +870,15 @@ int main(void){
 									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
 									if (credits[turnIndex] >= selectedTower->getCost()) {
 
-
+										std::cout << "Tower placed! " << doubleClick << std::endl;
 										if (doubleClick == 1) {
 											targetPos = glm::vec3(x, y, 0.0f);
 											doubleClick++;
 
 										}
 										else {
-											doubleClick = 1;
+											if (hudObjects[1]->getSelection()->getType().compare("Autonomous") == 0)doubleClick = 1;
+											else doubleClick = 0;
 											TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(),
 												selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
 												selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
@@ -888,10 +889,12 @@ int main(void){
 
 											}
 											g.getNode(id).setTowerState(true, turn);
+											std::cout << "tower made  " << selectedTower->getCost() << std::endl;
 											if (g.rePath(id, turn)) {
 												g.getNode(id).setTower(t);
 												credits[turnIndex] -= selectedTower->getCost();
 												towerMap[turnIndex]->push_back(t);
+												std::cout << "GRAPH STUFF " << selectedTower->getCost() << std::endl;
 												if (rainingLead) {
 													t->modCurROF(0.5);
 													t->setEffectDuration(rainingLeadEnd - glfwGetTime());
