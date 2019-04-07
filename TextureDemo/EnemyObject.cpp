@@ -62,6 +62,7 @@ void EnemyObject::update(double deltaTime) {
 		}
 		//Here if the health is zero,spawn the particle system for the death animation. 
 		if (health <= 0.0f && framesDeath == -1) {
+			killed = true;
 			deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
 			framesDeath++;
 			audio->playAgain("enemyDeath");

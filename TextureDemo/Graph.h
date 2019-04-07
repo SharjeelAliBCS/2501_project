@@ -70,7 +70,7 @@ public:
 	inline glm::vec3 getFocalPoint(int i) { return focalPoints[i]; }
 
 	void clearNextNodeMaps();
-	void startPaths();
+	bool startPaths(int turnIndex);
 
 	void selectRange(int id, float range);
 

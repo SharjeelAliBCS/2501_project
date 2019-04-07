@@ -425,7 +425,6 @@ create map for each node to store path based on dest, otherwise overwritten
 */
 bool Graph::rePath(int id, char side) {
 	map<int, int> mapInUse = side == 'T' ? topDestMap : botDestMap;
-	bool pathFound = true;
 	Node changedNode = getNode(id);
 
 	std::cout << "got here 2\n";
@@ -450,38 +449,25 @@ bool Graph::rePath(int id, char side) {
 	return true;
 }
 
-void Graph::startPaths() {
+bool Graph::startPaths(int turnIndex) {
 	std::cout << "startPaths\n";
 	std::cout << "T\n";
-
-	for (std::map<int, int>::iterator it = topDestMap.begin(); it != topDestMap.end(); ++it) {
+	map<int, int> mapInUse = turnIndex ? topDestMap : botDestMap;
+	for (std::map<int, int>::iterator it = mapInUse.begin(); it != mapInUse.end(); ++it) {
 		//std::cout << it->first << " => " << it->second << '\n';
 		getNode(it->first).setNextId(it->second);
 		if (it->second != -1) {
 			setStart(it->first);
 			setEnd(it->second);
-			pathfind();
+			if (!pathfind()) {
+				return false;
+			}
 		}
 		else {
 			setEnd(it->first);
 		}
 	}
-
-	std::cout << "B\n";
-	for (std::map<int, int>::iterator it = botDestMap.begin(); it != botDestMap.end(); ++it) {
-		//std::cout << it->first << " => " << it->second << '\n';
-		getNode(it->first).setNextId(it->second);
-		if (it->second != -1) {
-			setStart(it->first);
-			setEnd(it->second);
-			pathfind();
-		}
-		else {
-			setEnd(it->first);
-		}
-
-	}
-
+	return true;
 }
 
 

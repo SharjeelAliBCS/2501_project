@@ -239,12 +239,12 @@ void TowerObject::fireEnemy() {
 	else if (type.compare("Laser") == 0) {
 		if (bullObjects.size() == 0) {
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
-			bullObjects[0]->setImgScale(glm::vec3(projectileSpeed,1,1));
+			bullObjects[0]->setImgScale(glm::vec3(projectileSpeed, 1, 1));
 		}
 		bullObjects[0]->setCurrEnemy(currentEnemy);
 		bullObjects[0]->setRotation(rotation);
 		locateEnemy();
-		
+
 
 	}
 	else if (type.compare("Barrier") == 0) {
