@@ -49,7 +49,7 @@ float window_height_g = window_width_g * ratio;//*1.5
 int Wwidth, Wheight;
 float factor = window_width_g / window_width_g;//*1.5
 //const glm::vec3 viewport_background_color_g(1, 1, 1);
-const glm::vec3 viewport_background_color_g(111.0f/255.0f,106.0f /255.0f,99.0f /255.0f);
+const glm::vec3 viewport_background_color_g(50.0f/255.0f, 50.0f /255.0f, 50.0f /255.0f);
 
 // Global texture info
 
@@ -230,15 +230,15 @@ void setallTexture(void)
 	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_07.png"));//13
 	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_08.png"));//14
 
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/alien3.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/alien2.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/alien1.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/alien4.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/0_enemy.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/01_enemy.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/monster_41.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/monster_42.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/1_enemy.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/normal.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/glutton.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/speedster.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regenerator.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/speedsterGlutton.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regeneratingGlutton.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regeneratingSpeedster.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regeneratingSpeedsterGlutton.png"));
+	textures["Enemy"].push_back(createTexture("Graphics/Enemy/undying.png"));
 
 	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
 	textures["Particle"].push_back(createTexture("Graphics/Particles/enemyDeath.png"));
