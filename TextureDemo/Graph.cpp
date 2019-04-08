@@ -269,6 +269,42 @@ void Graph::printData() {
 	}
 }
 
+void Graph::startPaths() {
+	std::cout << "startPaths\n";
+	std::cout << "T\n";
+
+	for (std::map<int, int>::iterator it = topDestMap.begin(); it != topDestMap.end(); ++it) {
+		//std::cout << it->first << " => " << it->second << '\n';
+		getNode(it->first).setNextId(it->second);
+		if (it->second != -1) {
+			setStart(it->first);
+			setEnd(it->second);
+			pathfind();
+		}
+		else {
+			setEnd(it->first);
+		}
+	}
+
+	std::cout << "B\n";
+	for (std::map<int, int>::iterator it = botDestMap.begin(); it != botDestMap.end(); ++it) {
+		//std::cout << it->first << " => " << it->second << '\n';
+		getNode(it->first).setNextId(it->second);
+		if (it->second != -1) {
+			setStart(it->first);
+			setEnd(it->second);
+			pathfind();
+		}
+		else {
+			setEnd(it->first);
+		}
+
+	}
+
+}
+
+
+
 void Graph::highlight(int n) {
 
 	getNode(hover).toggleHighlight();

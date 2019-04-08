@@ -61,10 +61,11 @@ void TowerObject::update(double deltaTime) {
 		if (currentEnemy != NULL) {
 			float dis = glm::length(position - currentEnemy->getPosition());
 			//std::cout << "dis " << dis << std::endl;
-			if (dis < range) {
+			if (dis < range && prevEnemy!=currentEnemy) {
 				//currentEnemy->enemyHit(damage);
-				currentEnemy->setEffectDuration(3);
+				currentEnemy->setBurnDuration(3);
 				currentEnemy->enemyBurn(0.5);
+				prevEnemy = currentEnemy;
 			}
 		}
 	}
@@ -146,6 +147,11 @@ void TowerObject::update(double deltaTime) {
 		}
 
 		break;
+	}
+	case CoolDown: {
+		if (laserCoolDownTime <= 0) {
+			_state = Locate;
+		}
 	}
 	default:
 		break;
@@ -238,12 +244,42 @@ void TowerObject::fireEnemy() {
 	}
 	else if (type.compare("Laser") == 0) {
 		if (bullObjects.size() == 0) {
+			audio->addAudio("Audio/Towers/laser.mp3", uniqueID);
+			audio->volume(uniqueID, 10);
+			audio->playRepeat(uniqueID);
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
 			bullObjects[0]->setImgScale(glm::vec3(projectileSpeed, 1, 1));
+			laserCoolDownTime = 5;
 		}
-		bullObjects[0]->setCurrEnemy(currentEnemy);
-		bullObjects[0]->setRotation(rotation);
-		locateEnemy();
+
+		if (currentEnemy != NULL) {
+			bullObjects[0]->setCurrEnemy(currentEnemy);
+			bullObjects[0]->setRotation(rotation);
+			locateEnemy();
+
+			for (EnemyObject* e : allEnemies) {
+				if (lineCollision(e)) {
+					e->enemyHit(damage);
+				}
+			}
+
+			if (laserCoolDownTime <= 0) {
+				_state = CoolDown;
+				laserCoolDownTime = 3;
+				audio->close(uniqueID);
+				delete(bullObjects[0]);
+				bullObjects.pop_back();
+				audio->playAgain("cooldown");
+			}
+
+		}
+		else {
+			audio->close(uniqueID);
+			delete(bullObjects[0]);
+			bullObjects.pop_back();
+			_state = Locate;
+		}
+
 
 
 	}
@@ -275,6 +311,35 @@ void TowerObject::fireEnemy() {
 
 }
 
+bool TowerObject::lineCollision(EnemyObject* enemy) {
+	float x1 = position.x;
+	float y1 = position.y;
+	float x2 = 2*(projectileSpeed/9)*cos(rotation*3.14159 / 180)+ x1;
+	float y2 = 2*(projectileSpeed/9) *sin(rotation*3.14159 / 180)+ y1;
+	float ex = enemy->getPosition().x;
+	float ey = enemy->getPosition().y;
+
+	float radius = 0.3;
+	
+	float lineDotProduct = ((ex - x1) * (x2 - x1) + (ey - y1) * (y2 - y1)) / (pow((x2 - x1), 2) + pow((y2 - y1),2));
+	
+	lineDotProduct = std::fmax(std::fmin(lineDotProduct, 1), 0);
+
+	float pointOnLineX = x1 + lineDotProduct * (x2 - x1);
+	float pointOnLineY = y1 + lineDotProduct * (y2 - y1);
+
+	float distance = pow((pointOnLineX - ex),2) + pow((pointOnLineY - ey),2);
+
+	if (distance <= pow(radius, 2)) {
+		
+		return true;
+	}
+	else {
+		
+		return false;
+	}
+
+}
 
 void TowerObject::render(std::vector<Shader*> shaders) {
 
@@ -283,10 +348,12 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though														// Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix;
 
+
 	if (type.compare("Autonomous") == 0) {
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation - 90, glm::vec3(0.0f, 0.0f, 1.0f));
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.6f, 0.6f));
 	}
+	
 	else if (type.compare("Barrier")) {
 
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -317,6 +384,8 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+
 
 	if (explosion_num >= 0) {
 		translationMatrix = glm::translate(glm::mat4(1.0f), explodePos);

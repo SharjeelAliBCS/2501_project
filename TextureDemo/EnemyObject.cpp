@@ -27,8 +27,9 @@ void EnemyObject::enemyHit(float damage) {
 	hit = true;
 }
 void EnemyObject::enemyBurn(float b) {
-	burn = b;
+	burn += b;
 	hit = true;
+	
 }
 // Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
@@ -40,9 +41,9 @@ void EnemyObject::update(double deltaTime) {
 	}
 	case Move: {
 		if (burn > 0) {
-			if (effectTimeLeft > 0) {
+			if (burnTimeLeft > 0) {
 				health -= burn;
-				std::cout << "halth = " << health << std::endl;
+				
 			}
 			else {
 				burn = 0;

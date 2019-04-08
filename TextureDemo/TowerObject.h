@@ -7,6 +7,7 @@
 #include <deque>
 #include "Audio.h"
 
+
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:
@@ -49,7 +50,8 @@ private:
 		Fire,
 		Stop,
 		SpeedUp,
-		SlowDown
+		SlowDown,
+		CoolDown
 
 	};
 
@@ -59,7 +61,7 @@ private:
 	void locateEnemy();
 	void fireEnemy();
 	void move();
-
+	bool lineCollision(EnemyObject* enemy);
 	std::vector<EnemyObject*> enemiesInRange(float range);
 
 
@@ -71,6 +73,7 @@ private:
 	glm::vec3 positions[2];
 	glm::vec3 explodePos;
 	EnemyObject* currentEnemy;
+	EnemyObject* prevEnemy;
 	std::vector<EnemyObject*> currentEnemies;
 	std::vector<EnemyObject*> allEnemies;
 

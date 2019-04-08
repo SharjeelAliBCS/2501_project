@@ -99,7 +99,7 @@ void HUD::selection(double x, double y) {
 }
 
 void HUD::selectionEnemy(double x, double y) {
-	std::cout << x / factor << "," << y / factor << std::endl;
+	//std::cout << x / factor << "," << y / factor << std::endl;
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	if ((9.6 * factor <= x && x <= 42.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[0];

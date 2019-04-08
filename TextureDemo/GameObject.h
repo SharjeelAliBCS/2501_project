@@ -47,6 +47,7 @@ public:
 	inline int getCost() { return cost; }
 	inline void setCost(int c) { cost = c; }
 	inline void setEffectDuration(float t) { effectTimeLeft = t; }
+	inline void setBurnDuration(float t) { burnTimeLeft = t; }
 
 	static float cameraZoom;
 	static glm::vec3 cameraTranslatePos;
@@ -58,7 +59,7 @@ protected:
 	glm::vec3 position;
 	glm::vec3 direction;
 	float defaultSpeed, curSpeed,rotation=0.0f;
-	float effectTimeLeft;
+	float effectTimeLeft,laserCoolDownTime,burnTimeLeft;
 	glm::vec3 imgScale;
 	glm::vec3 targetPos;
 	bool exists;

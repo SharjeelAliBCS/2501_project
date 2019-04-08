@@ -71,7 +71,7 @@ public:
 
 	void clearNextNodeMaps();
 	bool startPaths(int turnIndex);
-
+	void startPaths();
 	void selectRange(int id, float range);
 
 private:

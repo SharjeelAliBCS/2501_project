@@ -1,7 +1,7 @@
 /* David Neudorf, Sharjeel Ali,Raul Rodriguez Azurdia
- * 101029913,101070889,
- Look in the README
- */
+* 101029913,101070889,
+Look in the README
+*/
 
 
 #include <iostream>
@@ -48,8 +48,8 @@ float window_width_g = 1000;//*1.5
 float window_height_g = window_width_g * ratio;//*1.5
 int Wwidth, Wheight;
 float factor = window_width_g / window_width_g;//*1.5
-//const glm::vec3 viewport_background_color_g(1, 1, 1);
-const glm::vec3 viewport_background_color_g(111.0f/255.0f,106.0f /255.0f,99.0f /255.0f);
+											   //const glm::vec3 viewport_background_color_g(1, 1, 1);
+const glm::vec3 viewport_background_color_g(111.0f / 255.0f, 106.0f / 255.0f, 99.0f / 255.0f);
 
 // Global texture info
 
@@ -113,12 +113,12 @@ int CreateSquare(void) {
 	// The face of the square is defined by four vertices and two triangles
 
 	// Number of attributes for vertices and faces
-//	const int vertex_att = 7;  // 7 attributes per vertex: 2D (or 3D) position (2), RGB color (3), 2D texture coordinates (2)
-//	const int face_att = 3; // Vertex indices (3)
+	//	const int vertex_att = 7;  // 7 attributes per vertex: 2D (or 3D) position (2), RGB color (3), 2D texture coordinates (2)
+	//	const int face_att = 3; // Vertex indices (3)
 
-	GLfloat vertex[]  = {
+	GLfloat vertex[] = {
 		//  square (two triangles)
-		   //  Position      Color             Texcoords
+		//  Position      Color             Texcoords
 		-0.5f, 0.5f,	 1.0f, 0.0f, 0.0f,		0.0f, 0.0f, // Top-left
 		0.5f, 0.5f,		 0.0f, 1.0f, 0.0f,		1.0f, 0.0f, // Top-right
 		0.5f, -0.5f,	 0.0f, 0.0f, 1.0f,		1.0f, 1.0f, // Bottom-right
@@ -169,19 +169,19 @@ void setthisTexture(GLuint w, char *fname)
 GLuint createTexture(char *fname)
 {
 	GLuint w[1];
-	glGenTextures(1,w);
+	glGenTextures(1, w);
 	glBindTexture(GL_TEXTURE_2D, w[0]);
 
 	float x = 0.2;
 	float y = 0.4;
-	
+
 
 	float h = 0.1;
 	glTexCoord2f(0, 0); glVertex2f(x, y);
-	glTexCoord2f(0.5, 0); glVertex2f(x+0.1, y);
-	glTexCoord2f(0.5, 0.5); glVertex2f(x +0.2, y + h);
+	glTexCoord2f(0.5, 0); glVertex2f(x + 0.1, y);
+	glTexCoord2f(0.5, 0.5); glVertex2f(x + 0.2, y + h);
 	glTexCoord2f(0, 0.5); glVertex2f(x, y + h);
-	
+
 
 	int width, height;
 	unsigned char* image = SOIL_load_image(fname, &width, &height, 0, SOIL_LOAD_RGBA);
@@ -320,7 +320,7 @@ void setallTexture(void)
 void setAudioTracks(Audio* audioObject) {
 
 	audioObject->addAudio("Audio/Soundtrack/test.mp3", "background");
-	audioObject->volume("background", 50);
+	audioObject->volume("background", 20);
 	//audioObject->playRepeat("background");
 	audioObject->addAudio("Audio/Soundtrack/mainMenu.mp3", "menu");
 	audioObject->volume("menu", 100);
@@ -332,6 +332,9 @@ void setAudioTracks(Audio* audioObject) {
 	audioObject->volume("towerPlaced", 30);
 	audioObject->addAudio("Audio/Towers/ship.mp3", "ship");
 	audioObject->volume("ship", 30);
+	audioObject->addAudio("Audio/Towers/laser.mp3", "laser");
+	audioObject->addAudio("Audio/Towers/cooldown.mp3", "cooldown");
+	audioObject->volume("cooldown", 30);
 
 	audioObject->addAudio("Audio/HUD/menuClick.mp3", "menuClick");
 	audioObject->volume("menuClick", 100);
@@ -354,6 +357,8 @@ void setAudioTracks(Audio* audioObject) {
 
 
 
+
+
 }
 
 std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<EnemyObject*>* creeps) {
@@ -364,7 +369,7 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 	float x = n.getX();
 	float y = n.getY();
 	for (EnemyObject* e : *creeps) {
-		if (pow((e->getPosition().x - x),2) + pow(0.75*(e->getPosition().y - y),2) < pow(range,2)) {
+		if (pow((e->getPosition().x - x), 2) + pow(0.75*(e->getPosition().y - y), 2) < pow(range, 2)) {
 			targets.push_back(e);
 		}
 	}
@@ -372,7 +377,7 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 }
 
 // Main function that builds and runs the game
-int main(void){
+int main(void) {
 	try {
 
 		/************************************************AUDIO INIT************************************************/
@@ -433,7 +438,7 @@ int main(void){
 		int size = CreateSquare();
 
 		/************************************************SHADER INIT************************************************/
-		
+
 		shaders.push_back(new Shader("shader.vert", "shader.frag", 0));
 		shaders[0]->disable();
 		shaders.push_back(new Shader("shaderParticle.vert", "shaderParticle.frag", 1));
@@ -445,8 +450,8 @@ int main(void){
 		shaders[2]->disable();
 
 		shaders[0]->setAttribute(0);
-		
-		
+
+
 
 		/************************************************TEXTURE INIT************************************************/
 		setallTexture();
@@ -495,7 +500,7 @@ int main(void){
 		char turn = turnArr[turnIndex];
 
 		int level = 2;
-		std::string fname = "Levels/map"+std::to_string(level)+".csv";
+		std::string fname = "Levels/map" + std::to_string(level) + ".csv";
 		int wid = 0;
 		int height = 0;
 		int start = 1149;
@@ -513,7 +518,7 @@ int main(void){
 		float maxCamZoom = 0.60f;
 		float minCamZoom = 0.10f;
 		float cameraZoom = 0.20f;
-		
+
 		float camShiftInc = 0.05f;
 		float camZoomInc = 0.01f;
 
@@ -536,7 +541,7 @@ int main(void){
 
 		std::ifstream in(fname);
 		std::string line, field;
-		while (getline(in, line)) { 
+		while (getline(in, line)) {
 			if (!height) {
 				std::stringstream ss(line);
 				while (getline(ss, field, ','))  // break line into comma delimitted fields
@@ -549,7 +554,7 @@ int main(void){
 		in.close();
 
 		/************************************************GRAPH INIT************************************************/
-		
+
 		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
 		glm::vec3 cameraTranslatePos = g.getFocalPoint(turnIndex);
 		start = *(g.getBotStartSet().begin());
@@ -558,7 +563,7 @@ int main(void){
 
 		g.setStart(start);
 
-	
+
 		/************************************************ENEMY INIT************************************************/
 
 		enemyMap[0] = new std::vector<EnemyObject*>;
@@ -580,24 +585,24 @@ int main(void){
 		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7, "Flamethrower", 1, 0.1, 10, 0.1)); index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0, "Barrier", 0, 0, 1, 0.0)); index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "Sniper", 20, 4, 100, 0.6)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "Autonomous", 20, 2, 5, 0.3));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "Laser", 10, 1, 0, 30));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "Autonomous", 20, 2, 100, 0.3));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0.5, "Laser", 10, 1, 50, 30));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "Yondu", 10));
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "AOE", 10));
 		/************************************************enemyBlueprints INIT************************************************/
-//																								         health							          speed, cost  regen
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 7.3f, 0.0f), textures["Enemy"][0], size, 50,  "Normal",    textures["Particle"][1], 1,   10,  0));//0
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 8.3f, 0.0f), textures["Enemy"][1], size, 200, "Glutton",   textures["Particle"][1], 0.8, 30,  0));//1
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][2], size, 100, "Speedster", textures["Particle"][1], 1.7, 60,  0));//2
-		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 7.3f, 0.0f), textures["Enemy"][3], size, 150, "Regrowth",  textures["Particle"][1], 1,   120, 10));//3
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//4
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//5
-		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 7.3f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//6
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 5,   "enemy",     textures["Particle"][1], 1,   5,   0));//7
+		//																								         health							          speed, cost  regen
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 7.3f, 0.0f), textures["Enemy"][0], size, 50, "Normal", textures["Particle"][1], 1, 10, 0));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 8.3f, 0.0f), textures["Enemy"][1], size, 200, "Glutton", textures["Particle"][1], 0.8, 30, 0));//1
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][2], size, 100, "Speedster", textures["Particle"][1], 1.7, 60, 0));//2
+
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 7.3f, 0.0f), textures["Enemy"][3], size, 150, "Regrowth", textures["Particle"][1], 1, 120, 10));//3
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 5, "enemy", textures["Particle"][1], 1, 5, 0));//4
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][3], size, 5, "enemy", textures["Particle"][1], 1, 5, 0));//5
+
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 7.3f, 0.0f), textures["Enemy"][3], size, 5, "enemy", textures["Particle"][1], 1, 5, 0));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 5, "enemy", textures["Particle"][1], 1, 5, 0));//7
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][3], size, 5, "enemy", textures["Particle"][1], 1, 5, 0));//7
-																																 /************************************************buttonBlueprints INIT************************************************/
+																																						  /************************************************buttonBlueprints INIT************************************************/
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-6.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button1"));//panel1 0
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-7.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button2"));//panel1 1
 		buttonTowerPanel.push_back(new GameObject(glm::vec3(-8.3f, 8.2f, 0.0f), textures["Button"][0], size, "Button3"));//panel1 2
@@ -608,19 +613,19 @@ int main(void){
 		buttonEnemyPanel.push_back(new GameObject(glm::vec3(8.2f, 8.2f, 0.0f), textures["Button"][0], size, "Button7"));//panel2
 		buttonEnemyPanel.push_back(new GameObject(glm::vec3(9.2f, 8.2f, 0.0f), textures["Button"][0], size, "Button8"));//panel2
 
-		/*
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(4.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//0
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(3.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//1
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(2.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//2
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(1.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//3
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//4
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-1.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//5
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-2.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//6
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-3.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//7
-		buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-4.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//8
-		*/
+																														/*
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(4.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//0
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(3.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//1
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(2.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//2
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(1.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//3
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(0.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//4
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-1.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//5
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-2.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//6
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-3.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//7
+																														buttonPowerUpsPanel.push_back(new GameObject(glm::vec3(-4.0f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));//8
+																														*/
 
-		/************************************************enemyCounters INIT************************************************/
+																														/************************************************enemyCounters INIT************************************************/
 		enemyCounters.push_back(new EnemyObject(glm::vec3(9.3f, 2.4f, 0.0f), textures["Enemy"][1], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//0
 		enemyCounters.push_back(new EnemyObject(glm::vec3(6.8f, 2.4f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//4
 		enemyCounters.push_back(new EnemyObject(glm::vec3(4.3f, 2.4f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//3
@@ -644,12 +649,12 @@ int main(void){
 		enemyCounters2.push_back(new EnemyObject(glm::vec3(-2.7f, 4.4f, 0.0f), textures["Enemy"][1], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//0
 		enemyCounters2.push_back(new EnemyObject(glm::vec3(-5.2f, 4.4f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//4
 		enemyCounters2.push_back(new EnemyObject(glm::vec3(-7.7f, 4.4f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//3
-		//button.push_back(new GameObject(glm::vec3(-7.5f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));
-		/************************************************buttonBlueprints INIT************************************************/
+																																								 //button.push_back(new GameObject(glm::vec3(-7.5f, 4.0f, 0.0f), textures["Button"][0], size, "Button9"));
+																																								 /************************************************buttonBlueprints INIT************************************************/
 		turnButtons.push_back(new GameObject(glm::vec3(1.0f, 4.0f, 0.0f), textures["MENU"][0], size, "endTurn"));//0
 		turnButtons.push_back(new GameObject(glm::vec3(-1.0f, 4.0f, 0.0f), textures["MENU"][0], size, "wave"));//0
 
-		/************************************************player stats INIT************************************************/
+																											   /************************************************player stats INIT************************************************/
 
 		player1.push_back(new HUD(glm::vec3(-4.9f, 5.7f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), textures["Player"][0], size, factor, "hp", window));
 		player1.push_back(new HUD(glm::vec3(-8.5f, 7.8f, 0.0f), cameraZoom, glm::vec3(0.07f, 0.07f, 0.0f), textures["Player"][1], size, factor, "gold", window));
@@ -750,7 +755,7 @@ int main(void){
 		hudObjects[6]->addText(new Text(glm::vec3(6.5f, -9.0f, 0.0f), fontTexture, std::to_string(fast_heartyCount2), size, 0.05f, glm::vec3(50, 175, 255), "P2fasthearty"));//0	|
 		hudObjects[6]->addText(new Text(glm::vec3(11.5f, -9.0f, 0.0f), fontTexture, std::to_string(fast_flyingCount2), size, 0.05f, glm::vec3(50, 175, 255), "P2fastflying"));//0	|
 		hudObjects[6]->addText(new Text(glm::vec3(16.5f, -9.0f, 0.0f), fontTexture, std::to_string(fast_regeneratingCount2), size, 0.05f, glm::vec3(50, 175, 255), "P2fastregenerating"));//0	|
-		hudObjects[2]->addText(new Text(glm::vec3(-14.0f, 13.9f, 0.0f), fontTexture, "FPS: ", size, 0.07f, glm::vec3(0, 0, 0),"FPS"));
+		hudObjects[2]->addText(new Text(glm::vec3(-14.0f, 13.9f, 0.0f), fontTexture, "FPS: ", size, 0.07f, glm::vec3(0, 0, 0), "FPS"));
 
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
@@ -762,8 +767,8 @@ int main(void){
 		bool roundOver = true;
 		int enemiesDestroyed = 0;
 		int numEnemiesSpawned = 0;
-
-		
+		int pathCount = 1;
+		//float spawnCount = 0;
 		_state = MainMenu;
 		_state = Game;//comment out to see menu. 
 
@@ -777,13 +782,13 @@ int main(void){
 			++fps;
 			if (int(glfwGetTime())>oldTime) {
 				oldTime = int(glfwGetTime());
-				std::cout << "FPS: "<<fps << std::endl;
+				std::cout << "FPS: " << fps << std::endl;
 				renderedFPS = fps;
 				fps = 0;
 
 			}
 			/************************************************KEY INPUT********************************************/
-			
+
 			switch (_state) {
 			case MainMenu: {
 				for (HUD* b : HUDMenu)b->setCamPos(cameraTranslatePos);
@@ -997,7 +1002,7 @@ int main(void){
 						g.getHoverCoords(x, y);
 
 
-						if (ypos <= 400*factor) {//prints on map
+						if (ypos <= 400 * factor) {//prints on map
 							if (hudObjects[3]->getFlag()) {
 
 								if (g.getNode(id).getBuildable(turn)) {
@@ -1055,7 +1060,7 @@ int main(void){
 											}
 											std::cout << "Repath" << std::endl;
 
-											
+
 										}
 									}
 
@@ -1065,30 +1070,55 @@ int main(void){
 						}
 						hudObjects[3]->selection(xpos, ypos);
 						hudObjects[4]->selectionEnemy(xpos, ypos);
-
+						hudObjects[4]->setSelectionEnemy(NULL);
+						hudObjects[6]->turns(xpos, ypos);
+						if (hudObjects[6]->turns(xpos, ypos) == "turn" && enemyMap[turnIndex]->empty() && (timeOfLastMove + 0.15 < glfwGetTime())) {
+							audioObject->playAgain("teamChange");
+							pathCount = 1;
+							spawnCount = 0;
+							startWave = 0;
+							enemiesDestroyed = 0;
+							turnIndex = turnIndex ^ 1;
+							cameraTranslatePos = g.getFocalPoint(turnIndex);
+							g.setCamPos(cameraTranslatePos);
+							for (HUD* h : hudObjects) {
+								h->setCamPos(cameraTranslatePos);
+							}
+							for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
+							for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
+							selectionGraphic->setCamPos(cameraTranslatePos);
+							timeOfLastMove = glfwGetTime();
+							std::cout << "T \n";
+							turn = turnArr[turnIndex];
+							credits[turnIndex] += income[turnIndex];
+							g.clearNextNodeMaps();
+							g.startPaths();
+						}
+						/*
 						if (hudObjects[4]->getSelectionEnemy() != NULL)
 						{
-							if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
-								std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-								income[turnIndex] += 5;
-								credits[turnIndex] -= 5;
-								Node* cur;
-								for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
-									cur = &g.getNode(s);
-									if (hudObjects[4]->getSelectionEnemy()->getType() == "normal") { normalCount += 1; }
-									EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), hudObjects[4]->getSelectionEnemy()->getTex(), size, hudObjects[4]->getSelectionEnemy()->getHealth(), hudObjects[4]->getSelectionEnemy()->getType(), hudObjects[4]->getSelectionEnemy()->getEnemyDeathTex(), hudObjects[4]->getSelectionEnemy()->getDefaultSpeed(), hudObjects[4]->getSelectionEnemy()->getCost());
-									e->setAudio(audioObject);
-									enemyMap[turnIndex ^ 1]->push_back(e);
+						if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
+						std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
+						income[turnIndex] += 5;
+						credits[turnIndex] -= 5;
+						Node* cur;
+						for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
+						cur = &g.getNode(s);
+						if (hudObjects[4]->getSelectionEnemy()->getType() == "normal") { normalCount += 1; }
+						EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), hudObjects[4]->getSelectionEnemy()->getTex(), size, hudObjects[4]->getSelectionEnemy()->getHealth(), hudObjects[4]->getSelectionEnemy()->getType(), hudObjects[4]->getSelectionEnemy()->getEnemyDeathTex(), hudObjects[4]->getSelectionEnemy()->getDefaultSpeed(), hudObjects[4]->getSelectionEnemy()->getCost());
+						e->setAudio(audioObject);
+						enemyMap[turnIndex ^ 1]->push_back(e);
 
-									e->oldx = round(e->getPosition().x * 100) / 100;
-									e->oldy = round(e->getPosition().y * 100) / 100;
-									e->setCur(cur);
-									e->setCurDestId(cur->getNextId());
-								}
-								timeOfLastMove = glfwGetTime();
-							}
+						e->oldx = round(e->getPosition().x * 100) / 100;
+						e->oldy = round(e->getPosition().y * 100) / 100;
+						e->setCur(cur);
+						e->setCurDestId(cur->getNextId());
+						}
+						timeOfLastMove = glfwGetTime();
+						}
 						}
 						hudObjects[4]->setSelectionEnemy(NULL);
+						*/
 						hudObjects[6]->turns(xpos, ypos);
 
 						if (hudObjects[6]->turns(xpos, ypos) == "wave") {
@@ -1120,19 +1150,19 @@ int main(void){
 						cursor->setTex(textures["Cursor"][0]);
 						hudObjects[1]->setFlag(false);
 					}
-
-
+					/*
 					if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(0);
+					selectedEnemy = enemyBlueprint.at(0);
 					}if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(1);
+					selectedEnemy = enemyBlueprint.at(1);
 					}if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(2);
+					selectedEnemy = enemyBlueprint.at(2);
 					}if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(3);
-					}
-
-
+					selectedEnemy = enemyBlueprint.at(3);
+					}*/
+					hudObjects[3]->selection(xpos, ypos);
+					hudObjects[4]->selectionEnemy(xpos, ypos);
+					selectedEnemy = hudObjects[4]->getSelectionEnemy();
 					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS &&
 						selectedEnemy != NULL && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						std::cout << selectedEnemy->getType() << std::endl;
@@ -1191,7 +1221,7 @@ int main(void){
 
 
 			}
-			
+
 			//==========================================>state:play/controls
 
 			//clear window
@@ -1219,11 +1249,11 @@ int main(void){
 				s->disable();
 			}
 			shaders[0]->enable();
-			
-		
+
+
 			/************************************************OBJECT UPDATE/RENDERING********************************************/
-			
-			switch(_state) {
+
+			switch (_state) {
 			case MainMenu: {
 				for (HUD* b : HUDMenu) {
 					b->render(shaders);
@@ -1247,7 +1277,7 @@ int main(void){
 
 				}
 
-				if (hudObjects[3]->updateHotkeysTower() ){
+				if (hudObjects[3]->updateHotkeysTower()) {
 					if (hudObjects[3]->getSelection()->getType().compare("Autonomous") == 0)doubleClick = 1;
 					else {
 						doubleClick = 0;
@@ -1258,29 +1288,30 @@ int main(void){
 					audioObject->playAgain("menuClick");
 				}
 				//=====================================================
+				/*
 				if (hudObjects[4]->getSelectionEnemy() != NULL)
 				{
-					if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
-						std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-						income[turnIndex] += 5;
-						credits[turnIndex] -= 5;
-						Node* cur;
-						for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
-							cur = &g.getNode(s);
+				if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
+				std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
+				income[turnIndex] += 5;
+				credits[turnIndex] -= 5;
+				Node* cur;
+				for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
+				cur = &g.getNode(s);
 
-							EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), hudObjects[4]->getSelectionEnemy()->getTex(), size, hudObjects[4]->getSelectionEnemy()->getHealth(), hudObjects[4]->getSelectionEnemy()->getType(), hudObjects[4]->getSelectionEnemy()->getEnemyDeathTex(), hudObjects[4]->getSelectionEnemy()->getDefaultSpeed(), hudObjects[4]->getSelectionEnemy()->getCost());
-							e->setAudio(audioObject);
-							enemyMap[turnIndex ^ 1]->push_back(e);
+				EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), hudObjects[4]->getSelectionEnemy()->getTex(), size, hudObjects[4]->getSelectionEnemy()->getHealth(), hudObjects[4]->getSelectionEnemy()->getType(), hudObjects[4]->getSelectionEnemy()->getEnemyDeathTex(), hudObjects[4]->getSelectionEnemy()->getDefaultSpeed(), hudObjects[4]->getSelectionEnemy()->getCost());
+				e->setAudio(audioObject);
+				enemyMap[turnIndex ^ 1]->push_back(e);
 
-							e->oldx = round(e->getPosition().x * 100) / 100;
-							e->oldy = round(e->getPosition().y * 100) / 100;
-							e->setCur(cur);
-							e->setCurDestId(cur->getNextId());
-						}
-						timeOfLastMove = glfwGetTime();
-					}
+				e->oldx = round(e->getPosition().x * 100) / 100;
+				e->oldy = round(e->getPosition().y * 100) / 100;
+				e->setCur(cur);
+				e->setCurDestId(cur->getNextId());
 				}
-				hudObjects[4]->setSelectionEnemy(NULL);
+				timeOfLastMove = glfwGetTime();
+				}
+				}
+				hudObjects[4]->setSelectionEnemy(NULL);*/
 				//=====================================================
 				for (HUD* h : hudObjects) {
 					h->setTex(textures["UI"][turnIndex]);
@@ -1608,7 +1639,7 @@ int main(void){
 				break;
 
 			}
-		
+
 			// Update other events like input handling
 			glfwPollEvents();
 
@@ -1616,13 +1647,13 @@ int main(void){
 			glfwSwapBuffers(window);
 		}
 	}
-	catch (std::exception &e){
+	catch (std::exception &e) {
 		// print exception and sleep so error can be read
 		PrintException(e);
 		std::this_thread::sleep_for(std::chrono::milliseconds(100000));
 	}
 
 	return 0;
-	
+
 }
 
