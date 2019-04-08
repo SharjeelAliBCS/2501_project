@@ -7,7 +7,6 @@
 #include <deque>
 #include "Audio.h"
 
-
 // Inherits from GameObject
 class TowerObject : public GameObject {
 public:

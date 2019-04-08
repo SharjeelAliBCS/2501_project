@@ -269,42 +269,6 @@ void Graph::printData() {
 	}
 }
 
-void Graph::startPaths() {
-	std::cout << "startPaths\n";
-	std::cout << "T\n";
-
-	for (std::map<int, int>::iterator it = topDestMap.begin(); it != topDestMap.end(); ++it) {
-		//std::cout << it->first << " => " << it->second << '\n';
-		getNode(it->first).setNextId(it->second);
-		if (it->second != -1) {
-			setStart(it->first);
-			setEnd(it->second);
-			pathfind();
-		}
-		else {
-			setEnd(it->first);
-		}
-	}
-
-	std::cout << "B\n";
-	for (std::map<int, int>::iterator it = botDestMap.begin(); it != botDestMap.end(); ++it) {
-		//std::cout << it->first << " => " << it->second << '\n';
-		getNode(it->first).setNextId(it->second);
-		if (it->second != -1) {
-			setStart(it->first);
-			setEnd(it->second);
-			pathfind();
-		}
-		else {
-			setEnd(it->first);
-		}
-
-	}
-
-}
-
-
-
 void Graph::highlight(int n) {
 
 	getNode(hover).toggleHighlight();
@@ -423,12 +387,12 @@ void Graph::render(std::vector<Shader*> shaders) {
 			glUniform3f(color_loc, 0.0f, 0.0f, 0.0f);	//dark green
 
 			//change the color uniform depending on if the node is the start or end node.
-			if (currentNode->getId() == startNodeId){
-				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = start
-			}
-			else if (currentNode->getId() == endNodeId) {
-				glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = end
-			}else if (currentNode->isOnPath() && 
+			//if (currentNode->getId() == startNodeId){
+			//	glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = start
+			//}
+			//else if (currentNode->getId() == endNodeId) {
+			//	glUniform3f(color_loc, 1.0f, 0.0f, 0.0f);	//light red = end
+			if (currentNode->isOnPath() && 
 				topDestMap.count(currentNode->getId())==0 && botDestMap.count(currentNode->getId()) == 0) {
 				
 				glUniform3f(color_loc, -44.0f/255.0f, -133.0f/255.0f,29.0f/255.0f);	//light red = on path
@@ -486,6 +450,11 @@ bool Graph::rePath(int id, char side) {
 }
 
 bool Graph::startPaths(int turnIndex) {
+	for (std::map<int, Node*>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it) {
+		//it->second->clearNextNodeMap();
+		//it->second->clearLastUpdateMap();
+		it->second->setOnPath(false);
+	}
 	std::cout << "startPaths\n";
 	std::cout << "T\n";
 	map<int, int> mapInUse = turnIndex ? topDestMap : botDestMap;

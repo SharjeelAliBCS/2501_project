@@ -29,7 +29,7 @@ void EnemyObject::enemyHit(float damage) {
 void EnemyObject::enemyBurn(float b) {
 	burn += b;
 	hit = true;
-	
+
 }
 // Update function checks if enemy health is 0
 void EnemyObject::update(double deltaTime) {
@@ -43,7 +43,7 @@ void EnemyObject::update(double deltaTime) {
 		if (burn > 0) {
 			if (burnTimeLeft > 0) {
 				health -= burn;
-				
+
 			}
 			else {
 				burn = 0;

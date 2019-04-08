@@ -21,6 +21,7 @@ public:
 	virtual bool updateHotkeysEnemy();
 	virtual bool updateHotkeysTower();
 	virtual std::string turns(double x, double y);
+	virtual void detailRender(std::vector<Shader*> shaders);
 
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;

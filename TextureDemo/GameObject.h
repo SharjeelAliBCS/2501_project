@@ -59,7 +59,7 @@ protected:
 	glm::vec3 position;
 	glm::vec3 direction;
 	float defaultSpeed, curSpeed,rotation=0.0f;
-	float effectTimeLeft,laserCoolDownTime,burnTimeLeft;
+	float effectTimeLeft, laserCoolDownTime, burnTimeLeft;
 	glm::vec3 imgScale;
 	glm::vec3 targetPos;
 	bool exists;

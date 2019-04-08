@@ -52,48 +52,57 @@ void HUD::selection(double x, double y) {
 		outSelection = blueprints[0];
 		flag = true;
 		currentCursor = blueprints[0]->getIcon();
+		enemyFlag = false;
 	}
 	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
-		outSelection = blueprints[1];
-		flag = true;
-		currentCursor = blueprints[1]->getIcon();
-	}
-	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
-		outSelection = blueprints[2];
-		flag = true;
-		currentCursor = blueprints[2]->getIcon();
-	}
-	//==============================next column
-	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outSelection = blueprints[3];
 		flag = true;
 		currentCursor = blueprints[3]->getIcon();
+		enemyFlag = false;
+	}
+	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
+		outSelection = blueprints[6];
+		flag = true;
+		currentCursor = blueprints[6]->getIcon();
+		enemyFlag = false;
+	}
+	//==============================next column
+	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
+		outSelection = blueprints[1];
+		flag = true;
+		currentCursor = blueprints[1]->getIcon();
+		enemyFlag = false;
 	}
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[4];
 		flag = true;
 		currentCursor = blueprints[4]->getIcon();
+		enemyFlag = false;
 	}
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
-		outSelection = blueprints[5];
-		flag = true;
-		currentCursor = blueprints[5]->getIcon();
-	}
-	//==============================next column
-	else if ((756 * factor <= x && x <= 788.8 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
-		outSelection = blueprints[6];
-		flag = true;
-		currentCursor = blueprints[6]->getIcon();
-	}
-	else if ((756 * factor <= x && x <= 788.8 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[7];
 		flag = true;
 		currentCursor = blueprints[7]->getIcon();
+		enemyFlag = false;
+	}
+	//==============================next column
+	else if ((756 * factor <= x && x <= 788.8 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
+		outSelection = blueprints[2];
+		flag = true;
+		currentCursor = blueprints[2]->getIcon();
+		enemyFlag = false;
+	}
+	else if ((756 * factor <= x && x <= 788.8 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
+		outSelection = blueprints[5];
+		flag = true;
+		currentCursor = blueprints[5]->getIcon();
+		enemyFlag = false;
 	}
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outSelection = blueprints[8];
 		flag = true;
 		currentCursor = blueprints[8]->getIcon();
+		enemyFlag = false;
 	}
 
 }
@@ -103,32 +112,50 @@ void HUD::selectionEnemy(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	if ((9.6 * factor <= x && x <= 42.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[0];
+		enemyFlag = true;
+		flag = false;
 	}
 	else if ((9.6 * factor <= x && x <= 42.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
-		outEnemy = enemyBlueprints2[1];
+		outEnemy = enemyBlueprints2[3];
+		enemyFlag = true;
+		flag = false;
 	}
 	else if ((9.6 * factor <= x && x <= 42.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
-		outEnemy = enemyBlueprints2[2];
+		outEnemy = enemyBlueprints2[6];
+		enemyFlag = true;
+		flag = false;
 	}
 	//====================================new column
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
-		outEnemy = enemyBlueprints2[3];
+		outEnemy = enemyBlueprints2[1];
+		enemyFlag = true;
+		flag = false;
 	}
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[4];
+		enemyFlag = true;
+		flag = false;
 	}
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
-		outEnemy = enemyBlueprints2[5];
+		outEnemy = enemyBlueprints2[7];
+		enemyFlag = true;
+		flag = false;
 	}
 	//====================================new column
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
-		outEnemy = enemyBlueprints2[6];
+		outEnemy = enemyBlueprints2[2];
+		enemyFlag = true;
+		flag = false;
 	}
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
-		outEnemy = enemyBlueprints2[7];
+		outEnemy = enemyBlueprints2[5];
+		enemyFlag = true;
+		flag = false;
 	}
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[8];
+		enemyFlag = true;
+		flag = false;
 	}
 }
 
@@ -233,62 +260,71 @@ bool HUD::updateHotkeysTower() {
 	{
 		outSelection = blueprints[0];
 		flag = true;
+		enemyFlag = false;
 		currentCursor = blueprints[0]->getIcon();
-		return true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_H) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-	{
-		outSelection = blueprints[1];
-		flag = true;
-		currentCursor = blueprints[1]->getIcon();
-		return true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_B) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-	{
-		outSelection = blueprints[2];
-		flag = true;
-		currentCursor = blueprints[2]->getIcon();
 		return true;
 	}
 	if (glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
-		outSelection = blueprints[3];
+		outSelection = blueprints[1];
 		flag = true;
-		currentCursor = blueprints[3]->getIcon();
-		return true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_J) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-	{
-		outSelection = blueprints[4];
-		flag = true;
-		currentCursor = blueprints[4]->getIcon();
-		return true;
-	}
-	if (glfwGetKey(win, GLFW_KEY_N) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-	{
-		outSelection = blueprints[5];
-		flag = true;
-		currentCursor = blueprints[5]->getIcon();
+		enemyFlag = false;
+		currentCursor = blueprints[1]->getIcon();
 		return true;
 	}
 	if (glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
-		outSelection = blueprints[6];
+		outSelection = blueprints[2];
 		flag = true;
-		currentCursor = blueprints[6]->getIcon();
+		enemyFlag = false;
+		currentCursor = blueprints[2]->getIcon();
+		return true;
+	}
+	if (glfwGetKey(win, GLFW_KEY_J) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outSelection = blueprints[3];
+		flag = true;
+		enemyFlag = false;
+		currentCursor = blueprints[3]->getIcon();
 		return true;
 	}
 	if (glfwGetKey(win, GLFW_KEY_K) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
-		outSelection = blueprints[7];
+		outSelection = blueprints[4];
 		flag = true;
-		currentCursor = blueprints[7]->getIcon();
+		enemyFlag = false;
+		currentCursor = blueprints[4]->getIcon();
+		return true;
+	}
+	if (glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outSelection = blueprints[5];
+		flag = true;
+		enemyFlag = false;
+		currentCursor = blueprints[5]->getIcon();
+		return true;
+	}
+	if (glfwGetKey(win, GLFW_KEY_N) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outSelection = blueprints[6];
+		flag = true;
+		enemyFlag = false;
+		currentCursor = blueprints[6]->getIcon();
 		return true;
 	}
 	if (glfwGetKey(win, GLFW_KEY_M) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
+		outSelection = blueprints[7];
+		flag = true;
+		enemyFlag = false;
+		currentCursor = blueprints[7]->getIcon();
+		return true;
+	}
+	if (glfwGetKey(win, GLFW_KEY_COMMA) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
 		outSelection = blueprints[8];
 		flag = true;
+		enemyFlag = false;
 		currentCursor = blueprints[8]->getIcon();
 		return true;
 	}
@@ -303,46 +339,64 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_Q) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[0];
-			return true;
-		}
-		if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-		{
-			outEnemy = enemyBlueprints2[1];
-			return true;
-		}
-		if (glfwGetKey(win, GLFW_KEY_Z) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-		{
-			outEnemy = enemyBlueprints2[2];
+			enemyFlag = true;
+			flag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
+			outEnemy = enemyBlueprints2[1];
+			enemyFlag = true;
+			flag = false;
+			return true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_E) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+		{
+			outEnemy = enemyBlueprints2[2];
+			enemyFlag = true;
+			flag = false;
+			return true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+		{
 			outEnemy = enemyBlueprints2[3];
+			enemyFlag = true;
+			flag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[4];
-			return true;
-		}
-		if (glfwGetKey(win, GLFW_KEY_X) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-		{
-			outEnemy = enemyBlueprints2[5];
-			return true;
-		}
-		if (glfwGetKey(win, GLFW_KEY_E) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
-		{
-			outEnemy = enemyBlueprints2[6];
+			enemyFlag = true;
+			flag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
+			outEnemy = enemyBlueprints2[5];
+			enemyFlag = true;
+			flag = false;
+			return true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_Z) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+		{
+			outEnemy = enemyBlueprints2[6];
+			enemyFlag = true;
+			flag = false;
+			return true;
+		}
+		if (glfwGetKey(win, GLFW_KEY_X) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+		{
 			outEnemy = enemyBlueprints2[7];
+			enemyFlag = true;
+			flag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[8];
+			enemyFlag = true;
+			flag = false;
 			return true;
 		}
 		//==============================================
@@ -356,60 +410,60 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	int normal2 = 0, fast2 = 0, hearty2 = 0, flying2 = 0, splitter2 = 0, regenerating2 = 0, fasthearty2 = 0, fastflying2 = 0, fastregenerating2 = 0;
 
 	for (EnemyObject* g : l1) {
-		if (g->getType().compare("normal") == 0) {
+		if (g->getType().compare("Normal") == 0) {
 			normal += 1;
 		}
-		if (g->getType().compare("fast") == 0) {
+		if (g->getType().compare("Glutton") == 0) {
 			fast += 1;
 		}
-		if (g->getType().compare("hearty") == 0) {
+		if (g->getType().compare("Speedster") == 0) {
 			hearty += 1;
 		}
-		if (g->getType().compare("flying") == 0) {
+		if (g->getType().compare("Regenerator") == 0) {
 			flying += 1;
 		}
-		if (g->getType().compare("splitter") == 0) {
+		if (g->getType().compare("Speedster Glutton") == 0) {
 			splitter += 1;
 		}
-		if (g->getType().compare("regenerating") == 0) {
+		if (g->getType().compare("Regenerating Glutton") == 0) {
 			regenerating += 1;
 		}
-		if (g->getType().compare("fasthearty") == 0) {
+		if (g->getType().compare("Regenerating Speedster") == 0) {
 			fasthearty += 1;
 		}
-		if (g->getType().compare("fastflying") == 0) {
+		if (g->getType().compare("Regenerating Speedster Glutton") == 0) {
 			fastflying += 1;
 		}
-		if (g->getType().compare("fastregenerating") == 0) {
+		if (g->getType().compare("Undying") == 0) {
 			fastregenerating += 1;
 		}
 	}
 	for (EnemyObject* g : l2) {
-		if (g->getType().compare("normal") == 0) {
+		if (g->getType().compare("Normal") == 0) {
 			normal2 += 1;
 		}
-		if (g->getType().compare("fast") == 0) {
+		if (g->getType().compare("Glutton") == 0) {
 			fast2 += 1;
 		}
-		if (g->getType().compare("hearty") == 0) {
+		if (g->getType().compare("Speedster") == 0) {
 			hearty2 += 1;
 		}
-		if (g->getType().compare("flying") == 0) {
+		if (g->getType().compare("Regenerator") == 0) {
 			flying2 += 1;
 		}
-		if (g->getType().compare("splitter") == 0) {
+		if (g->getType().compare("Speedster Glutton") == 0) {
 			splitter2 += 1;
 		}
-		if (g->getType().compare("regenerating") == 0) {
+		if (g->getType().compare("Regenerating Glutton") == 0) {
 			regenerating2 += 1;
 		}
-		if (g->getType().compare("fasthearty") == 0) {
+		if (g->getType().compare("Regenerating Speedster") == 0) {
 			fasthearty2 += 1;
 		}
-		if (g->getType().compare("fastflying") == 0) {
+		if (g->getType().compare("Regenerating Speedster Glutton") == 0) {
 			fastflying2 += 1;
 		}
-		if (g->getType().compare("fastregenerating") == 0) {
+		if (g->getType().compare("Undying") == 0) {
 			fastregenerating2 += 1;
 		}
 	}
@@ -544,6 +598,115 @@ void HUD::updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int h
 			t->setRenderedText(temp);
 		}
 	}
+}
+
+void HUD::detailRender(std::vector<Shader*> shaders) {
+
+
+	if (flag) {
+		textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
+		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string(outSelection->getCost()));//cost
+		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
+		textObjects[3]->setRenderedText(textObjects[3]->getText() + std::to_string(outSelection->getDamage()));//damage
+		textObjects[4]->setRenderedText(textObjects[4]->getText() + std::to_string(outSelection->getROF()));//ROF
+		textObjects[5]->setRenderedText(textObjects[5]->getText() + std::to_string(outSelection->getRange()));//range
+
+		textObjects[0]->render(shaders);
+		textObjects[1]->render(shaders);
+		textObjects[2]->render(shaders);
+		textObjects[3]->render(shaders);
+		textObjects[4]->render(shaders);
+		textObjects[5]->render(shaders);
+		glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
+
+		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outSelection->getPosition());
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outSelection->getPosition().x, -outSelection->getPosition().y, -outSelection->getPosition().z));
+		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+		// Draw the entity
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+		glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
+
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	}
+
+	if (enemyFlag) {
+
+
+		textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
+		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string(outEnemy->getCost()));//cost
+		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
+		textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string(outEnemy->getHealth()));//hp
+		textObjects[7]->setRenderedText(textObjects[7]->getText() + std::to_string(outEnemy->getCurSpeed()));//speed
+		textObjects[8]->setRenderedText(textObjects[8]->getText() + std::to_string(outEnemy->getRegen()));//range
+
+		textObjects[0]->render(shaders);
+		textObjects[1]->render(shaders);
+		textObjects[2]->render(shaders);
+		textObjects[6]->render(shaders);
+		textObjects[7]->render(shaders);
+		textObjects[8]->render(shaders);
+		glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
+
+		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outEnemy->getPosition());
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
+		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+		// Draw the entity
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+		glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
+
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	}
+
+	// Bind the entities texture
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// Setup the transformation matrix for the shader
+	glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+	//std::cout<< testCam.x<<std::endl;
+	//glm::mat4 translationMatrix = glm::translate(glm::translate(glm::mat4(1.0f), testCam), position);
+	glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+	glm::mat4 posMat = glm::translate(glm::mat4(1.0f), position);
+	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
+
+
+	glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, -position.z));
+	glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));
+	glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
+	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+	// Draw the entity
+	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+
+	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 }
 
 void HUD::render(std::vector<Shader*> shaders) {
