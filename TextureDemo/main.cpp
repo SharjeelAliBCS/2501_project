@@ -329,8 +329,8 @@ void setallTexture(void)
 
 void setAudioTracks(Audio* audioObject) {
 
-	audioObject->addAudio("Audio/Soundtrack/test.mp3", "background");
-	audioObject->volume("background", 50);
+	audioObject->addAudio("Audio/Soundtrack/infected.mp3", "background");
+	audioObject->volume("background", 20);
 	//audioObject->playRepeat("background");
 	audioObject->addAudio("Audio/Soundtrack/mainMenu.mp3", "menu");
 	audioObject->volume("menu", 100);
@@ -743,10 +743,10 @@ int main(void){
 
 		/************************************************MENU INIT************************************************/
 		glm::vec3 buttonScale = glm::vec3(0.5f, 0.5f, 0.0f);
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, factor, "PLAY", window));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, factor, "SCORE", window));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, factor, "OPTION", window));
-		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, factor, "QUIT", window));
+		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, -1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][0], size, factor, "PLAY", window));
+		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, factor, "SCORE", window));
+		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, factor, "OPTION", window));
+		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, factor, "QUIT", window));
 
 		/************************************************TEXT INIT************************************************/
 
@@ -818,7 +818,7 @@ int main(void){
 
 		
 		_state = MainMenu;
-		_state = Game;//comment out to see menu. 
+		//_state = Game;//comment out to see menu. 
 
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
 		while (!glfwWindowShouldClose(window)) {
