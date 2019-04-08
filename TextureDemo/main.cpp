@@ -243,25 +243,28 @@ void setallTexture(void)
 	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
 	textures["Particle"].push_back(createTexture("Graphics/Particles/enemyDeath.png"));
 
+	//basic
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_tower.png"));//0
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_turret.png"));//1
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_projectile.png"));//2
 	textures["Tower"].push_back(createTexture("Graphics/Tower/01_towerIcon.png"));//3
 
+	//defender
 	textures["Tower"].push_back(createTexture("Graphics/Tower/02_tower.png"));//4
 	textures["Tower"].push_back(createTexture("Graphics/Tower/02_turret.png"));//5
 	textures["Tower"].push_back(createTexture("Graphics/Tower/02_projectile.png"));//6
 	textures["Tower"].push_back(createTexture("Graphics/Tower/02_towerIcon.png"));//7
 
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_tower.png"));//8
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_turret.png"));//9
-	textures["Tower"].push_back(textures["Particle"][0]);//10
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_towerIcon.png"));//11
-
+	//barrier
 	textures["Tower"].push_back(createTexture("Graphics/Tower/05_barrier.png"));//11
 	textures["Tower"].push_back(createTexture("Graphics/Tower/05_towerIcon.png"));//8
 	textures["Tower"].push_back(createTexture("Graphics/Tower/05_towerIcon.png"));//9
 	textures["Tower"].push_back(createTexture("Graphics/Tower/05_towerIcon.png"));//11
+	//flamethrower
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_tower.png"));//8
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_turret.png"));//9
+	textures["Tower"].push_back(textures["Particle"][0]);//10
+	textures["Tower"].push_back(createTexture("Graphics/Tower/03_towerIcon.png"));//11
 
 	textures["Tower"].push_back(createTexture("Graphics/Tower/06_tower.png"));//4
 	textures["Tower"].push_back(createTexture("Graphics/Tower/06_turret.png"));//5
@@ -581,18 +584,18 @@ int main(void){
 		Node* cur;
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW STUFF
 		int index2 = 0;
-		/*
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "Basic", 3, 0.5, 5, 0.2)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 30, "Defender", 2, 1, 10, 0.4)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7, "Flamethrower", 1, 0.1, 10, 0.1)); index2 += 4;
+		
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0, "Barrier", 0, 0, 1, 0.0)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "Sniper", 20, 4, 100, 0.6)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 50, "Autonomous", 20, 2, 5, 0.3)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000)); 
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000)); 
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "Laser", 10, 1, 0, 30));//index += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "Yondu", 10));
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "AOE", 10));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 50, "A-Class Auto Assault Bomber", 20, 2, 300, 0.3));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 1, "A-Class High Beam Laser", 10, 1, 200, 30));
 
 
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][0], size, 50, "Normal", textures["Particle"][1], 1.0, 10, 0));//0
@@ -607,7 +610,7 @@ int main(void){
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Regenerating Speedster Glutton", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
-		*/
+		
 		/************************************************blueprints INIT************************************************/
 
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
@@ -615,16 +618,17 @@ int main(void){
 		int index = 0;	
 																																																				//damage              range  rof  cost  speed								
 		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "C-Class Defender", 2, 1, 10, 0.4)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7, "Flamethrower", 1, 0.1, 10, 0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0, "Barrier", 0, 0, 1, 0.0)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "Sniper", 20, 4, 100, 0.6)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "Autonomous", 20, 2, 5, 0.3));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size, 100000000, "PLACEHOLDER", 100000000));
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000));
+
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "A-Class Auto Assault Bomber", 20, 2, 5, 0.3));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "A-Class High Beam Laser", 10, 1, 50, 30));//index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "Laser", 10, 1, 50, 30));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size, 100000000, "PLACEHOLDER", 100000000));
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000));
 	
 		
 		/************************************************enemyBlueprints INIT************************************************/
@@ -641,12 +645,12 @@ int main(void){
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][7], size, 1000,    "Regenerating Speedster Glutton", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying",                        textures["Particle"][1], 2.5, 1000000,   1000000));//7
 																																						  
-		for (TowerObject* t : blueprints) {
+		/*for (TowerObject* t : blueprints) {
 			towerDetailHUD.push_back(t);
 		}
 		for (EnemyObject* e : enemyBlueprint) {
 			enemyDetailHUD.push_back(e);
-		}
+		}*/
 		/************************************************buttonBlueprints INIT************************************************/
 																																						  /************************************************enemyCounters INIT************************************************/
 		enemyCounters.push_back(new EnemyObject(glm::vec3(9.3f, 2.4f, 0.0f), textures["Enemy"][0], size, enemyHealth, "enemy", textures["Particle"][1], 1, 5));//0
@@ -1063,7 +1067,7 @@ int main(void){
 
 										}
 										else {
-											if (hudObjects[3]->getSelection()->getType().compare("Autonomous") == 0)doubleClick = 1;
+											if (hudObjects[3]->getSelection()->getType().compare("A-Class Auto Assault Bomber") == 0)doubleClick = 1;
 											else doubleClick = 0;
 											std::cout << "tower =  " << std::endl;
 											TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(),
@@ -1163,7 +1167,7 @@ int main(void){
 						}
 
 						if (hudObjects[3]->getFlag() && cursor->getTex() != hudObjects[3]->getCursor()) {
-							if (hudObjects[3]->getSelection()->getType().compare("Autonomous") == 0)doubleClick = 1;
+							if (hudObjects[3]->getSelection()->getType().compare("A-Class Auto Assault Bomber") == 0)doubleClick = 1;
 							else {
 								doubleClick = 0;
 								targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -1319,7 +1323,7 @@ int main(void){
 
 				if (hudObjects[3]->updateHotkeysTower()) {
 					hudObjects[5]->updateHotkeysTower();
-					if (hudObjects[3]->getSelection()->getType().compare("Autonomous") == 0)doubleClick = 1;
+					if (hudObjects[3]->getSelection()->getType().compare("A-Class Auto Assault Bomber") == 0)doubleClick = 1;
 					else {
 						doubleClick = 0;
 						targetPos = glm::vec3(0.0f, 0.0f, 0.0f);

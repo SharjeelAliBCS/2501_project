@@ -28,7 +28,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	orgCoord = position;
 	explosion_num = -1;
 	orgSpeed = speed;
-	//if (type.compare("Autonomous") == 0)curSpeed = speed;
+	//if (type.compare("A-Class Auto Assault Bomber") == 0)curSpeed = speed;
 	std::cout << type << " Cost: " << cost << " ROF: " << ROF << " range: " << range << " speed = " << projectileSpeed << std::endl;
 
 
@@ -42,7 +42,7 @@ void TowerObject::update(double deltaTime) {
 
 	std::deque<int> deleteBullets;
 
-	if (type.compare("Laser")) {
+	if (type.compare("A-Class High Beam Laser")) {
 		for (int i = 0; i < bullObjects.size(); i++) {
 			bullObjects[i]->setCurrEnemy(currentEnemy);
 			bullObjects[i]->setRotation(rotation);
@@ -80,7 +80,7 @@ void TowerObject::update(double deltaTime) {
 		curROF = defaultROF;
 	}
 
-	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("Flamethrower") == 0) {
+	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("B-Class IGNITION Cannon") == 0) {
 		std::cout << "Right";
 		if (particle != NULL) {
 			delete(particle);
@@ -100,7 +100,7 @@ void TowerObject::update(double deltaTime) {
 	case Idle: {
 		if (allEnemies.size() > 0) {
 
-			if (type.compare("Autonomous") == 0) _state = SpeedUp;
+			if (type.compare("A-Class Auto Assault Bomber") == 0) _state = SpeedUp;
 			else _state = Locate;
 		}
 		break;
@@ -180,7 +180,7 @@ void TowerObject::move() {
 }
 //locates the enemy based off of it's coordinates
 void TowerObject::locateEnemy() {
-	if (type.compare("Autonomous") == 0) {
+	if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (allEnemies.size() == 0) {
 			std::cout << "idle" << std::endl;
@@ -228,7 +228,7 @@ void TowerObject::locateEnemy() {
 
 void TowerObject::fireEnemy() {
 
-	if (type.compare("Autonomous") == 0) {
+	if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (explosion_num == -1) {
 			explosion_num++;
@@ -242,7 +242,7 @@ void TowerObject::fireEnemy() {
 		}
 
 	}
-	else if (type.compare("Laser") == 0) {
+	else if (type.compare("A-Class High Beam Laser") == 0) {
 		if (bullObjects.size() == 0) {
 			audio->addAudio("Audio/Towers/laser.mp3", uniqueID);
 			audio->volume(uniqueID, 10);
@@ -283,11 +283,11 @@ void TowerObject::fireEnemy() {
 
 
 	}
-	else if (type.compare("Barrier") == 0) {
+	else if (type.compare("C-Class BARRIER") == 0) {
 
 	}
 	//creates a single particle object (flames)
-	else if (type.compare("Flamethrower") == 0) {
+	else if (type.compare("B-Class IGNITION Cannon") == 0) {
 		if (particle == NULL) {
 			audio->addAudio("Audio/Towers/fire.mp3", uniqueID);
 			audio->volume(uniqueID, 30);
@@ -347,11 +347,11 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though														// Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix;
 
-	if (type.compare("Autonomous") == 0) {
+	if (type.compare("A-Class Auto Assault Bomber") == 0) {
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation - 90, glm::vec3(0.0f, 0.0f, 1.0f));
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.6f, 0.6f));
 	}
-	else if (type.compare("Barrier")) {
+	else if (type.compare("C-Class BARRIER")) {
 
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f));
 		glBindTexture(GL_TEXTURE_2D, turretTexture);
