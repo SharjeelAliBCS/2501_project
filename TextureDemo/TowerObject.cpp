@@ -28,6 +28,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	orgCoord = position;
 	explosion_num = -1;
 	orgSpeed = speed;
+	duration = -1;
 	//if (type.compare("A-Class Auto Assault Bomber") == 0)curSpeed = speed;
 	std::cout << type << " Cost: " << cost << " ROF: " << ROF << " range: " << range << " speed = " << projectileSpeed << std::endl;
 
@@ -180,7 +181,19 @@ void TowerObject::move() {
 }
 //locates the enemy based off of it's coordinates
 void TowerObject::locateEnemy() {
-	if (type.compare("A-Class Auto Assault Bomber") == 0) {
+
+	if (type.compare("AOE") == 0) {
+
+		enemiesInRange(range);
+		if (currentEnemies.size() > 0) {
+			_state = Fire;
+			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "circle", currentEnemy, rotation, damage, 0));
+			duration = 2.0f;
+			timeSince = 0.0f;
+			
+		}
+	}
+	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (allEnemies.size() == 0) {
 			std::cout << "idle" << std::endl;
@@ -228,7 +241,23 @@ void TowerObject::locateEnemy() {
 
 void TowerObject::fireEnemy() {
 
-	if (type.compare("A-Class Auto Assault Bomber") == 0) {
+	if (type.compare("AOE") == 0) {
+
+		bullObjects[0]->setImgScale(glm::vec3(5*range*projectileSpeed*(timeSince / duration), 5*range*projectileSpeed*(timeSince / duration), 1.0f));
+		std::cout << "range = " << range*projectileSpeed*(timeSince / duration) << std::endl;
+		enemiesInRange(range*projectileSpeed*(timeSince / duration));
+		if (timeSince*projectileSpeed >= duration) {
+			for (EnemyObject* e : currentEnemies) {
+				e->enemyHit(damage);
+			}
+			laserCoolDownTime = 3;
+			_state = CoolDown;
+			delete(bullObjects[0]);
+			bullObjects.pop_back();
+			audio->playAgain("cooldown");
+		}
+	}
+	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (explosion_num == -1) {
 			explosion_num++;
@@ -239,6 +268,7 @@ void TowerObject::fireEnemy() {
 				e->enemyHit(damage);
 			}
 			_state = SlowDown;
+
 		}
 
 	}

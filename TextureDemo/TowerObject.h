@@ -83,6 +83,7 @@ private:
 	int explosion_num;
 	float range;
 	float orgSpeed;
+	float duration;
 	GLint size;
 	std::vector<ProjectileObject*> bullObjects;
 	std::vector<GLuint> explosion_tex;

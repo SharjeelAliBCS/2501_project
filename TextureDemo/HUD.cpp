@@ -412,6 +412,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	for (EnemyObject* g : l1) {
 		if (g->getType().compare("Normal") == 0) {
 			normal += 1;
+			std::cout << "NORMAL\n";
 		}
 		if (g->getType().compare("Glutton") == 0) {
 			fast += 1;
@@ -421,6 +422,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 		}
 		if (g->getType().compare("Regenerator") == 0) {
 			flying += 1;
+			std::cout << "REGEN\n";
 		}
 		if (g->getType().compare("Speedster Glutton") == 0) {
 			splitter += 1;
@@ -469,6 +471,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	}
 	std::vector<int> out;
 	out.clear();
+	
 	out.push_back(normal);//0
 	out.push_back(fast);//1
 	out.push_back(hearty);//2
@@ -478,10 +481,14 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	out.push_back(fasthearty);//6
 	out.push_back(fastflying);//7
 	out.push_back(fastregenerating);//8
+	
+
+	
 	out.push_back(normal2);//9
 	out.push_back(fast2);//10
 	out.push_back(hearty2);//11
 	out.push_back(flying2);//12
+
 	out.push_back(splitter2);//13
 	out.push_back(regenerating2);//14
 	out.push_back(fasthearty2);//15

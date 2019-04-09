@@ -18,6 +18,7 @@ GameObject::GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint en
 	curSpeed = speed;
 	imgScale = glm::vec3(1.0f, 1.0f, 1.0f);
 	effectTimeLeft = -1;
+	timeSince - 1;
 
 	uniqueID = std::to_string(std::rand() % (100000000 - 0 + 1));
 
@@ -45,6 +46,7 @@ void GameObject::update(double deltaTime) {
 	effectTimeLeft -= deltaTime;
 	burnTimeLeft -= deltaTime;
 	laserCoolDownTime -= deltaTime;
+	timeSince += deltaTime;
 
 	position += curSpeed*direction * (float)deltaTime;
 

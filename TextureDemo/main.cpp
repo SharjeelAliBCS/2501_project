@@ -38,7 +38,7 @@
 #define PrintException(exception_object)\
 	std::cerr << exception_object.what() << std::endl
 
-float GameObject::cameraZoom = 0.2f;
+float GameObject::cameraZoom = 0.22f;
 glm::vec3 GameObject::cameraTranslatePos = glm::vec3(0.0f);
 
 // Globals that define the OpenGL window and viewport
@@ -266,6 +266,11 @@ void setallTexture(void)
 	textures["Tower"].push_back(textures["Particle"][0]);//10
 	textures["Tower"].push_back(createTexture("Graphics/Tower/03_towerIcon.png"));//11
 
+	textures["Tower"].push_back(createTexture("Graphics/Tower/8_tower.png"));//4
+	textures["Tower"].push_back(createTexture("Graphics/Tower/8_tower.png"));//5
+	textures["Tower"].push_back(createTexture("Graphics/Tower/8_radius.png"));//6
+	textures["Tower"].push_back(createTexture("Graphics/Tower/8_towericon.png"));//7
+
 	textures["Tower"].push_back(createTexture("Graphics/Tower/06_tower.png"));//4
 	textures["Tower"].push_back(createTexture("Graphics/Tower/06_turret.png"));//5
 	textures["Tower"].push_back(createTexture("Graphics/Tower/06_projectile.png"));//6
@@ -280,6 +285,7 @@ void setallTexture(void)
 	textures["Tower"].push_back(createTexture("Graphics/Tower/07_turret.png"));//5
 	textures["Tower"].push_back(createTexture("Graphics/Tower/07_projectile.png"));//6
 	textures["Tower"].push_back(createTexture("Graphics/Tower/07_towerIcon.png"));//7
+
 
 
 	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_1.png"));
@@ -500,7 +506,7 @@ int main(void){
 		/************************************************VARIABLES INIT************************************************/
 		char turnArr[2] = { 'B','T' };
 		long income[2] = { 20,20 };
-		long credits[2] = { 30,30 };
+		long credits[2] = { 3000,3000 };
 		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
 
 		int hp[2] = { 20,20 };
@@ -525,7 +531,7 @@ int main(void){
 
 		float maxCamZoom = 0.60f;
 		float minCamZoom = 0.10f;
-		float cameraZoom = 0.20f;
+		float cameraZoom = 0.22f;
 		
 		float camShiftInc = 0.05f;
 		float camZoomInc = 0.01f;
@@ -590,7 +596,7 @@ int main(void){
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index2 += 4;
 
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000)); 
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "AOE", 2, 1, 0, 0.1));index2 += 4;
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000)); 
 
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
@@ -606,7 +612,7 @@ int main(void){
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][4], size, 350, "Speedster Glutton", textures["Particle"][1], 1.5, 250, 0));//4
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][5], size, 400, "Regenerating Glutton", textures["Particle"][1], 1.0, 400, 15));//5
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][6], size, 300, "Regenerating Speedster ", textures["Particle"][1], 1.6, 500, 15));//6
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][6], size, 300, "Regenerating Speedster", textures["Particle"][1], 1.6, 500, 15));//6
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Regenerating Speedster Glutton", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
@@ -616,18 +622,18 @@ int main(void){
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
 		//to create the actual tower object. 
 		int index = 0;	
-																																																				//damage              range  rof  cost  speed								
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index += 4;
+																																																										//damage                                range  rof  cost  speed								
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,        "C-Class BASIC",               3, 0.5, 5, 0.2)); index += 4; //the final 5 here is the cost
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30,       "C-Class DEFENDER",             2, 1,   10, 0.4)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,        "C-Class BARRIER",              0, 0,   1, 0.0)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size, 100000000, "PLACEHOLDER", 100000000));
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,         "B-Class IGNITION Cannon",     1, 0.1, 10, 0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"],    size, 20, "AOE", 1, 1, 30, 4));index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 100000000, "PLACEHOLDER", 100000000));
 
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "A-Class Auto Assault Bomber", 20, 2, 5, 0.3));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "A-Class High Beam Laser", 10, 1, 50, 30));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200,       "A-Class Stealth Sniper",      20, 4, 100, 0.6)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50,        "A-Class Auto Assault Bomber", 20, 2, 5, 0.3));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1,         "A-Class High Beam Laser",     10, 1, 50, 30));//index += 4;
 		
 	
 		
@@ -641,10 +647,10 @@ int main(void){
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][4], size, 350,     "Speedster Glutton",              textures["Particle"][1], 1.5, 250,  0));//4
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][5], size, 400,     "Regenerating Glutton",           textures["Particle"][1], 1.0, 400,  15));//5
 		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][6], size, 300,     "Regenerating Speedster ",        textures["Particle"][1], 1.6, 500,  15));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][6], size, 300,     "Regenerating Speedster",        textures["Particle"][1], 1.6, 500,  15));//6
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][7], size, 1000,    "Regenerating Speedster Glutton", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying",                        textures["Particle"][1], 2.5, 1000000,   1000000));//7
-																																						  
+																																					  
 		/*for (TowerObject* t : blueprints) {
 			towerDetailHUD.push_back(t);
 		}
@@ -847,6 +853,7 @@ int main(void){
 						_state = Game;
 						audioObject->stop("menu");
 						audioObject->playRepeat("background");
+						timeOfLastMove = glfwGetTime();
 					}
 				}
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
@@ -866,6 +873,15 @@ int main(void){
 			}
 			case Game: {
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
+
+					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
+						(timeOfLastMove + 0.5 < glfwGetTime())) {
+						_state = Pause;
+						audioObject->stop("menu");
+						audioObject->playRepeat("background");
+						timeOfLastMove = glfwGetTime();
+					}
+
 					double xpos, ypos;
 					int window_width_g, window_height_g;
 					glfwGetWindowSize(window, &window_width_g, &window_height_g);
@@ -874,7 +890,7 @@ int main(void){
 					//std::cout << "w: " << window_width_g << " h: " << window_height_g << std::endl;
 					bool inWindow = ypos > 0 && xpos > 0 && ypos < window_height_g && xpos < window_width_g;
 					if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS ||
-						((ypos > 0 && ypos<30) && inWindow)) {
+						((ypos > 0 && ypos<20) && inWindow)) {
 						cameraTranslatePos.y -= camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
@@ -884,7 +900,7 @@ int main(void){
 
 					}
 					if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS ||
-						((ypos > window_height_g - 30 && ypos < window_height_g) && inWindow)) {
+						((ypos > window_height_g - 20 && ypos < window_height_g) && inWindow)) {
 						cameraTranslatePos.y += camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
@@ -893,7 +909,7 @@ int main(void){
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
 					if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS ||
-						((xpos > window_width_g - 30 && xpos < window_width_g) && inWindow)) {
+						((xpos > window_width_g - 20 && xpos < window_width_g) && inWindow)) {
 						cameraTranslatePos.x -= camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
@@ -902,7 +918,7 @@ int main(void){
 						selectionGraphic->setCamPos(cameraTranslatePos);
 					}
 					if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS ||
-						((xpos > 0 && xpos < 30) && inWindow)) {
+						((xpos > 0 && xpos < 20) && inWindow)) {
 						cameraTranslatePos.x += camShiftInc / cameraZoom;
 						g.setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
@@ -970,11 +986,11 @@ int main(void){
 						}
 						timeOfLastMove = glfwGetTime();
 					}
-					//Inc outgoing creep speed 100% for 20 seconds.
+					//Inc outgoing creep speed 50% for 20 seconds.
 					if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						gottaGoFast = true;
 						for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
-							e->modCurSpeed(2);
+							e->modCurSpeed(1.5);
 							e->setEffectDuration(20);
 						}
 						timeOfLastMove = glfwGetTime();
@@ -1199,7 +1215,7 @@ int main(void){
 						selectedEnemy = enemyBlueprint.at(3);
 					}*/
 					if (selectedEnemy != NULL) {
-						std::cout << selectedEnemy->getType() << std::endl;
+						//std::cout << selectedEnemy->getType() << std::endl;
 					}
 					//hudObjects[3]->selection(xpos, ypos);
 					hudObjects[4]->selectionEnemy(xpos, ypos);
@@ -1229,7 +1245,7 @@ int main(void){
 								e->setAudio(audioObject);
 								enemyMap[turnIndex ^ 1]->push_back(e);
 								if (gottaGoFast) {
-									e->modCurSpeed(2);
+									e->modCurSpeed(1.5);
 									e->setEffectDuration(20);
 								}
 								if (hpUp) {
@@ -1668,7 +1684,8 @@ int main(void){
 						std::cout << "hp = " << hp[turnIndex] << std::endl;
 						audioObject->playAgain("baseAttack");
 						e->setExists(false);
-						if (hp[turnIndex] == 0) {
+						if (hp[turnIndex] <= 0) {
+							_state = Pause;
 							gameOver = true;
 							std::cout << "GAME OVER" << std::endl;
 							std::cout << "PLAYER " << (turnIndex ^ 1 + 1) << " WINS" << std::endl;
@@ -1707,6 +1724,13 @@ int main(void){
 				break;
 			}
 			case Pause: {
+				if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
+					(timeOfLastMove + 0.25 < glfwGetTime())) {
+					_state = Game;
+					audioObject->stop("menu");
+					audioObject->playRepeat("background");
+					timeOfLastMove = glfwGetTime();
+				}
 				break;
 			}
 			case GameOver: {
