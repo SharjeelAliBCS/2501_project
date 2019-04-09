@@ -43,11 +43,13 @@ public:
 	inline void setAudio(Audio* a) { audio = a;  }
 	inline bool getExists() { return exists; }
 	inline float getRotation() { return rotation; }
+	inline std::string getDescription() { return description; }
 
 	inline int getCost() { return cost; }
 	inline void setCost(int c) { cost = c; }
 	inline void setEffectDuration(float t) { effectTimeLeft = t; }
 	inline void setBurnDuration(float t) { burnTimeLeft = t; }
+	inline void setDescription(std::string d) { description = d;std::cout << d << std::endl; }
 
 	static float cameraZoom;
 	static glm::vec3 cameraTranslatePos;
@@ -72,6 +74,7 @@ protected:
 	float acceleration, accelerationSlow;
 	glm::vec3 velocity, a;
 	glm::vec3 orgCoord;//stores the original coord of where it launched from. glm::vec3 orgCoord;//stores the original coord of where it launched from. 
+	std::string description;
 	// Object's texture
 	GLuint texture;
 	Audio* audio;

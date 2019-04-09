@@ -33,6 +33,7 @@
 #include "Audio.h"
 #include "PowerUpObject.h"
 #include "UpgradeObject.h"
+#include "FileUtils.h"
 
 
 
@@ -395,28 +396,17 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 	return targets;
 }
 
+
 // Main function that builds and runs the game
 int main(void){
 	try {
 
 		/************************************************AUDIO INIT************************************************/
 
-		//PlaySound(TEXT("Audio/warlords.wav"), NULL, SND_FILENAME | SND_ASYNC); // remember you need 2 slashes these "\\"
-		//system("pause");
-		//PlaySound(L"Audio/warlords.wav", NULL, SND_ASYNC);
-		//mciSendString(s2ws("play \"Audio/warlords.wav\" repeat"), NULL, 0, NULL);
-		//mciSendString(s2ws("open Audio/warlords.wav alias MY_SND"), NULL, 0, NULL);
-		//mciSendString(s2ws("play MY_SND"), NULL, 0, NULL);
-
-		//mciSendString(L"open Audio/warlords.wav alias t", NULL, 0, 0);
-		//mciSendString(L"open Audio/warlords.wav alias h", NULL, 0, 0);
-		//mciSendString(L"play t", NULL, 0, 0);
 
 		Audio* audioObject = new Audio();
 		setAudioTracks(audioObject);
 
-
-		std::cout << L"dd";
 		/************************************************OPENGL INIT************************************************/
 
 		// Seed for generating random numbers with rand()
@@ -572,6 +562,8 @@ int main(void){
 		}
 		in.close();
 
+		FileUtils descriptions;
+
 		/************************************************GRAPH INIT************************************************/
 		
 		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
@@ -642,6 +634,7 @@ int main(void){
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
+		towerDetailHUD[0]->setDescription(descriptions.LoadTextFile("Descriptions/test.txt"));
 		
 		/************************************************blueprints INIT************************************************/
 
@@ -844,7 +837,6 @@ int main(void){
 		bool roundOver = true;
 		int enemiesDestroyed = 0;
 		int numEnemiesSpawned = 0;
-
 		
 		_state = MainMenu;
 		//_state = Game;//comment out to see menu. 
@@ -1776,7 +1768,7 @@ int main(void){
 					//stop moving if we're done
 					if (e->getExists() && (cur->getId() == g.getEndPoints(turnIndex) || (cur->getNextNode(e->getCurDestId()) == NULL))) {
 						hp[turnIndex] -= 1;
-						if (e->getType().compare("Undying") == 0) {
+						if (e->getType().compare("Undying Zenith") == 0) {
 							hp[turnIndex] = 0;
 						}
 						std::cout << "hp = " << hp[turnIndex] << std::endl;
@@ -1790,6 +1782,7 @@ int main(void){
 							//hudObjects[2]->setTex(textures["UI"][1]);
 
 						}
+					
 
 					}
 
