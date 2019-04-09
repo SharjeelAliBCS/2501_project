@@ -29,9 +29,10 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	explosion_num = -1;
 	orgSpeed = speed;
 	duration = -1;
+	
 	//if (type.compare("A-Class Auto Assault Bomber") == 0)curSpeed = speed;
 	std::cout << type << " Cost: " << cost << " ROF: " << ROF << " range: " << range << " speed = " << projectileSpeed << std::endl;
-
+	
 
 
 
@@ -132,7 +133,7 @@ void TowerObject::update(double deltaTime) {
 			_state = SpeedUp;
 		}
 		else {
-			projectileSpeed -= acceleration;
+			projectileSpeed -= accelerationSlow;
 			move();
 		}
 		break;
@@ -141,9 +142,10 @@ void TowerObject::update(double deltaTime) {
 		if (projectileSpeed >= orgSpeed) {
 			projectileSpeed = orgSpeed;
 			_state = Locate;
+			//bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, damage, projectileSpeed*2));
 		}
 		else {
-			projectileSpeed += acceleration;
+			projectileSpeed += accelerationSlow;
 			move();
 		}
 
@@ -163,21 +165,42 @@ void TowerObject::update(double deltaTime) {
 }
 
 void TowerObject::move() {
-
-	rotation = atan2(positions[currPos % 2].y - position.y, positions[currPos % 2].x - position.x);
-	position.x += projectileSpeed * cos(rotation);
-	position.y += projectileSpeed * sin(rotation);
-
-	rotation *= (180 / 3.14f);
-
-	float dis = glm::length(position - positions[currPos % 2]);
-	//std::cout << "dis " << dis << std::endl;
-	if (dis <= 0.2) {
-
-		currPos++;
-		//std::cout << "dis " << positions[currPos % 2].x << ",  " << positions[currPos % 2].y << std::endl;
-
+	
+	if (currentEnemy != NULL && _state == Locate) {
+		std::cout << "target" << _state << std::endl;
+		targetPos = currentEnemy->getPosition();
+		
 	}
+
+	float dis = glm::length(position - (targetPos));
+	
+	if (dis > 0.1) {
+		rotation = (int)rotation % 360;
+		glm::vec3 dir = targetPos - position;
+
+
+		glm::vec3 moveVec = dir / glm::length(dir);
+		a = acceleration * moveVec;
+
+		velocity += a;
+		if (glm::length(velocity) > projectileSpeed) {
+			velocity = projectileSpeed * velocity / glm::length(velocity);
+		}
+
+		position = glm::vec3(position.x + velocity.x, position.y + velocity.y, 0.0f);
+
+		float targetAngle = atan2(velocity.y, velocity.x);
+		rotation = targetAngle * (180 / 3.14f);
+	}
+	else {
+		
+		std::cout << "distance too short" << std::endl;
+	}
+	
+	
+
+	
+
 }
 //locates the enemy based off of it's coordinates
 void TowerObject::locateEnemy() {
@@ -198,12 +221,19 @@ void TowerObject::locateEnemy() {
 		if (allEnemies.size() == 0) {
 			std::cout << "idle" << std::endl;
 			_state = Stop;
+			int angle = (std::rand() % (360));
+
+			targetPos.x += 10 * cos(angle*3.14159 / 180);
+			targetPos.y += 10 * sin(angle*3.14159 / 180);
 		}
 
 		move();
 
-		setCurrEnemies(enemiesInRange(1));
-		if (currentEnemies.size() != 0)_state = Fire;
+		setCurrEnemies(enemiesInRange(range));
+		if(currentEnemy!=NULL &&  glm::length(position - currentEnemy->getPosition()) < 1) {
+			_state = Fire;
+			}
+		
 
 
 	}
@@ -269,6 +299,12 @@ void TowerObject::fireEnemy() {
 				e->enemyHit(damage);
 			}
 			_state = SlowDown;
+			
+			int angle = (std::rand() % (360));
+			
+			targetPos.x+= 10 * cos(angle*3.14159 / 180);
+			targetPos.y += 10 * sin(angle*3.14159 / 180);
+
 		}
 
 	}
@@ -278,7 +314,7 @@ void TowerObject::fireEnemy() {
 			audio->volume(uniqueID, 10);
 			audio->playRepeat(uniqueID);
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
-			bullObjects[0]->setImgScale(glm::vec3(projectileSpeed, 1, 1));
+			bullObjects[0]->setImgScale(glm::vec3(range, 1, 1));
 			laserCoolDownTime = 5;
 		}
 
@@ -343,8 +379,8 @@ void TowerObject::fireEnemy() {
 bool TowerObject::lineCollision(EnemyObject* enemy) {
 	float x1 = position.x;
 	float y1 = position.y;
-	float x2 = 2 * (projectileSpeed / 9)*cos(rotation*3.14159 / 180) + x1;
-	float y2 = 2 * (projectileSpeed / 9) *sin(rotation*3.14159 / 180) + y1;
+	float x2 = 2 * (range / 9)*cos(rotation*3.14159 / 180) + x1;
+	float y2 = 2 * (range / 9) *sin(rotation*3.14159 / 180) + y1;
 	float ex = enemy->getPosition().x;
 	float ey = enemy->getPosition().y;
 
@@ -380,6 +416,9 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 	if (type.compare("A-Class Auto Assault Bomber") == 0) {
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation - 90, glm::vec3(0.0f, 0.0f, 1.0f));
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.6f, 0.6f));
+		for (int i = 0; i < bullObjects.size(); i++) {
+			bullObjects[i]->render(shaders);
+		}
 	}
 	else if (type.compare("C-Class BARRIER")) {
 

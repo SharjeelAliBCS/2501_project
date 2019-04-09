@@ -626,21 +626,21 @@ int main(void){
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 20, "AOE", 1, 1, 30, 4));index2 += 4;
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 50, "A-Class Auto Assault Bomber", 20, 2, 300, 0.3));index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 1, "A-Class High Beam Laser", 10, 1, 200, 30));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1.5, 2, 300, 0.5));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));
 
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][0], size, 50, "Normal", textures["Particle"][1], 1.0, 10, 0));//0
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][1], size, 200, "Glutton", textures["Particle"][1], 0.8, 40, 0));//1
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][2], size, 100, "Speedster", textures["Particle"][1], 1.7, 70, 0));//2
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][0], size, 50, "Servent Minor", textures["Particle"][1], 1.0, 10, 0));//0
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][1], size, 200, "Glutton Minor", textures["Particle"][1], 0.8, 40, 0));//1
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][2], size, 100, "Fleeting Minor", textures["Particle"][1], 1.7, 70, 0));//2
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][3], size, 150, "Regenerator", textures["Particle"][1], 1, 100, 10));//3
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][4], size, 350, "Speedster Glutton", textures["Particle"][1], 1.5, 250, 0));//4
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][5], size, 400, "Regenerating Glutton", textures["Particle"][1], 1.0, 400, 15));//5
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][3], size, 150, "Lifegiver Minor", textures["Particle"][1], 1, 100, 10));//3
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][4], size, 350, "Fleeting Colossal", textures["Particle"][1], 1.5, 250, 0));//4
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][5], size, 400, "Life Colossal", textures["Particle"][1], 1.0, 400, 15));//5
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][6], size, 300, "Regenerating Speedster", textures["Particle"][1], 1.6, 500, 15));//6
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Regenerating Speedster Glutton", textures["Particle"][1], 2.0, 1500, 20));//7
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying", textures["Particle"][1], 2.5, 1000000, 1000000));//7
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][6], size, 300, "Fleeting Lifeblood", textures["Particle"][1], 1.6, 500, 15));//6
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
 		
 		/************************************************blueprints INIT************************************************/
@@ -657,24 +657,24 @@ int main(void){
 		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size, 20, "AOE", 1, 1, 30, 4));index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 50, "A-Class Auto Assault Bomber", 20, 2, 5, 0.3));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 1, "A-Class High Beam Laser", 10, 1, 50, 30));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1.5, 2, 300, 0.5));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));//index += 4;
 		
 	
 		
 		/************************************************enemyBlueprints INIT************************************************/
 //																								         health							                                     speed, cost regen
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 7.3f, 0.0f), textures["Enemy"][0], size, 50,      "Normal",                         textures["Particle"][1], 1.0, 10,   0));//0
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 7.3f, 0.0f), textures["Enemy"][1], size, 200,     "Glutton",                        textures["Particle"][1], 0.8, 40,   0));//1
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 7.3f, 0.0f), textures["Enemy"][2], size, 100,     "Speedster",                      textures["Particle"][1], 1.7, 70,   0));//2
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 7.3f, 0.0f), textures["Enemy"][0], size, 50,      "Servent Minor",                         textures["Particle"][1], 1.0, 10,   0));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 7.3f, 0.0f), textures["Enemy"][1], size, 200,     "Glutton Minor",                        textures["Particle"][1], 0.8, 40,   0));//1
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 7.3f, 0.0f), textures["Enemy"][2], size, 100,     "Fleeting Minor",                      textures["Particle"][1], 1.7, 70,   0));//2
 		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 150,     "Regenerator",                    textures["Particle"][1], 1,   100,  10));//3
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][4], size, 350,     "Speedster Glutton",              textures["Particle"][1], 1.5, 250,  0));//4
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][5], size, 400,     "Regenerating Glutton",           textures["Particle"][1], 1.0, 400,  15));//5
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 150,     "Lifegiver Minor",                    textures["Particle"][1], 1,   100,  10));//3
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][4], size, 350,     "Fleeting Colossal",              textures["Particle"][1], 1.5, 250,  0));//4
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][5], size, 400,     "Life Colossal",           textures["Particle"][1], 1.0, 400,  15));//5
 		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][6], size, 300,     "Regenerating Speedster",        textures["Particle"][1], 1.6, 500,  15));//6
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][7], size, 1000,    "Regenerating Speedster Glutton", textures["Particle"][1], 2.0, 1500, 20));//7
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying",                        textures["Particle"][1], 2.5, 1000000,   1000000));//7
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][6], size, 300,     "Fleeting Lifeblood",        textures["Particle"][1], 1.6, 500,  15));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][7], size, 1000,    "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith",                        textures["Particle"][1], 2.5, 1000000,   1000000));//7
 																																						  
 		/*for (TowerObject* t : blueprints) {
 			towerDetailHUD.push_back(t);
@@ -840,7 +840,6 @@ int main(void){
 		int renderedFPS = 0;
 		int oldTime = 0;
 		float lastSpawnTime = 0;
-		int doubleClick = 0;
 		glm::vec3 targetPos;
 		bool roundOver = true;
 		int enemiesDestroyed = 0;
@@ -1157,59 +1156,52 @@ int main(void){
 									TowerObject* selectedTower = hudObjects[3]->getSelection();
 									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
 									if (credits[turnIndex] >= selectedTower->getCost()) {
+										
+								
+					
+										std::cout << "tower =  " << std::endl;
+										TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(),
+											selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
+											selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
+											selectedTower->getCost(), selectedTower->getSpeed());
+										t->setAudio(audioObject);
+										
+										if (t->getType().compare("denderBlueprint---2") == 0) {
 
-										std::cout << "Tower placed! " << doubleClick << std::endl;
-										if (doubleClick == 1) {
-											targetPos = glm::vec3(x, y, 0.0f);
-											doubleClick++;
+										}
+										g.getNode(id).setTowerState(true, turn);
+										std::cout << "tower made  " << selectedTower->getCost() << std::endl;
+										//
+										//g.clearNextNodeMaps();
+										//g.startPaths();
+										if (g.startPaths(turnIndex) && g.rePath(id, turn)) {
+											g.getNode(id).setTower(t);
+											credits[turnIndex] -= selectedTower->getCost();
+											towerMap[turnIndex]->push_back(t);
+											std::cout << "GRAPH STUFF " << selectedTower->getCost() << std::endl;
+											if (rainingLead) {
+												t->modCurROF(0.5);
+												t->setEffectDuration(rainingLeadEnd - glfwGetTime());
+												if (rainingLeadEnd - glfwGetTime() <= 0) {
+													rainingLead = false;
+												}
+											}
+											audioObject->playAgain("towerPlaced");
+											audioObject->playAgain("unitReady");
 
 										}
 										else {
-											if (hudObjects[3]->getSelection()->getType().compare("A-Class Auto Assault Bomber") == 0)doubleClick = 1;
-											else doubleClick = 0;
-											std::cout << "tower =  " << std::endl;
-											TowerObject* t = new TowerObject(glm::vec3(x, y, 0.0f), selectedTower->getTexvec(),
-												selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
-												selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
-												selectedTower->getCost(), selectedTower->getSpeed());
-											t->setAudio(audioObject);
-											t->setTargetPos(targetPos);
-											if (t->getType().compare("denderBlueprint---2") == 0) {
-
-											}
-											g.getNode(id).setTowerState(true, turn);
-											std::cout << "tower made  " << selectedTower->getCost() << std::endl;
-											//
-											//g.clearNextNodeMaps();
-											//g.startPaths();
-											if (g.startPaths(turnIndex) && g.rePath(id, turn)) {
-												g.getNode(id).setTower(t);
-												credits[turnIndex] -= selectedTower->getCost();
-												towerMap[turnIndex]->push_back(t);
-												std::cout << "GRAPH STUFF " << selectedTower->getCost() << std::endl;
-												if (rainingLead) {
-													t->modCurROF(0.5);
-													t->setEffectDuration(rainingLeadEnd - glfwGetTime());
-													if (rainingLeadEnd - glfwGetTime() <= 0) {
-														rainingLead = false;
-													}
-												}
-												audioObject->playAgain("towerPlaced");
-												audioObject->playAgain("unitReady");
-
-											}
-											else {
-												std::cout << "\n\n\nINVALID TOWER PLACEMENT";
-												g.getNode(id).setTowerState(false, turn);
-												g.clearNextNodeMaps();
-												g.startPaths(turnIndex);
-												g.rePath(id, turn);
-												delete(t);
-											}
-											std::cout << "Repath" << std::endl;
+											std::cout << "\n\n\nINVALID TOWER PLACEMENT";
+											g.getNode(id).setTowerState(false, turn);
+											g.clearNextNodeMaps();
+											g.startPaths(turnIndex);
+											g.rePath(id, turn);
+											delete(t);
+										}
+										std::cout << "Repath" << std::endl;
 
 											
-										}
+										
 									}
 
 
@@ -1289,11 +1281,7 @@ int main(void){
 						}
 
 						if (hudObjects[3]->getFlag() && cursor->getTex() != hudObjects[3]->getCursor()) {
-							if (hudObjects[3]->getSelection()->getType().compare("A-Class Auto Assault Bomber") == 0)doubleClick = 1;
-							else {
-								doubleClick = 0;
-								targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
-							}
+							
 							cursor->setTex(hudObjects[3]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 							selectionGraphic->setPosition(hudObjects[3]->getSelection()->getPosition());
 							audioObject->playAgain("menuClick");
@@ -1452,11 +1440,7 @@ int main(void){
 
 				if (hudObjects[3]->updateHotkeysTower()) {
 					hudObjects[5]->updateHotkeysTower();
-					if (hudObjects[3]->getSelection()->getType().compare("A-Class Auto Assault Bomber") == 0)doubleClick = 1;
-					else {
-						doubleClick = 0;
-						targetPos = glm::vec3(0.0f, 0.0f, 0.0f);
-					}
+					
 					cursor->setTex(hudObjects[3]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 					selectionGraphic->setPosition(hudObjects[3]->getSelection()->getPosition());
 					audioObject->playAgain("menuClick");

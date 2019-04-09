@@ -69,7 +69,7 @@ protected:
 	std::string type;
 	std::string uniqueID;
 
-	float acceleration, vx, vy;
+	float acceleration, accelerationSlow;
 	glm::vec3 velocity, a;
 	glm::vec3 orgCoord;//stores the original coord of where it launched from. glm::vec3 orgCoord;//stores the original coord of where it launched from. 
 	// Object's texture

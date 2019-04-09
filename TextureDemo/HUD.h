@@ -6,6 +6,7 @@
 #include "TowerObject.h"
 #include "PowerUpObject.h"
 #include "UpgradeObject.h"
+#include <iomanip>
 
 
 class HUD : public GameObject {
@@ -95,6 +96,8 @@ private:
 	EnemyObject* outEnemy;
 	TowerObject* outSelection;
 	GLuint currentCursor;
+
+	std::string round(float num, int places);
 
 
 };

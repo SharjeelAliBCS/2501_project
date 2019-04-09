@@ -566,62 +566,62 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	int normal2 = 0, fast2 = 0, hearty2 = 0, flying2 = 0, splitter2 = 0, regenerating2 = 0, fasthearty2 = 0, fastflying2 = 0, fastregenerating2 = 0;
 
 	for (EnemyObject* g : l1) {
-		if (g->getType().compare("Normal") == 0) {
+		if (g->getType().compare("Servent Minor") == 0) {
 			normal += 1;
 			//std::cout << "NORMAL\n";
 		}
-		if (g->getType().compare("Glutton") == 0) {
+		if (g->getType().compare("Glutton Minor") == 0) {
 			fast += 1;
 		}
-		if (g->getType().compare("Speedster") == 0) {
+		if (g->getType().compare("Fleeting Minor") == 0) {
 			hearty += 1;
 		}
-		if (g->getType().compare("Regenerator") == 0) {
+		if (g->getType().compare("Lifegiver Minor") == 0) {
 			flying += 1;
 			std::cout << "REGEN\n";
 		}
-		if (g->getType().compare("Speedster Glutton") == 0) {
+		if (g->getType().compare("Fleeting Colossal") == 0) {
 			splitter += 1;
 		}
-		if (g->getType().compare("Regenerating Glutton") == 0) {
+		if (g->getType().compare("Life Colossal") == 0) {
 			regenerating += 1;
 		}
-		if (g->getType().compare("Regenerating Speedster") == 0) {
+		if (g->getType().compare("Fleeting Lifeblood") == 0) {
 			fasthearty += 1;
 		}
-		if (g->getType().compare("Regenerating Speedster Glutton") == 0) {
+		if (g->getType().compare("Absolute Zenith") == 0) {
 			fastflying += 1;
 		}
-		if (g->getType().compare("Undying") == 0) {
+		if (g->getType().compare("Undying Zenith") == 0) {
 			fastregenerating += 1;
 		}
 	}
 	for (EnemyObject* g : l2) {
-		if (g->getType().compare("Normal") == 0) {
+		if (g->getType().compare("Servent Minor") == 0) {
 			normal2 += 1;
 		}
-		if (g->getType().compare("Glutton") == 0) {
+		if (g->getType().compare("Glutton Minor") == 0) {
 			fast2 += 1;
 		}
-		if (g->getType().compare("Speedster") == 0) {
+		if (g->getType().compare("Fleeting Minor") == 0) {
 			hearty2 += 1;
 		}
-		if (g->getType().compare("Regenerator") == 0) {
+		if (g->getType().compare("Lifegiver Minor") == 0) {
 			flying2 += 1;
 		}
-		if (g->getType().compare("Speedster Glutton") == 0) {
+		if (g->getType().compare("Fleeting Colossal") == 0) {
 			splitter2 += 1;
 		}
-		if (g->getType().compare("Regenerating Glutton") == 0) {
+		if (g->getType().compare("Life Colossal") == 0) {
 			regenerating2 += 1;
 		}
-		if (g->getType().compare("Regenerating Speedster") == 0) {
+		if (g->getType().compare("Fleeting Lifeblood") == 0) {
 			fasthearty2 += 1;
 		}
-		if (g->getType().compare("Regenerating Speedster Glutton") == 0) {
+		if (g->getType().compare("Absolute Zenith") == 0) {
 			fastflying2 += 1;
 		}
-		if (g->getType().compare("Undying") == 0) {
+		if (g->getType().compare("Undying Zenith") == 0) {
 			fastregenerating2 += 1;
 		}
 	}
@@ -834,12 +834,12 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 	}
 	if (flag) {
 		textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
-		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string(outSelection->getCost()));//cost
+		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
 		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
-		textObjects[3]->setRenderedText(textObjects[3]->getText() + std::to_string(outSelection->getDamage()));//damage
-		textObjects[4]->setRenderedText(textObjects[4]->getText() + std::to_string(outSelection->getROF()));//ROF
-		textObjects[5]->setRenderedText(textObjects[5]->getText() + std::to_string(outSelection->getRange()));//range
-
+		textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage(), 1));//damage
+		textObjects[4]->setRenderedText(textObjects[4]->getText() + round(outSelection->getROF(),1));//ROF
+		textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange(),1));//range
+		
 		textObjects[0]->render(shaders);
 		textObjects[1]->render(shaders);
 		textObjects[2]->render(shaders);
@@ -872,13 +872,12 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 
 	if (enemyFlag) {
 
-
 		textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
-		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string(outEnemy->getCost()));//cost
+		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outEnemy->getCost()));//cost
 		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
-		textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string(outEnemy->getHealth()));//hp
-		textObjects[7]->setRenderedText(textObjects[7]->getText() + std::to_string(outEnemy->getCurSpeed()));//speed
-		textObjects[8]->setRenderedText(textObjects[8]->getText() + std::to_string(outEnemy->getRegen()));//range
+		textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)outEnemy->getHealth()));//hp
+		textObjects[7]->setRenderedText(textObjects[7]->getText() + round(outEnemy->getCurSpeed(),1));//speed
+		textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen(),1));//range
 
 		textObjects[0]->render(shaders);
 		textObjects[1]->render(shaders);
@@ -1097,4 +1096,10 @@ void HUD::render(std::vector<Shader*> shaders) {
 
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+}
+
+std::string HUD::round(float num, int places) {
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(places) << num;
+	return ss.str(); 
 }
