@@ -38,6 +38,22 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 
 }
 
+TowerObject::~TowerObject() {
+	if (particle != NULL) {
+		delete(particle);
+		particle = NULL;
+
+	}
+
+	for (int i = 0; i< bullObjects.size();i++)
+	{
+		delete (bullObjects[i]);
+	}
+	bullObjects.clear();
+
+	audio->close(uniqueID);
+}
+
 // Update function
 void TowerObject::update(double deltaTime) {
 

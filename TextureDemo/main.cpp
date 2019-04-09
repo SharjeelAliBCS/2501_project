@@ -1216,7 +1216,7 @@ int main(void){
 						hudObjects[2]->selectionPowerUp(xpos, ypos);
 						if (hudObjects[2]->getSelectionPowerUps()!=NULL) {
 							selectionGraphic->setPosition(hudObjects[2]->getSelectionPowerUps()->getPosition());
-							std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
+							//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
 							hudObjects[3]->setFlag(false);
 							hudObjects[2]->setSelectionPowerUps(NULL);
 						}
@@ -1225,7 +1225,7 @@ int main(void){
 						hudObjects[9]->selectionUpgrades(xpos, ypos);
 						if (hudObjects[9]->getSelectionUpgrades() !=NULL) {
 							selectionGraphic->setPosition(hudObjects[9]->getSelectionUpgrades()->getPosition());
-							std::cout << hudObjects[9]->getSelectionUpgrades()->getType() << std::endl;
+							//std::cout << hudObjects[9]->getSelectionUpgrades()->getType() << std::endl;
 							hudObjects[9]->setSelectionUpgrades(NULL);
 						}
 						//============================================================this is for the details render out put
@@ -1309,14 +1309,14 @@ int main(void){
 						selectedEnemy = enemyBlueprint.at(3);
 					}*/
 					if (selectedEnemy != NULL) {
-						std::cout << selectedEnemy->getType() << std::endl;
+						//std::cout << selectedEnemy->getType() << std::endl;
 					}
 					//hudObjects[3]->selection(xpos, ypos);
 					hudObjects[4]->selectionEnemy(xpos, ypos);
 					selectedEnemy = hudObjects[4]->getSelectionEnemy();
 					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS &&
 						selectedEnemy != NULL && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						std::cout << selectedEnemy->getType() << std::endl;
+						//std::cout << selectedEnemy->getType() << std::endl;
 						/////////////////////////////////
 						/////////////////////////////////
 						/////////////////////////////////

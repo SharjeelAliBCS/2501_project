@@ -11,7 +11,7 @@
 class TowerObject : public GameObject {
 public:
 	TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vector<GLuint> explosion, GLint entityNumElements, float d, std::string type, float r, float ROF = 1, int c = 0, float speed = 0.1);
-
+	~TowerObject();
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
 

@@ -578,7 +578,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 		}
 		if (g->getType().compare("Lifegiver Minor") == 0) {
 			flying += 1;
-			std::cout << "REGEN\n";
+			//std::cout << "REGEN\n";
 		}
 		if (g->getType().compare("Fleeting Colossal") == 0) {
 			splitter += 1;
