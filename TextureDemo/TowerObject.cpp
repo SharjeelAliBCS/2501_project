@@ -190,7 +190,7 @@ void TowerObject::locateEnemy() {
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "circle", currentEnemy, rotation, damage, 0));
 			duration = 2.0f;
 			timeSince = 0.0f;
-			
+
 		}
 	}
 	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
@@ -243,13 +243,13 @@ void TowerObject::fireEnemy() {
 
 	if (type.compare("AOE") == 0) {
 
-		bullObjects[0]->setImgScale(glm::vec3(5*range*projectileSpeed*(timeSince / duration), 5*range*projectileSpeed*(timeSince / duration), 1.0f));
-		std::cout << "range = " << range*projectileSpeed*(timeSince / duration) << std::endl;
+		bullObjects[0]->setImgScale(glm::vec3(6 * range*projectileSpeed*(timeSince / duration), 6 * range*projectileSpeed*(timeSince / duration), 1.0f));
+		std::cout << "range = " << range * projectileSpeed*(timeSince / duration) << std::endl;
 		enemiesInRange(range*projectileSpeed*(timeSince / duration));
 		if (timeSince*projectileSpeed >= duration) {
-			for (EnemyObject* e : currentEnemies) {
-				e->enemyHit(damage);
-			}
+			for (EnemyObject* e : currentEnemies) e->enemyHit(damage);
+			
+			std::cout << "duraton " << timeSince * projectileSpeed << std::endl;
 			laserCoolDownTime = 3;
 			_state = CoolDown;
 			delete(bullObjects[0]);
@@ -257,6 +257,7 @@ void TowerObject::fireEnemy() {
 			audio->playAgain("cooldown");
 		}
 	}
+
 	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (explosion_num == -1) {
@@ -268,7 +269,6 @@ void TowerObject::fireEnemy() {
 				e->enemyHit(damage);
 			}
 			_state = SlowDown;
-
 		}
 
 	}

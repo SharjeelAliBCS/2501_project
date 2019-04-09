@@ -4,6 +4,9 @@
 #include "GameObject.h"
 #include "Text.h"
 #include "TowerObject.h"
+#include "PowerUpObject.h"
+#include "UpgradeObject.h"
+
 
 class HUD : public GameObject {
 public:
@@ -20,6 +23,10 @@ public:
 	virtual void updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int hp2);
 	virtual bool updateHotkeysEnemy();
 	virtual bool updateHotkeysTower();
+	virtual bool updateHotkeysUpgrade();
+	virtual void selectionUpgrades(double x, double y);
+	//virtual bool updateHotkeysPowerUp();
+
 	virtual std::string turns(double x, double y);
 	virtual void detailRender(std::vector<Shader*> shaders);
 
@@ -34,28 +41,34 @@ public:
 	inline bool getFlag() { return flag; }
 	inline bool getPowerUpFlag() { return powerUpFlag; }
 	inline bool getEnemyFlag() { return enemyFlag; }
-	inline bool getButtonFlag() { return buttonFlag; }
+	inline bool getUpgradeFlag() { return upgradeFlag; }
 	inline TowerObject* getSelection() { return outSelection; }
 	inline EnemyObject* getSelectionEnemy() { return outEnemy; }
-	inline GameObject* getSelectionButton() { return outButton; }
-	inline GameObject* getSelectionPowerUps() { return outPowerUP; }
+	inline UpgradeObject* getSelectionUpgrades() { return outUpgrade; }
+	inline PowerUpObject* getSelectionPowerUps() { return outPowerUP; }
 	inline GLuint getCursor() { return currentCursor; }
 
 	// Setters
 	inline void setCamPos(glm::vec3 newPosition) { camPos = newPosition; }
 	inline void setScale(glm::vec3 newScale) { camPos = newScale; }
 	inline void setZoom(float newZoom) { zoom = newZoom; }
-	inline void setBlueprints(std::vector<TowerObject*> b) { blueprints = b; }
-	inline void setEnemyBlueprints(std::vector<EnemyObject*> e) { enemyBlueprints2 = e; }
+	inline void setFactor(float newFact) { factor = newFact; }
+	//flags
 	inline void setFlag(bool newFlag) { flag = newFlag; }
-	inline void setButtonFlag(bool newFlag) { buttonFlag = newFlag; }
+	inline void setUpgradeFlag(bool newFlag) {upgradeFlag = newFlag; }
 	inline void setPowerUpFlag(bool power) { powerUpFlag = power; }
 	inline void setEnemyFlag(bool newEnemyFlag) { enemyFlag = newEnemyFlag; }
-	inline void setButtons(std::vector<GameObject*> butt) { buttons = butt; }
-	inline void setPowerUPs(std::vector<GameObject*> power) { powerUps = power; }
-	inline void setFactor(float newFact) { factor = newFact; }
-	inline void setSelectionEnemy(EnemyObject* newEnemy) { outEnemy = newEnemy; }
+	//
+	inline void setUpgrades(std::vector<UpgradeObject*> up) { upgrades = up; }
+	inline void setPowerUPs(std::vector<PowerUpObject*> power) { powerUps = power; }
+	inline void setBlueprints(std::vector<TowerObject*> b) { blueprints = b; }
+	inline void setEnemyBlueprints(std::vector<EnemyObject*> e) { enemyBlueprints2 = e; }
 	inline void setGeneralList(std::vector<HUD*> list) { generalList = list; }
+	inline void setGameObjects(std::vector<GameObject*> g) { gameObjectList = g; }
+	//outs
+	inline void setSelectionEnemy(EnemyObject* newEnemy) { outEnemy = newEnemy; }
+	inline void setSelectionPowerUps(PowerUpObject* power) { outPowerUP = power; }
+	inline void setSelectionUpgrades(UpgradeObject* up) { outUpgrade = up; }
 private:
 	float zoom;
 	glm::vec3 camPos;
@@ -64,19 +77,21 @@ private:
 	GLFWwindow* win;
 	bool flag;//only important flag becuase its flag for selection of towers /////the other flags are just for the selection square demonstration
 	bool powerUpFlag;
-	bool buttonFlag;
+	bool upgradeFlag;
 	bool enemyFlag;
 	std::vector<int> out;
 	//vectors storing all the items in the game
 	std::vector<TowerObject*> blueprints;
-	std::vector<GameObject*> buttons;
-	std::vector<GameObject*> powerUps;
+	std::vector<UpgradeObject*> upgrades;
+	std::vector<GameObject*> gameObjectList;
+	std::vector<PowerUpObject*> powerUps;
 	std::vector<EnemyObject*> enemyBlueprints2;
 	std::vector<Text*> textObjects;
 	std::vector<HUD*> generalList;
-	//These are used to store the current selected item. 
-	GameObject* outPowerUP;
-	GameObject* outButton;
+	//These are used to store the current selected item.
+	//GameObject* outGameObject;
+	PowerUpObject* outPowerUP;
+	UpgradeObject* outUpgrade;
 	EnemyObject* outEnemy;
 	TowerObject* outSelection;
 	GLuint currentCursor;

@@ -10,10 +10,9 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	factor = fact;
 	flag = false;
 	enemyFlag = false;
-	buttonFlag = false;
+	upgradeFlag = false;
 	powerUpFlag = false;
 	outSelection = NULL;
-	outButton = NULL;
 	outEnemy = NULL;
 	outPowerUP = NULL;
 	win = window;
@@ -51,27 +50,38 @@ void HUD::selection(double x, double y) {
 	if ((677.6 * factor <= x && x <= 710.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {//start first row
 		outSelection = blueprints[0];
 		flag = true;
-		currentCursor = blueprints[0]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[0]->getIcon();
 	}
 	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[3];
 		flag = true;
-		currentCursor = blueprints[3]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[3]->getIcon();
+		
 	}
 	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outSelection = blueprints[6];
 		flag = true;
-		currentCursor = blueprints[6]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[6]->getIcon();
+	
 	}
 	//==============================next column
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outSelection = blueprints[1];
 		flag = true;
-		currentCursor = blueprints[1]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[1]->getIcon();
+		
 	}
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[4];
@@ -82,27 +92,42 @@ void HUD::selection(double x, double y) {
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outSelection = blueprints[7];
 		flag = true;
-		currentCursor = blueprints[7]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[7]->getIcon();
+		
 	}
 	//==============================next column
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outSelection = blueprints[2];
 		flag = true;
-		currentCursor = blueprints[2]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[2]->getIcon();
+		
 	}
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[5];
 		flag = true;
-		currentCursor = blueprints[5]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[5]->getIcon();
+		
 	}
+	
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
+		/*
 		outSelection = blueprints[8];
 		flag = true;
-		currentCursor = blueprints[8]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[8]->getIcon();
+
+	*/
 	}
 
 }
@@ -112,125 +137,158 @@ void HUD::selectionEnemy(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	if ((9.6 * factor <= x && x <= 42.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[0];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
 	}
 	else if ((9.6 * factor <= x && x <= 42.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[3];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
+
 	}
 	else if ((9.6 * factor <= x && x <= 42.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[6];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
 	}
 	//====================================new column
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[1];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
+
 	}
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[4];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
+
 	}
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[7];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
 	}
 	//====================================new column
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[2];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
 	}
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[5];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
 	}
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[8];
-		enemyFlag = true;
 		flag = false;
+		enemyFlag = true;
+		upgradeFlag = false;
+		powerUpFlag = false;
 	}
 }
 
 void HUD::selectionPowerUp(double x, double y) {
+	//std::cout << "====================>" << x / factor << "," << y / factor << std::endl;
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
-	if ((244 * factor <= x && x <= 256 * factor) && (408 * factor <= y && y <= 432 * factor)) {//start first row
+	
+	if ((266.4 * factor <= x && x <= 294.4 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[0];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
+		upgradeFlag = false;
 		powerUpFlag = true;
-	}
-	else if ((263 * factor <= x && x <= 295 * factor) && (408 * factor <= y && y <= 432 * factor)) {
+	}else if ((326.4* factor <= x && x <= 353.6 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[1];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
+		upgradeFlag = false;
 		powerUpFlag = true;
-
 	}
-	else if ((302 * factor <= x && x <= 334 * factor) && (408 * factor <= y && y <= 432 * factor)) {
+	else if ((388* factor <= x && x <= 415.2 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[2];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
+		upgradeFlag = false;
 		powerUpFlag = true;
-
 	}
-	else if ((341 * factor <= x && x <= 373 * factor) && (408 * factor <= y && y <= 432 * factor)) {
+	else if ((446.4* factor <= x && x <= 474 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[3];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
+		upgradeFlag = false;
 		powerUpFlag = true;
-
 	}
-	else if ((380 * factor <= x && x <= 412 * factor) && (408 * factor <= y && y <= 432 * factor)) {
+	else if ((504.8* factor <= x && x <= 535.2 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[4];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
+		upgradeFlag = false;
 		powerUpFlag = true;
-
 	}
-	else if ((419 * factor <= x && x <= 451 * factor) && (408 * factor <= y && y <= 432 * factor)) {
-		outPowerUP = powerUps[5];
+	
+}
+
+void HUD::selectionUpgrades(double x, double y) {
+	//std::cout << "====================>" << x / factor << "," << y / factor << std::endl;
+	if ((628 * factor <= x && x <= 656 * factor) && (505.6 * factor <= y && y <= 526.4 * factor)) {//start first row
+		outUpgrade = upgrades[0];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
-		powerUpFlag = true;
-
+		upgradeFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((458 * factor <= x && x <= 490 * factor) && (408 * factor <= y && y <= 432 * factor)) {
-		outPowerUP = powerUps[6];
+	else if ((628 * factor <= x && x <= 656 * factor) && (536 * factor <= y && y <= 556 * factor)) {//start first row
+		outUpgrade = upgrades[1];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
-		powerUpFlag = true;
-
+		upgradeFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((497 * factor <= x && x <= 529 * factor) && (408 * factor <= y && y <= 432 * factor)) {
-		outPowerUP = powerUps[7];
+	else if ((628 * factor <= x && x <= 656 * factor) && (567.2 * factor <= y && y <= 587.2 * factor)) {//start first row
+		outUpgrade = upgrades[2];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
-		powerUpFlag = true;
-
+		upgradeFlag = true;
+		powerUpFlag = false;
 	}
-	else if ((536 * factor <= x && x <= 568 * factor) && (408 * factor <= y && y <= 432 * factor)) {
-		outPowerUP = powerUps[8];
+	else if ((147.2 * factor <= x && x <= 174.4 * factor) && (505.6 * factor <= y && y <= 526.4 * factor)) {//start first row
+		outUpgrade = upgrades[3];
 		flag = false;
 		enemyFlag = false;
-		buttonFlag = false;
-		powerUpFlag = true;
-
+		upgradeFlag = true;
+		powerUpFlag = false;
+	}
+	else if ((147.2 * factor <= x && x <= 174.4 * factor) && (536 * factor <= y && y <= 556 * factor)) {//start first row
+		outUpgrade = upgrades[4];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+	}
+	else if ((147.2 * factor <= x && x <= 174.4 * factor) && (567.2 * factor <= y && y <= 587.2 * factor)) {//start first row
+		outUpgrade = upgrades[5];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
 	}
 }
 
@@ -254,6 +312,7 @@ void HUD::update(double deltaTime)// use it to compute the x and y coord of the 
 		t->setCamZoom(zoom);
 	}
 }
+
 bool HUD::updateHotkeysTower() {
 	float timeOfLastMove = 0.0f;
 	if (glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
@@ -261,6 +320,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[0];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[0]->getIcon();
 		return true;
 	}
@@ -269,6 +330,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[1];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[1]->getIcon();
 		return true;
 	}
@@ -277,6 +340,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[2];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[2]->getIcon();
 		return true;
 	}
@@ -285,6 +350,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[3];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[3]->getIcon();
 		return true;
 	}
@@ -293,6 +360,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[4];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[4]->getIcon();
 		return true;
 	}
@@ -301,6 +370,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[5];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[5]->getIcon();
 		return true;
 	}
@@ -309,6 +380,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[6];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[6]->getIcon();
 		return true;
 	}
@@ -317,6 +390,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[7];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[7]->getIcon();
 		return true;
 	}
@@ -325,6 +400,8 @@ bool HUD::updateHotkeysTower() {
 		outSelection = blueprints[8];
 		flag = true;
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
 		currentCursor = blueprints[8]->getIcon();
 		return true;
 	}
@@ -339,68 +416,147 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_Q) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[0];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[1];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_E) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[2];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[3];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[4];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[5];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_Z) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[6];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_X) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[7];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[8];
-			enemyFlag = true;
 			flag = false;
+			enemyFlag = true;
+			upgradeFlag = false;
+			powerUpFlag = false;
 			return true;
 		}
 		//==============================================
 	}
+	return false;
+}
+
+bool HUD::updateHotkeysUpgrade() {
+	float timeOfLastMove = 0.0f;
+	if (glfwGetKey(win, GLFW_KEY_Y) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outUpgrade = upgrades[0];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+		return true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_H) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outUpgrade = upgrades[1];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+		return true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_B) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outUpgrade = upgrades[2];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+		return true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_R) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outUpgrade = upgrades[3];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+		return true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_F) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outUpgrade = upgrades[4];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+		return true;
+	}
+	else if (glfwGetKey(win, GLFW_KEY_V) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+	{
+		outUpgrade = upgrades[5];
+		flag = false;
+		enemyFlag = false;
+		upgradeFlag = true;
+		powerUpFlag = false;
+		return true;
+	}
+
+
 	return false;
 }
 
@@ -412,7 +568,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	for (EnemyObject* g : l1) {
 		if (g->getType().compare("Normal") == 0) {
 			normal += 1;
-			std::cout << "NORMAL\n";
+			//std::cout << "NORMAL\n";
 		}
 		if (g->getType().compare("Glutton") == 0) {
 			fast += 1;
@@ -609,7 +765,73 @@ void HUD::updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int h
 
 void HUD::detailRender(std::vector<Shader*> shaders) {
 
+	if(upgradeFlag) {
 
+		textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
+		textObjects[11]->setRenderedText(textObjects[11]->getText() + std::to_string(outUpgrade->getMod()));//range
+	
+
+
+		textObjects[0]->render(shaders);
+		textObjects[11]->render(shaders);
+		
+
+		glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
+
+		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outUpgrade->getPosition());
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outUpgrade->getPosition().x, -outUpgrade->getPosition().y, -outUpgrade->getPosition().z));
+		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+		// Draw the entity
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+		glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
+
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	}
+	if (powerUpFlag) {
+		textObjects[0]->setRenderedText(textObjects[0]->getText() + outPowerUP->getType());//name
+		textObjects[9]->setRenderedText(textObjects[9]->getText() + std::to_string(outPowerUP->getRange()));//range
+		textObjects[10]->setRenderedText(textObjects[10]->getText() + std::to_string(outPowerUP->getDur()));//duration
+		
+
+		textObjects[0]->render(shaders);
+		textObjects[9]->render(shaders);
+		textObjects[10]->render(shaders);
+		
+		glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
+
+		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outPowerUP->getPosition());
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outPowerUP->getPosition().x, -outPowerUP->getPosition().y, -outPowerUP->getPosition().z));
+		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+		// Draw the entity
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+		glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
+
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	}
 	if (flag) {
 		textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
 		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string(outSelection->getCost()));//cost
@@ -725,6 +947,30 @@ void HUD::render(std::vector<Shader*> shaders) {
 	for (Text* t : textObjects) {
 		t->render(shaders);
 	}
+	for (int i = 0; i < upgrades.size(); i++) {
+		glBindTexture(GL_TEXTURE_2D, upgrades[i]->getTex());
+
+		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), upgrades[i]->getPosition());
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-upgrades[i]->getPosition().x, -upgrades[i]->getPosition().y, -upgrades[i]->getPosition().z));
+		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+		// Draw the entity
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+		glBindTexture(GL_TEXTURE_2D, upgrades[i]->getTex());
+
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	}
 	for (int i = 0; i < powerUps.size(); i++) {
 		glBindTexture(GL_TEXTURE_2D, powerUps[i]->getTex());
 
@@ -750,15 +996,15 @@ void HUD::render(std::vector<Shader*> shaders) {
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 	}
 
-	for (int i = 0; i < buttons.size(); i++) {
-		glBindTexture(GL_TEXTURE_2D, buttons[i]->getTex());
+	for (int i = 0; i < gameObjectList.size(); i++) {
+		glBindTexture(GL_TEXTURE_2D, gameObjectList[i]->getTex());
 
 		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
 
 		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
-		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), buttons[i]->getPosition());
+		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), gameObjectList[i]->getPosition());
 		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
-		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-buttons[i]->getPosition().x, -buttons[i]->getPosition().y, -buttons[i]->getPosition().z));
+		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-gameObjectList[i]->getPosition().x, -gameObjectList[i]->getPosition().y, -gameObjectList[i]->getPosition().z));
 		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
@@ -768,7 +1014,7 @@ void HUD::render(std::vector<Shader*> shaders) {
 		// Draw the entity
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 
-		glBindTexture(GL_TEXTURE_2D, buttons[i]->getTex());
+		glBindTexture(GL_TEXTURE_2D, gameObjectList[i]->getTex());
 
 
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);

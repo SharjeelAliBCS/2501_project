@@ -8,7 +8,7 @@ It overrides GameObject's update method, so that you can check for input to chan
 */
 
 EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumElements, float h, std::string type, GLuint edt, float speed, int c, float regen)
-	: GameObject(entityPos, entityTexture, entityNumElements, type, speed, c),
+	: GameObject(entityPos, entityTexture, entityNumElements, type, std::fmin(2.5, speed) , c),
 	enemyDeathTex(edt), framesDeath(-1), deathParticles(NULL) {
 	health = h;
 	defaultHealthCap = h;

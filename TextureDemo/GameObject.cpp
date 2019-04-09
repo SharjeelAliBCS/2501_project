@@ -46,7 +46,7 @@ void GameObject::update(double deltaTime) {
 	effectTimeLeft -= deltaTime;
 	burnTimeLeft -= deltaTime;
 	laserCoolDownTime -= deltaTime;
-	timeSince += deltaTime;
+	timeSince+=deltaTime;
 
 	position += curSpeed*direction * (float)deltaTime;
 
