@@ -610,31 +610,43 @@ int main(void){
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW STUFF
 		int index2 = 0;
 		
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 20, "AOE", 1, 1, 30, 4));index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 20, "AOE", 1, 1, 30, 4));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1.5, 2, 300, 0.5));index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(3.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1.5, 2, 300, 0.5));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));
 
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][0], size, 50, "Servent Minor", textures["Particle"][1], 1.0, 10, 0));//0
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][1], size, 200, "Glutton Minor", textures["Particle"][1], 0.8, 40, 0));//1
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][2], size, 100, "Fleeting Minor", textures["Particle"][1], 1.7, 70, 0));//2
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][0], size, 50, "Servent Minor", textures["Particle"][1], 1.0, 10, 0));//0
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][1], size, 200, "Glutton Minor", textures["Particle"][1], 0.8, 40, 0));//1
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][2], size, 100, "Fleeting Minor", textures["Particle"][1], 1.7, 70, 0));//2
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][3], size, 150, "Lifegiver Minor", textures["Particle"][1], 1, 100, 10));//3
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][4], size, 350, "Fleeting Colossal", textures["Particle"][1], 1.5, 250, 0));//4
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][5], size, 400, "Life Colossal", textures["Particle"][1], 1.0, 400, 15));//5
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][3], size, 150, "Lifegiver Minor", textures["Particle"][1], 1, 100, 10));//3
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][4], size, 350, "Fleeting Colossal", textures["Particle"][1], 1.5, 250, 0));//4
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][5], size, 400, "Life Colossal", textures["Particle"][1], 1.0, 400, 15));//5
 
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][6], size, 300, "Fleeting Lifeblood", textures["Particle"][1], 1.6, 500, 15));//6
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
-		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith", textures["Particle"][1], 2.5, 1000000, 1000000));//7
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][6], size, 300, "Fleeting Lifeblood", textures["Particle"][1], 1.6, 500, 15));//6
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
+		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
-		towerDetailHUD[0]->setDescription(descriptions.LoadTextFile("Descriptions/test.txt"));
+		std::vector < std::string>  discriptionTexts = descriptions.LoadVectorTextFile("Descriptions/discriptions.txt");
+		std::cout << "size = " << discriptionTexts.size() << std::endl;
+		int indexText = 0;
+		for (TowerObject* t : towerDetailHUD) {
+			t->setDescription(discriptionTexts[indexText]);
+			indexText++;
+		}
+
+		for (EnemyObject* e : enemyDetailHUD) {
+			e->setDescription(discriptionTexts[indexText]);
+			indexText++;
+		}
+		
 		
 		/************************************************blueprints INIT************************************************/
 
@@ -814,19 +826,21 @@ int main(void){
 		hudObjects[2]->addText(new Text(glm::vec3(-14.0f, 13.9f, 0.0f), fontTexture, "FPS: ", size, 0.07f, glm::vec3(0, 0, 0), "FPS"));
 
 		//==========================================================//===============================================>>>new stufff
-		hudObjects[5]->addText(new Text(glm::vec3(-10.0f, -18.0f, 0.0f), fontTexture, "NAME:", size, 0.04f, glm::vec3(50, 175, 255), "name"));//0
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -19.0f, 0.0f), fontTexture, "COST:", size, 0.04f, glm::vec3(50, 175, 255), "cost"));//1
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -20.0f, 0.0f), fontTexture, "HOTKEY:", size, 0.04f, glm::vec3(50, 175, 255), "hotkey"));//2
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -21.0f, 0.0f), fontTexture, "DAMAGE:", size, 0.04f, glm::vec3(50, 175, 255), "towerdamage"));//3
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -22.0f, 0.0f), fontTexture, "ROF:", size, 0.04f, glm::vec3(50, 175, 255), "towerrof"));//4
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -23.0f, 0.0f), fontTexture, "RANGE:", size, 0.04f, glm::vec3(50, 175, 255), "towerrange"));//5
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -21.0f, 0.0f), fontTexture, "HP:", size, 0.04f, glm::vec3(50, 175, 255), "enemyhp"));//6
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -22.0f, 0.0f), fontTexture, "SPEED:", size, 0.04f, glm::vec3(50, 175, 255), "enemyspeed"));//7
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -23.0f, 0.0f), fontTexture, "REGEN:", size, 0.04f, glm::vec3(50, 175, 255), "enemyregen"));//8
+		hudObjects[5]->addText(new Text(glm::vec3(-12.5f, -18.0f, 0.0f), fontTexture, "NAME:", size, 0.04f, glm::vec3(50, 175, 255), "name"));//0
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "COST:", size, 0.04f, glm::vec3(50, 175, 255), "cost"));//1
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -20.0f, 0.0f), fontTexture, "HOTKEY:", size, 0.04f, glm::vec3(50, 175, 255), "hotkey"));//2
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -21.0f, 0.0f), fontTexture, "DAMAGE:", size, 0.04f, glm::vec3(50, 175, 255), "towerdamage"));//3
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -22.0f, 0.0f), fontTexture, "ROF:", size, 0.04f, glm::vec3(50, 175, 255), "towerrof"));//4
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -23.0f, 0.0f), fontTexture, "RANGE:", size, 0.04f, glm::vec3(50, 175, 255), "towerrange"));//5
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -21.0f, 0.0f), fontTexture, "HP:", size, 0.04f, glm::vec3(50, 175, 255), "enemyhp"));//6
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -22.0f, 0.0f), fontTexture, "SPEED:", size, 0.04f, glm::vec3(50, 175, 255), "enemyspeed"));//7
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -23.0f, 0.0f), fontTexture, "REGEN:", size, 0.04f, glm::vec3(50, 175, 255), "enemyregen"));//8
 
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -19.0f, 0.0f), fontTexture, "RANGE:", size, 0.04f, glm::vec3(50, 175, 255), "powerupRange"));//9
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -20.0f, 0.0f), fontTexture, "DURATION:", size, 0.04f, glm::vec3(50, 175, 255), "powerupDuration"));//10
-		hudObjects[5]->addText(new Text(glm::vec3(-7.0f, -19.0f, 0.0f), fontTexture, "MOD:", size, 0.04f, glm::vec3(50, 175, 255), "upgradeMod"));//11
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "RANGE:", size, 0.04f, glm::vec3(50, 175, 255), "powerupRange"));//9
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -20.0f, 0.0f), fontTexture, "DURATION:", size, 0.04f, glm::vec3(50, 175, 255), "powerupDuration"));//10
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "MOD:", size, 0.04f, glm::vec3(50, 175, 255), "upgradeMod"));//11
+		
+		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "s: ", size, 0.04f, glm::vec3(50, 175, 255), "discription"));//11
 																										
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
@@ -886,6 +900,13 @@ int main(void){
 				break;
 			}
 			case Game: {
+				if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && (timeOfLastMove + 0.3 < glfwGetTime()))
+				{
+					hudObjects[5]->setToggleInfo();
+					timeOfLastMove = glfwGetTime();
+					
+				}
+
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&

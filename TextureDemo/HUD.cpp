@@ -16,6 +16,7 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	outEnemy = NULL;
 	outPowerUP = NULL;
 	win = window;
+	toggleItemInfo = true;
 
 }
 
@@ -314,7 +315,8 @@ void HUD::update(double deltaTime)// use it to compute the x and y coord of the 
 }
 
 bool HUD::updateHotkeysTower() {
-	float timeOfLastMove = 0.0f;
+
+	
 	if (glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[0];
@@ -323,6 +325,7 @@ bool HUD::updateHotkeysTower() {
 		upgradeFlag = false;
 		powerUpFlag = false;
 		currentCursor = blueprints[0]->getIcon();
+
 		return true;
 	}
 	if (glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
@@ -405,6 +408,7 @@ bool HUD::updateHotkeysTower() {
 		currentCursor = blueprints[8]->getIcon();
 		return true;
 	}
+	
 	return false;
 }
 
@@ -765,148 +769,194 @@ void HUD::updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int h
 
 void HUD::detailRender(std::vector<Shader*> shaders) {
 
-	if(upgradeFlag) {
+	if (toggleItemInfo) {
+		if (upgradeFlag) {
 
-		textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
-		textObjects[11]->setRenderedText(textObjects[11]->getText() + std::to_string(outUpgrade->getMod()));//range
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
+			textObjects[11]->setRenderedText(textObjects[11]->getText() + std::to_string(outUpgrade->getMod()));//range
+
+
+
+			textObjects[0]->render(shaders);
+			textObjects[11]->render(shaders);
+
+
+			glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
+
+			glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+			glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+			glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outUpgrade->getPosition());
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+			glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outUpgrade->getPosition().x, -outUpgrade->getPosition().y, -outUpgrade->getPosition().z));
+			glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+			glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+			// Draw the entity
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+			glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
+
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+		}
+		if (powerUpFlag) {
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outPowerUP->getType());//name
+			textObjects[9]->setRenderedText(textObjects[9]->getText() + std::to_string(outPowerUP->getRange()));//range
+			textObjects[10]->setRenderedText(textObjects[10]->getText() + std::to_string(outPowerUP->getDur()));//duration
+
+
+			textObjects[0]->render(shaders);
+			textObjects[9]->render(shaders);
+			textObjects[10]->render(shaders);
+
+			glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
+
+			glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+			glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+			glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outPowerUP->getPosition());
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+			glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outPowerUP->getPosition().x, -outPowerUP->getPosition().y, -outPowerUP->getPosition().z));
+			glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+			glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+			// Draw the entity
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+			glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
+
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+		}
+		if (flag) {
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
+			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
+			textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
+			textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage(), 1));//damage
+			textObjects[4]->setRenderedText(textObjects[4]->getText() + round(outSelection->getROF(), 1));//ROF
+			textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange(), 1));//range
+
+			textObjects[0]->render(shaders);
+			textObjects[1]->render(shaders);
+			textObjects[2]->render(shaders);
+			textObjects[3]->render(shaders);
+			textObjects[4]->render(shaders);
+			textObjects[5]->render(shaders);
+			glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
+
+			glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+			glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+			glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outSelection->getPosition());
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+			glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outSelection->getPosition().x, -outSelection->getPosition().y, -outSelection->getPosition().z));
+			glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+			glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+			// Draw the entity
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+			glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
+
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+		}
+
+		if (enemyFlag) {
+
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
+			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outEnemy->getCost()));//cost
+			textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
+			textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)outEnemy->getHealth()));//hp
+			textObjects[7]->setRenderedText(textObjects[7]->getText() + round(outEnemy->getCurSpeed(), 1));//speed
+			textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen(), 1));//range
+
+			textObjects[0]->render(shaders);
+			textObjects[1]->render(shaders);
+			textObjects[2]->render(shaders);
+			textObjects[6]->render(shaders);
+			textObjects[7]->render(shaders);
+			textObjects[8]->render(shaders);
+			glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
+
+			glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+
+			glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
+			glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outEnemy->getPosition());
+			glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+			glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
+			glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+
+			glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+
+			// Draw the entity
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+			glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
+
+
+			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+		}
+	}
+	else if (flag || enemyFlag){
+		std::cout << "info" << std::endl;
+
+		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
+		glm::mat4 oMatrix,posMat,scaleMatrix,zoomMatrix,camMat,transformationMatrix; 
+		
+		camMat = glm::translate(glm::mat4(1.0f), testCam);
+		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
+
+		zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
+
+		
+		if (flag) {
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
+			textObjects[12]->setRenderedText(outSelection->getDescription());//discription
+			glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
+			posMat = glm::translate(glm::mat4(1.0f), outSelection->getPosition());
+			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outSelection->getPosition().x, -outSelection->getPosition().y, -outSelection->getPosition().z));
 	
+			
 
-
+		
+		}
+		else if (enemyFlag) {
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
+			textObjects[12]->setRenderedText(outEnemy->getDescription());//discription
+			glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
+			posMat = glm::translate(glm::mat4(1.0f), outEnemy->getPosition());
+			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
+		}
+		
+		transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		textObjects[0]->render(shaders);
-		textObjects[11]->render(shaders);
+		textObjects[12]->render(shaders);
+
 		
 
-		glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
-
-		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-
-		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
-		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outUpgrade->getPosition());
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
-		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outUpgrade->getPosition().x, -outUpgrade->getPosition().y, -outUpgrade->getPosition().z));
-		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
-
-		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-
-		// Draw the entity
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-
-		glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
-
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-	}
-	if (powerUpFlag) {
-		textObjects[0]->setRenderedText(textObjects[0]->getText() + outPowerUP->getType());//name
-		textObjects[9]->setRenderedText(textObjects[9]->getText() + std::to_string(outPowerUP->getRange()));//range
-		textObjects[10]->setRenderedText(textObjects[10]->getText() + std::to_string(outPowerUP->getDur()));//duration
 		
-
-		textObjects[0]->render(shaders);
-		textObjects[9]->render(shaders);
-		textObjects[10]->render(shaders);
-		
-		glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
-
-		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-
-		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
-		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outPowerUP->getPosition());
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
-		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outPowerUP->getPosition().x, -outPowerUP->getPosition().y, -outPowerUP->getPosition().z));
-		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
-
-		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-
-		// Draw the entity
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-
-		glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
-
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-	}
-	if (flag) {
-		textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
-		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
-		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
-		textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage(), 1));//damage
-		textObjects[4]->setRenderedText(textObjects[4]->getText() + round(outSelection->getROF(),1));//ROF
-		textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange(),1));//range
-		
-		textObjects[0]->render(shaders);
-		textObjects[1]->render(shaders);
-		textObjects[2]->render(shaders);
-		textObjects[3]->render(shaders);
-		textObjects[4]->render(shaders);
-		textObjects[5]->render(shaders);
-		glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
-
-		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-
-		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
-		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outSelection->getPosition());
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
-		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outSelection->getPosition().x, -outSelection->getPosition().y, -outSelection->getPosition().z));
-		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
-
-		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-
-		// Draw the entity
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-
-		glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
-
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-	}
-
-	if (enemyFlag) {
-
-		textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
-		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outEnemy->getCost()));//cost
-		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
-		textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)outEnemy->getHealth()));//hp
-		textObjects[7]->setRenderedText(textObjects[7]->getText() + round(outEnemy->getCurSpeed(),1));//speed
-		textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen(),1));//range
-
-		textObjects[0]->render(shaders);
-		textObjects[1]->render(shaders);
-		textObjects[2]->render(shaders);
-		textObjects[6]->render(shaders);
-		textObjects[7]->render(shaders);
-		textObjects[8]->render(shaders);
-		glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
-
-		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-
-		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
-		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), outEnemy->getPosition());
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
-		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
-		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
-
-		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-
-		// Draw the entity
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
-
-		glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
-
-
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	
+	
 	}
 
 	// Bind the entities texture

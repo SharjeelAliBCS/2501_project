@@ -20,3 +20,32 @@ std::string FileUtils::LoadTextFile(const char *filename) {
 
 	return content;
 }
+
+std::vector<std::string> FileUtils::LoadVectorTextFile(const char *filename) {
+	std::vector < std::string>  strings;
+
+
+	std::ifstream f;
+	f.open(filename);
+	if (f.fail()) {
+		throw(std::ios_base::failure(std::string("Error opening file ") + std::string(filename)));
+	}
+
+	// Read file
+	std::string content;
+	std::string line;
+	while (std::getline(f, line)) {
+		content += line + "\n";
+		if (line == "") {
+			strings.push_back(content);
+			content = "";
+		}
+	}
+
+	// Close file
+	f.close();
+
+	return strings;
+
+
+}

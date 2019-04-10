@@ -70,6 +70,8 @@ public:
 	inline void setSelectionEnemy(EnemyObject* newEnemy) { outEnemy = newEnemy; }
 	inline void setSelectionPowerUps(PowerUpObject* power) { outPowerUP = power; }
 	inline void setSelectionUpgrades(UpgradeObject* up) { outUpgrade = up; }
+	inline void setToggleInfo() { toggleItemInfo = !toggleItemInfo; }
+	
 private:
 	float zoom;
 	glm::vec3 camPos;
@@ -80,6 +82,8 @@ private:
 	bool powerUpFlag;
 	bool upgradeFlag;
 	bool enemyFlag;
+	bool toggleItemInfo;
+	float timeOfLastMove;
 	std::vector<int> out;
 	//vectors storing all the items in the game
 	std::vector<TowerObject*> blueprints;
