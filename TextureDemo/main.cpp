@@ -93,6 +93,7 @@ int normalCount = 10000, fastCount = 10000, heartyCount = 10000, flyingCount = 1
 int normalCount2 = 10000, fastCount2 = 10000, heartyCount2 = 10000, flyingCount2 = 10000, splitterCount2 = 10000, regeneratingCount2 = 10000, fast_heartyCount2 = 10000, fast_flyingCount2 = 10000, fast_regeneratingCount2 = 10000, fast_splitterCount2 = 10000, fast_hearty_regenerating_flyingCount2 = 10000;
 enum State {
 	MainMenu,
+	Map,
 	Game,
 	Pause,
 	GameOver,
@@ -899,6 +900,10 @@ int main(void){
 				}
 				break;
 			}
+			case Map: {
+
+				break;
+			}
 			case Game: {
 				if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && (timeOfLastMove + 0.3 < glfwGetTime()))
 				{
@@ -987,7 +992,7 @@ int main(void){
 						numEnemiesSpawned = enemyMap[turnIndex]->size();
 
 					}if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						showRadius ^= 1;
+						showRadius ^= 2;
 						timeOfLastMove = glfwGetTime();
 					}
 
@@ -1423,6 +1428,10 @@ int main(void){
 					b->render(shaders);
 				}
 				background->render(shaders);
+				break;
+			}
+			case Map: {
+
 				break;
 			}
 			case Game: {

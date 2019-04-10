@@ -170,6 +170,8 @@ int Shader::CreateParticleArray(int type) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(manyface), manyface, GL_STATIC_DRAW);
 
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	// Return number of elements in array buffer
 	return sizeof(manyface);
 		
@@ -177,8 +179,7 @@ int Shader::CreateParticleArray(int type) {
 }
 void Shader::setRadius(int type) {
 	// Create buffer for vertices
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(particleatt), particleatt, GL_STATIC_DRAW);
 
 }
