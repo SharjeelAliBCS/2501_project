@@ -49,3 +49,24 @@ std::vector<std::string> FileUtils::LoadVectorTextFile(const char *filename) {
 
 
 }
+
+std::pair<int, int> FileUtils::loadMapSize(std::string fname) {
+	int wid = 0;
+	int height=0;
+	std::ifstream in(fname);
+	std::string line, field;
+	while (getline(in, line)) {
+		if (!height) {
+			std::stringstream ss(line);
+			while (getline(ss, field, ','))  // break line into comma delimitted fields
+			{
+				++wid;
+			}
+		}
+		++height;
+	}
+	in.close();
+
+	return std::make_pair(wid, height);
+
+}

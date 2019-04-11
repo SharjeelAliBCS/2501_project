@@ -24,7 +24,7 @@ class Graph {
 public:
 	//constructor. 
 	Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname, int x, int y, GLFWwindow* w);
-
+	~Graph();
 	
 	//Loops through array and prints out associated data for each node.
 	void printData();

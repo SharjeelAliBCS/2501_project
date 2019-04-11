@@ -52,7 +52,7 @@ float window_height_g = window_width_g * ratio;//*1.5
 int Wwidth, Wheight;
 float factor = window_width_g / window_width_g;//*1.5
 //const glm::vec3 viewport_background_color_g(1, 1, 1);
-const glm::vec3 viewport_background_color_g(50.0f/255.0f, 50.0f /255.0f, 50.0f /255.0f);
+const glm::vec3 viewport_background_color_g(15.0f/255.0f, 5.0f /255.0f, 24.0f /255.0f);
 
 // Global texture info
 
@@ -88,6 +88,7 @@ std::vector<PowerUpObject*> powerUpListHUD;
 std::vector<UpgradeObject*> upgradeListHUD;
 std::vector<PowerUpObject*> powerUpList;
 std::vector<UpgradeObject*> upgradeList;
+std::vector<HUD*>mapHUD;
 
 int normalCount = 10000, fastCount = 10000, heartyCount = 10000, flyingCount = 10000, splitterCount = 10000, regeneratingCount = 10000, fast_heartyCount = 10000, fast_flyingCount = 10000, fast_regeneratingCount = 10000, fast_splitterCount = 10000, fast_hearty_regenerating_flyingCount = 10000;
 int normalCount2 = 10000, fastCount2 = 10000, heartyCount2 = 10000, flyingCount2 = 10000, splitterCount2 = 10000, regeneratingCount2 = 10000, fast_heartyCount2 = 10000, fast_flyingCount2 = 10000, fast_regeneratingCount2 = 10000, fast_splitterCount2 = 10000, fast_hearty_regenerating_flyingCount2 = 10000;
@@ -305,7 +306,12 @@ void setallTexture(void)
 	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player1.png"));
 	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player2.png"));
 
-
+	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map1box.png"));
+	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map2box.png"));
+	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map3box.png"));
+	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map4box.png"));
+	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map5box.png"));
+	
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
 	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
 
@@ -315,6 +321,8 @@ void setallTexture(void)
 	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 
 	textures["Background"].push_back(createTexture("Graphics/Background/menu.png"));//0
+	textures["Background"].push_back(createTexture("Graphics/Background/mapMenu.png"));//0
+	textures["Background"].push_back(createTexture("Graphics/MENU/MapSelection/mapbox.png"));
 
 	textures["Player"].push_back(createTexture("Graphics/playerStats/hp.png"));
 	textures["Player"].push_back(createTexture("Graphics/playerStats/gold.png"));
@@ -435,6 +443,7 @@ int main(void){
 			throw(std::runtime_error(std::string("Could not initialize the GLEW library: ") + std::string((const char *)glewGetErrorString(err))));
 		}
 		glfwSetWindowAspectRatio(window, 4, 3);
+		
 
 		// Set up z-buffer for rendering
 		glEnable(GL_DEPTH_TEST);
@@ -549,31 +558,22 @@ int main(void){
 
 		/************************************************FILE INIT************************************************/
 
-		std::ifstream in(fname);
-		std::string line, field;
-		while (getline(in, line)) { 
-			if (!height) {
-				std::stringstream ss(line);
-				while (getline(ss, field, ','))  // break line into comma delimitted fields
-				{
-					++wid;
-				}
-			}
-			++height;
-		}
-		in.close();
+		FileUtils fileLoader;
+		std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
+		wid = tempSize.first;
+		height = tempSize.second;
+		
+		std::vector < std::string>  discriptionTexts = fileLoader.LoadVectorTextFile("Descriptions/discriptions.txt");
+		std::cout << "size = " << discriptionTexts.size() << std::endl;
 
-		FileUtils descriptions;
+		
 
 		/************************************************GRAPH INIT************************************************/
 		
-		Graph g = Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
-		glm::vec3 cameraTranslatePos = g.getFocalPoint(turnIndex);
-		start = *(g.getBotStartSet().begin());
-		g.setZoom(cameraZoom);
-		g.setCamPos(cameraTranslatePos);
-
-		g.setStart(start);
+		
+		glm::vec3 cameraTranslatePos = glm::vec3(0.1125f,6.3f,0.0f);
+		
+		
 
 	
 		/************************************************ENEMY INIT************************************************/
@@ -635,8 +635,7 @@ int main(void){
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
-		std::vector < std::string>  discriptionTexts = descriptions.LoadVectorTextFile("Descriptions/discriptions.txt");
-		std::cout << "size = " << discriptionTexts.size() << std::endl;
+		
 		int indexText = 0;
 		for (TowerObject* t : towerDetailHUD) {
 			t->setDescription(discriptionTexts[indexText]);
@@ -769,14 +768,17 @@ int main(void){
 		hudObjects[8]->setGameObjects(turnButtons);
 		hudObjects.push_back(new HUD(glm::vec3(-0.158f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD4", window));
 		hudObjects[9]->setUpgrades(upgradeList);
-		
 
-		for (HUD* h : hudObjects) {
-			h->setCamPos(cameraTranslatePos);
-		}
-		for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
-		for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
-		selectionGraphic->setCamPos(cameraTranslatePos);
+		//MAP SELECTION HUD
+		float mapBoxSize = 0.6f;
+		objectS = glm::vec3(1.0f*mapBoxSize, 1.3f*mapBoxSize, 1.0f*mapBoxSize);
+		float mapBoxOffset = 0.04f;
+		mapHUD.push_back(new HUD(glm::vec3(1.1+ mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][0], size, factor, "map1", window));
+		mapHUD.push_back(new HUD(glm::vec3(0.0f+ mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][1], size, factor, "map2", window));
+		mapHUD.push_back(new HUD(glm::vec3(-1.1f+ mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][2], size, factor, "map3", window));
+		mapHUD.push_back(new HUD(glm::vec3(0.65f+ mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][3], size, factor, "map4", window));
+		mapHUD.push_back(new HUD(glm::vec3(-0.65f+ mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][4], size, factor, "map5", window));
+		
 		////selectionGraphic2->setCamPos(cameraTranslatePos);
 
 		/************************************************MENU INIT************************************************/
@@ -842,6 +844,13 @@ int main(void){
 		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "MOD:", size, 0.04f, glm::vec3(50, 175, 255), "upgradeMod"));//11
 		
 		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "s: ", size, 0.04f, glm::vec3(50, 175, 255), "discription"));//11
+
+		
+		mapHUD[0]->addText(new Text(glm::vec3(-17.8f, -25.5f, 0.0f), fontTexture, "New Texas (Easy)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
+		mapHUD[1]->addText(new Text(glm::vec3(-5.3f, -25.5f, 0.0f), fontTexture, "Havan City (NORMAL)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
+		mapHUD[2]->addText(new Text(glm::vec3(7.8f, -25.5f, 0.0f), fontTexture, "Three Sols (NORMAL)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
+		mapHUD[3]->addText(new Text(glm::vec3(-14.0f, -45.0f, 0.0f), fontTexture, "New World Order (HARD)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
+		mapHUD[4]->addText(new Text(glm::vec3(0.0f, -45.0f, 0.0f), fontTexture, "Infernal Battlefield (HARD)", size, 0.05f,  glm::vec3(255, 255, 255), "mapbox"));//11
 																										
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
@@ -857,6 +866,13 @@ int main(void){
 		//_state = Game;//comment out to see menu. 
 
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
+
+		Graph* g;
+
+		//g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
+		//g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
+		
+
 		while (!glfwWindowShouldClose(window)) {
 
 			//int Wwidth, Wheight;
@@ -880,11 +896,16 @@ int main(void){
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
-						_state = Game;
-						audioObject->stop("menu");
-						audioObject->playRepeat("background");
+						_state = Map;
+						
+						timeOfLastMove = glfwGetTime();
+						background->setTex(textures["Background"][1]);
+						
+						
 					}
 				}
+				
+
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 					double xpos, ypos;
 					glfwGetCursorPos(window, &xpos, &ypos);
@@ -893,14 +914,75 @@ int main(void){
 
 					float x;
 					float y;
-					int id = g.getHover();
-					g.getHoverCoords(x, y);
+					int id = g->getHover();
+					g->getHoverCoords(x, y);
 
 					//std::cout << xOut << "," << yOut << std::endl;
 				}
 				break;
 			}
 			case Map: {
+				if (timeOfLastMove + 0.05 < glfwGetTime()) {
+					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
+						(timeOfLastMove + 0.15 < glfwGetTime())) {
+						_state = Game;
+						audioObject->stop("menu");
+						audioObject->playRepeat("background");
+						timeOfLastMove = glfwGetTime();
+
+						std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
+						wid = tempSize.first;
+						height = tempSize.second;
+						g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
+						cameraTranslatePos = g->getFocalPoint(turnIndex);
+						std::cout << cameraTranslatePos.x << ", " << cameraTranslatePos.y << std::endl;
+						start = *(g->getBotStartSet().begin());
+						g->setZoom(cameraZoom);
+						g->setCamPos(cameraTranslatePos);
+
+						g->setStart(start);
+
+						g->setStart(start);
+						for (HUD* h : hudObjects) {
+							h->setCamPos(cameraTranslatePos);
+						}
+						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
+						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
+						selectionGraphic->setCamPos(cameraTranslatePos);
+
+						background->setTex(textures["Background"][2]);
+						
+						//background = new GameObject(glm::vec3(3.0f, -6.3f, 0.0f), textures["Background"][0], size, "map");
+						background->setImgScale(glm::vec3(90, 46, 46));
+					}
+				}
+				//std::string fname = "Levels/map"+std::to_string(level)+".csv";
+				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					timeOfLastMove = glfwGetTime();
+					_state = MainMenu;
+					background->setTex(textures["Background"][0]);
+				}
+				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					timeOfLastMove = glfwGetTime();
+					fname = "Levels/map" + std::to_string(1) + ".csv";
+				}
+				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					timeOfLastMove = glfwGetTime();
+					fname = "Levels/map" + std::to_string(2) + ".csv";
+				}
+				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					timeOfLastMove = glfwGetTime();
+					fname = "Levels/map" + std::to_string(3) + ".csv";
+				}
+				if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					timeOfLastMove = glfwGetTime();
+					fname = "Levels/map" + std::to_string(4) + ".csv";
+				}
+				if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+					timeOfLastMove = glfwGetTime();
+					fname = "Levels/map" + std::to_string(5) + ".csv";
+				}
+				
 
 				break;
 			}
@@ -932,7 +1014,7 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS ||
 						((ypos > 0 && ypos<30) && inWindow)) {
 						cameraTranslatePos.y -= camShiftInc / cameraZoom;
-						g.setCamPos(cameraTranslatePos);
+						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
@@ -942,7 +1024,7 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS ||
 						((ypos > window_height_g - 30 && ypos < window_height_g) && inWindow)) {
 						cameraTranslatePos.y += camShiftInc / cameraZoom;
-						g.setCamPos(cameraTranslatePos);
+						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
@@ -951,7 +1033,7 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS ||
 						((xpos > window_width_g - 30 && xpos < window_width_g) && inWindow)) {
 						cameraTranslatePos.x -= camShiftInc / cameraZoom;
-						g.setCamPos(cameraTranslatePos);
+						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
@@ -960,7 +1042,7 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS ||
 						((xpos > 0 && xpos < 30) && inWindow)) {
 						cameraTranslatePos.x += camShiftInc / cameraZoom;
-						g.setCamPos(cameraTranslatePos);
+						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
@@ -968,7 +1050,7 @@ int main(void){
 					}
 					if (glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS) {
 						cameraZoom = std::fmin(cameraZoom + camZoomInc, maxCamZoom);
-						g.setZoom(cameraZoom);
+						g->setZoom(cameraZoom);
 						timeOfLastMove = glfwGetTime();
 						for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 						for (HUD* h : player1)h->setZoom(cameraZoom);
@@ -977,7 +1059,7 @@ int main(void){
 					}
 					if (glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS) {
 						cameraZoom = std::fmax(cameraZoom - camZoomInc, minCamZoom);
-						g.setZoom(cameraZoom);
+						g->setZoom(cameraZoom);
 						timeOfLastMove = glfwGetTime();
 						for (HUD* h : hudObjects)h->setZoom(cameraZoom);
 						for (HUD* h : player1)h->setZoom(cameraZoom);
@@ -1012,7 +1094,7 @@ int main(void){
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
 
 						selectionRadius = 1.5;
-						for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+						for (EnemyObject* e : enemiesInRange(g->getNode(g->getHover()), selectionRadius, enemyMap[turnIndex])) {
 							if (e->getType().compare("Undying") != 0) {
 								e->setExists(false);
 							}
@@ -1034,7 +1116,7 @@ int main(void){
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
 
 						selectionRadius = 1.5;
-						for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+						for (EnemyObject* e : enemiesInRange(g->getNode(g->getHover()), selectionRadius, enemyMap[turnIndex])) {
 							e->modCurSpeed(0);
 							e->setEffectDuration(4);
 						}
@@ -1104,7 +1186,7 @@ int main(void){
 					//centre screen
 					if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 						cameraTranslatePos = glm::vec3(0.0f);
-						g.setCamPos(cameraTranslatePos);
+						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
@@ -1120,8 +1202,8 @@ int main(void){
 						hpUp = false;
 						rainingLead = false;
 						turnIndex = turnIndex ^ 1;
-						cameraTranslatePos = g.getFocalPoint(turnIndex);
-						g.setCamPos(cameraTranslatePos);
+						cameraTranslatePos = g->getFocalPoint(turnIndex);
+						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects) {
 							h->setCamPos(cameraTranslatePos);
 						}
@@ -1132,20 +1214,20 @@ int main(void){
 						std::cout << "T \n";
 						turn = turnArr[turnIndex];
 						credits[turnIndex] += income[turnIndex];
-						g.clearNextNodeMaps();
-						g.startPaths(turnIndex);
+						g->clearNextNodeMaps();
+						g->startPaths(turnIndex);
 
 						audioObject->playAgain("teamChange");
 					}
 					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-						std::cout << g.getHover() << std::endl;
+						std::cout << g->getHover() << std::endl;
 						//Node* tttt = &g.getNode(g.getHover());
-						g.selectRange(g.getHover(), 1.5);
+						g->selectRange(g->getHover(), 1.5);
 						//tttt->selected = true;
-						std::cout << g.getHover() << std::endl;
-						Node* tttt = g.getNode(g.getHover()).getNextNode(2024);
+						std::cout << g->getHover() << std::endl;
+						Node* tttt = g->getNode(g->getHover()).getNextNode(2024);
 						if (tttt == NULL) {
-							tttt = g.getNode(g.getHover()).getNextNode(314);
+							tttt = g->getNode(g->getHover()).getNextNode(314);
 						}
 						if (tttt != NULL) {
 							std::cout << tttt->getId() << std::endl;
@@ -1162,15 +1244,15 @@ int main(void){
 
 						float x;
 						float y;
-						int id = g.getHover();
-						g.getHoverCoords(x, y);
+						int id = g->getHover();
+						g->getHoverCoords(x, y);
 
 						//std::cout << ypos << ", " << 400*factor << std::endl;
 
 						if (ypos <= 400*factor) {//prints on map
 							if (hudObjects[3]->getFlag()) {
 
-								if (g.getNode(id).getBuildable(turn)) {
+								if (g->getNode(id).getBuildable(turn)) {
 									TowerObject* selectedTower = hudObjects[3]->getSelection();
 									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
 									if (credits[turnIndex] >= selectedTower->getCost()) {
@@ -1187,13 +1269,13 @@ int main(void){
 										if (t->getType().compare("denderBlueprint---2") == 0) {
 
 										}
-										g.getNode(id).setTowerState(true, turn);
+										g->getNode(id).setTowerState(true, turn);
 										std::cout << "tower made  " << selectedTower->getCost() << std::endl;
 										//
 										//g.clearNextNodeMaps();
 										//g.startPaths();
-										if (g.startPaths(turnIndex) && g.rePath(id, turn)) {
-											g.getNode(id).setTower(t);
+										if (g->startPaths(turnIndex) && g->rePath(id, turn)) {
+											g->getNode(id).setTower(t);
 											credits[turnIndex] -= selectedTower->getCost();
 											towerMap[turnIndex]->push_back(t);
 											std::cout << "GRAPH STUFF " << selectedTower->getCost() << std::endl;
@@ -1210,10 +1292,10 @@ int main(void){
 										}
 										else {
 											std::cout << "\n\n\nINVALID TOWER PLACEMENT";
-											g.getNode(id).setTowerState(false, turn);
-											g.clearNextNodeMaps();
-											g.startPaths(turnIndex);
-											g.rePath(id, turn);
+											g->getNode(id).setTowerState(false, turn);
+											g->clearNextNodeMaps();
+											g->startPaths(turnIndex);
+											g->rePath(id, turn);
 											delete(t);
 										}
 										std::cout << "Repath" << std::endl;
@@ -1350,8 +1432,8 @@ int main(void){
 							income[turnIndex] += selectedEnemy->getCost();
 							credits[turnIndex] -= selectedEnemy->getCost();
 							Node* cur;
-							for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
-								cur = &g.getNode(s);
+							for (int s : g->getStartSet(turnArr[turnIndex ^ 1])) {
+								cur = &g->getNode(s);
 								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), selectedEnemy->getTex(), size, selectedEnemy->getHealth(),
 									selectedEnemy->getType(), selectedEnemy->getEnemyDeathTex(), selectedEnemy->getCurSpeed(), selectedEnemy->getCost(), selectedEnemy->getRegen());
 								e->setAudio(audioObject);
@@ -1379,6 +1461,13 @@ int main(void){
 				break;
 			}
 			case Pause: {
+				if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
+					(timeOfLastMove + 0.25 < glfwGetTime())) {
+					_state = Game;
+					audioObject->stop("menu");
+					audioObject->playRepeat("background");
+					timeOfLastMove = glfwGetTime();
+				}
 				break;
 			}
 			case GameOver: {
@@ -1431,7 +1520,19 @@ int main(void){
 				break;
 			}
 			case Map: {
+				for (HUD* h : mapHUD) {
+				
+					h->setFactor(factor);
+					h->update(deltaTime);
 
+					for (Text* t : h->getTextObjects()) {
+						t->render(shaders);
+					}
+
+					h->render(shaders);
+					
+				}
+				background->render(shaders);
 				break;
 			}
 			case Game: {
@@ -1568,10 +1669,10 @@ int main(void){
 
 				//**********Cursor**********
 				float x, y;
-				int id = g.getHover();
-				g.getHoverCoords(x, y);
+				int id = g->getHover();
+				g->getHoverCoords(x, y);
 				cursor->setPosition(glm::vec3(x, y, 0.0f));
-				if (g.getNode(id).getBuildable(turn)) {
+				if (g->getNode(id).getBuildable(turn)) {
 
 					cursor->render(shaders);
 				}
@@ -1689,13 +1790,13 @@ int main(void){
 
 
 
-					if (cur->getId() != g.getEndPoints(turnIndex) && cur->getNextNode(e->getCurDestId()) != NULL) {
+					if (cur->getId() != g->getEndPoints(turnIndex) && cur->getNextNode(e->getCurDestId()) != NULL) {
 
 						Node* next = cur->getNextNode(e->getCurDestId());
 						if (!next->getPathable()) {
-							g.setStart(cur->getId());
-							g.setEnd(e->getCurDestId());
-							if (!g.pathfind()) {
+							g->setStart(cur->getId());
+							g->setEnd(e->getCurDestId());
+							if (!g->pathfind()) {
 								std::cout << "Welll fuck";
 							}
 							next = cur->getNextNode(e->getCurDestId());
@@ -1731,9 +1832,9 @@ int main(void){
 								next = cur->getNextNode(e->getCurDestId());
 								if (!next->getPathable()) {
 
-									g.setStart(cur->getId());
-									g.setEnd(e->getCurDestId());
-									if (!g.pathfind()) {
+									g->setStart(cur->getId());
+									g->setEnd(e->getCurDestId());
+									if (!g->pathfind()) {
 										std::cout << "Welll fuck";
 									}
 									next = cur->getNextNode(e->getCurDestId());
@@ -1796,7 +1897,7 @@ int main(void){
 					}
 
 					//stop moving if we're done
-					if (e->getExists() && (cur->getId() == g.getEndPoints(turnIndex) || (cur->getNextNode(e->getCurDestId()) == NULL))) {
+					if (e->getExists() && (cur->getId() == g->getEndPoints(turnIndex) || (cur->getNextNode(e->getCurDestId()) == NULL))) {
 						hp[turnIndex] -= 1;
 						if (e->getType().compare("Undying Zenith") == 0) {
 							hp[turnIndex] = 0;
@@ -1838,20 +1939,15 @@ int main(void){
 				}
 
 				//**********Graph**********
-				g.update(showRadius, selectionRadius);
+				g->update(showRadius, selectionRadius);
 				//render graph
-				g.render(shaders);
+				g->render(shaders);
 
 				break;
 			}
 			case Pause: {
-				if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
-					(timeOfLastMove + 0.25 < glfwGetTime())) {
-					_state = Game;
-					audioObject->stop("menu");
-					audioObject->playRepeat("background");
-					timeOfLastMove = glfwGetTime();
-				}
+				
+				background->render(shaders);
 				break;
 			}
 			case GameOver: {

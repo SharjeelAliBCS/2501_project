@@ -11,4 +11,5 @@ class FileUtils {
 public:
 	static std::string LoadTextFile(const char *filename);
 	static std::vector<std::string> LoadVectorTextFile(const char *filename);
+	static std::pair<int, int> loadMapSize(std::string fname);
 };

@@ -19,7 +19,7 @@ class Node {
 
 public:
 	Node(float _x, float _y, GLuint tex);
-
+	
 	//connects two nodes with an edge of 'edgeCost'
 	void addNode(Node& n, int edgeCost);
 
@@ -64,7 +64,7 @@ public:
 
 	//inline bool isVisited() const { return visited; }
 	inline bool getHighlight() const { return highlight; }
-	inline void setTex(GLuint t) { texture = t; }
+	inline void setTex(GLuint t) {  texture = t; }
 
 	inline bool isOnPath() const { return onPath; }
 	inline int getId() const { return id; }
