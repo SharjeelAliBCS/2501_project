@@ -52,7 +52,7 @@ std::vector<std::string> FileUtils::LoadVectorTextFile(const char *filename) {
 
 std::pair<int, int> FileUtils::loadMapSize(std::string fname) {
 	int wid = 0;
-	int height=0;
+	int height = 0;
 	std::ifstream in(fname);
 	std::string line, field;
 	while (getline(in, line)) {

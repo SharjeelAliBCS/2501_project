@@ -31,17 +31,25 @@ public:
 
 	inline void modCurHealthCap(float hp) { curHealthCap *= hp; health = curHealthCap; }
 	inline GLuint getEnemyDeathTex() { return enemyDeathTex; }
+
+	inline void upHardiness(float mod) { defaultHealthCap = baseHealthCap * mod; regen = baseRegen * mod; }
+	inline void upCost(float mod) { cost = (int)(baseCost*mod); }
+	inline void upSpeed(float mod) { defaultSpeed = std::fmin(2.5,baseSpeed*mod); }
+
 	float oldx;
 	float oldy;
 protected:
 
 	Node * cur;
-	float health, defaultHealthCap, curHealthCap;
-	float regen;
+	float health, defaultHealthCap, curHealthCap, baseHealthCap;
+	float regen, baseRegen;
 	int curDestId;
 	bool hit, killed, spawned;
 	float curTime;
 	float timeSinceLastHeal = 1;
+
+	int baseCost;
+	float baseSpeed;
 
 	//These variables below are used for the enemy death particle stuff
 	GLuint enemyDeathTex;

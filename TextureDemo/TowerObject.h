@@ -37,6 +37,10 @@ public:
 	inline void setCurROF(float rof) { curROF = rof; }
 	inline void modCurROF(float rof) { curROF *= rof; }
 
+	inline void upDamage(float mod) { damage = baseDamage * mod; }
+	inline void upRange(float mod) { range = baseRange * mod; }
+	inline void upROF(float mod) { defaultROF = std::fmax(baseROF *(2-mod),0.05); }
+
 
 private:
 	float rotationSpeed;
@@ -76,12 +80,13 @@ private:
 	std::vector<EnemyObject*> currentEnemies;
 	std::vector<EnemyObject*> allEnemies;
 
-	float curROF, defaultROF, frames;
+	float curROF, baseROF, defaultROF;
+	float frames;
 	double lastShotTime;
-	float damage;
+	float damage, baseDamage;
 	float projectileSpeed;
 	int explosion_num;
-	float range;
+	float range, baseRange;
 	float orgSpeed;
 	float duration;
 	GLint size;

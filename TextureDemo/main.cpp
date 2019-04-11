@@ -1,5 +1,4 @@
 /* David Neudorf, Sharjeel Ali,Raul Rodriguez Azurdia
- * 101029913,101070889,
  Look in the README
  */
 
@@ -43,6 +42,7 @@
 
 float GameObject::cameraZoom = 0.22f;
 glm::vec3 GameObject::cameraTranslatePos = glm::vec3(0.0f);
+int GameObject::nextUniqueID = 0;
 
 // Globals that define the OpenGL window and viewport
 const std::string window_title_g = "Assault on Terra";
@@ -52,7 +52,7 @@ float window_height_g = window_width_g * ratio;//*1.5
 int Wwidth, Wheight;
 float factor = window_width_g / window_width_g;//*1.5
 //const glm::vec3 viewport_background_color_g(1, 1, 1);
-const glm::vec3 viewport_background_color_g(15.0f/255.0f, 5.0f /255.0f, 24.0f /255.0f);
+const glm::vec3 viewport_background_color_g(15.0f / 255.0f, 5.0f / 255.0f, 24.0f / 255.0f);
 
 // Global texture info
 
@@ -88,13 +88,14 @@ std::vector<PowerUpObject*> powerUpListHUD;
 std::vector<UpgradeObject*> upgradeListHUD;
 std::vector<PowerUpObject*> powerUpList;
 std::vector<UpgradeObject*> upgradeList;
+
 std::vector<HUD*>mapHUD;
 
 int normalCount = 10000, fastCount = 10000, heartyCount = 10000, flyingCount = 10000, splitterCount = 10000, regeneratingCount = 10000, fast_heartyCount = 10000, fast_flyingCount = 10000, fast_regeneratingCount = 10000, fast_splitterCount = 10000, fast_hearty_regenerating_flyingCount = 10000;
 int normalCount2 = 10000, fastCount2 = 10000, heartyCount2 = 10000, flyingCount2 = 10000, splitterCount2 = 10000, regeneratingCount2 = 10000, fast_heartyCount2 = 10000, fast_flyingCount2 = 10000, fast_regeneratingCount2 = 10000, fast_splitterCount2 = 10000, fast_hearty_regenerating_flyingCount2 = 10000;
 enum State {
 	MainMenu,
-	Map,
+	MapMenu,
 	Game,
 	Pause,
 	GameOver,
@@ -306,27 +307,40 @@ void setallTexture(void)
 	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player1.png"));
 	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player2.png"));
 
+
+	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
+	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
+
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/nullzone.png"));//1
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/timestop.png"));//2
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/morphine.png"));//3
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/stimpack.png"));//4
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/giveemlead.png"));//5
+
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/damageup.png"));//5
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/rofup.png"));//5
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/rangeup.png"));//5
+
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/healthup.png"));//5
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/speedup.png"));//5
+	textures["MENU"].push_back(createTexture("Graphics/Buttons/costup.png"));//5
+
 	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map1box.png"));
 	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map2box.png"));
 	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map3box.png"));
 	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map4box.png"));
 	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map5box.png"));
-	
-	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
-	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
-
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
 
 	textures["Background"].push_back(createTexture("Graphics/Background/menu.png"));//0
 	textures["Background"].push_back(createTexture("Graphics/Background/mapMenu.png"));//0
-	textures["Background"].push_back(createTexture("Graphics/MENU/MapSelection/mapbox.png"));
+	textures["Background"].push_back(createTexture("Graphic/Background/pauseMenu.png"));
+
+
 
 	textures["Player"].push_back(createTexture("Graphics/playerStats/hp.png"));
-	textures["Player"].push_back(createTexture("Graphics/playerStats/gold.png"));
-	textures["Player"].push_back(createTexture("Graphics/playerStats/income.png"));
+	textures["Player"].push_back(createTexture("Graphics/playerStats/gold2.png"));
+	textures["Player"].push_back(createTexture("Graphics/playerStats/income2.png"));
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Score.png"));//2
@@ -443,7 +457,6 @@ int main(void){
 			throw(std::runtime_error(std::string("Could not initialize the GLEW library: ") + std::string((const char *)glewGetErrorString(err))));
 		}
 		glfwSetWindowAspectRatio(window, 4, 3);
-		
 
 		// Set up z-buffer for rendering
 		glEnable(GL_DEPTH_TEST);
@@ -512,6 +525,14 @@ int main(void){
 		char turnArr[2] = { 'B','T' };
 		long income[2] = { 20,20 };
 		long credits[2] = { 30,30 };
+		std::map<std::string, float> upgrades[2];
+		std::string keys[6] = { "Upgrade Damage","Upgrade Rate of Fire","Upgrade Range","Upgrade Hardiness","Upgrade Speed","Increase Cost" };
+		for (int i = 0; i < 2; ++i) {
+			for (int j = 0; j < 6; ++j) {
+				upgrades[i][keys[j]]=1;
+			}
+		}
+
 		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
 
 		int hp[2] = { 20,20 };
@@ -548,6 +569,7 @@ int main(void){
 
 		EnemyObject* selectedEnemy = NULL;
 
+
 		float enemyX, enemyY, oldEnemyX, oldEnemyY;
 		float spawnCount = 0;
 		bool startWave;
@@ -562,17 +584,13 @@ int main(void){
 		std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
 		wid = tempSize.first;
 		height = tempSize.second;
-		
+
 		std::vector < std::string>  discriptionTexts = fileLoader.LoadVectorTextFile("Descriptions/discriptions.txt");
 		std::cout << "size = " << discriptionTexts.size() << std::endl;
-
-		
-
 		/************************************************GRAPH INIT************************************************/
 		
-		
-		glm::vec3 cameraTranslatePos = glm::vec3(0.1125f,6.3f,0.0f);
-		
+		Graph* g;
+		glm::vec3 cameraTranslatePos = glm::vec3(0.1125f, 6.3f, 0.0f);
 		
 
 	
@@ -588,26 +606,54 @@ int main(void){
 		Node* cur;
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW STUFF
 		glm::vec3 powerUpStartPosition = glm::vec3(3.0f, 6.0f, 0.0f);
-		for (int i = 0; i < 5;i++) {
-			powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][0],size,"power"+std::to_string(i)));
+		//for (int i = 0; i < 5;i++) {
+		//	powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][0],size,"power"+std::to_string(i)));
+		//	powerUpStartPosition.x -= 1.5;
+			
+			powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][1], size, "Null Zone", 1.5, 0, 5000));
 			powerUpStartPosition.x -= 1.5;
-		}
+			powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][2], size, "Time Stop", 1.5, 4, 2500));
+			powerUpStartPosition.x -= 1.5;
+			powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][3], size, "Morphine", -1, 20, 1000));
+			powerUpStartPosition.x -= 1.5;
+			powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][4], size, "Stimpack", -1, 20, 2000));
+			powerUpStartPosition.x -= 1.5;
+			powerUpList.push_back(new PowerUpObject(powerUpStartPosition, textures["MENU"][5], size, "Give 'Em Lead", -1, 15, 1250));
+		//}
 		glm::vec3 upgradeUpStartPosition = glm::vec3(-6.0f, 7.3f, 0.0f);
-		for (int i = 0; i < 3; i++) {
-			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][0], size, "upgradeTower" + std::to_string(i)));
+		//for (int i = 0; i < 3; i++) {
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][6], size, "Upgrade Damage",1.2, 500));
 			upgradeUpStartPosition.y += 1;
-		}
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][7], size, "Upgrade Rate of Fire",1.2,1000));
+			upgradeUpStartPosition.y += 1;
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][8], size, "Upgrade Range",1.1,750));
+			upgradeUpStartPosition.y += 1;
+		//}
 		upgradeUpStartPosition = glm::vec3(6.0f, 7.3f, 0.0f);
-		for (int i = 0; i < 3; i++) {
-			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][0], size, "upgradeEnemy" + std::to_string(i)));
+		//for (int i = 0; i < 3; i++) {
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][9], size, "Upgrade Hardiness",1.2,500));
 			upgradeUpStartPosition.y += 1;
-		}
-		for (int i = 0; i < 5; i++) {
-			powerUpListHUD.push_back(new PowerUpObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["MENU"][0], size, "power" + std::to_string(i)));
-		}
-		for (int i = 0; i < 6; i++) {
-			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["MENU"][0], size, "upgrade" + std::to_string(i)));
-		}
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][10], size, "Upgrade Speed",1.1,1000));
+			upgradeUpStartPosition.y += 1;
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][11], size, "Increase Cost",1.5,0));
+			upgradeUpStartPosition.y += 1;
+		//}
+			powerUpListHUD.push_back(new PowerUpObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][1], size, "Null Zone", 1.5, 0, 5000));
+			powerUpListHUD.push_back(new PowerUpObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][2], size, "Time Stop", 1.5, 4, 2500));
+			powerUpListHUD.push_back(new PowerUpObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][3], size, "Morphine", -1, 20, 1000));
+			powerUpListHUD.push_back(new PowerUpObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][4], size, "Stimpack", -1, 20, 2000));
+			powerUpListHUD.push_back(new PowerUpObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][5], size, "Give 'Em Lead", -1, 15, 1250));
+		//for (int i = 0; i < 6; i++) {
+		//	upgradeListHUD.push_back(new UpgradeObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["MENU"][0], size, "upgrade" + std::to_string(i)));
+			
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][6], size, "Upgrade Damage", 1.2, 500));
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][7], size, "Upgrade Rate of Fire", 1.2, 1000));
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][8], size, "Upgrade Range", 1.1, 750));
+		
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][9], size, "Upgrade Hardiness", 1.2, 500));
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][10], size, "Upgrade Speed", 1.1, 1000));
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["MENU"][11], size, "Increase cost", 1.5, 0));
+		//}
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW STUFF
 		int index2 = 0;
 		
@@ -619,8 +665,9 @@ int main(void){
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 20, "AOE", 1, 1, 30, 4));index2 += 4;
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1.5, 2, 300, 0.5));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1, 2, 300, 0.5));index2 += 4;
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(4.7f, 8.0f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")) , textures["Explosion"], size, 0, "Sell", 0, 0, 0, 0));
 
 
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][0], size, 50, "Servent Minor", textures["Particle"][1], 1.0, 10, 0));//0
@@ -635,35 +682,42 @@ int main(void){
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][7], size, 1000, "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(4.7f, 8.0f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith", textures["Particle"][1], 2.5, 1000000, 1000000));//7
 
-		
 		int indexText = 0;
-		for (TowerObject* t : towerDetailHUD) {
-			t->setDescription(discriptionTexts[indexText]);
-			indexText++;
-		}
 
-		for (EnemyObject* e : enemyDetailHUD) {
-			e->setDescription(discriptionTexts[indexText]);
-			indexText++;
+		for (int i = 0; i < towerDetailHUD.size(); i++) {
+			towerDetailHUD[i]->setDescription(discriptionTexts[i]);
+		}
+		for (int i = 0; i < enemyDetailHUD.size(); i++) {
+			enemyDetailHUD[i]->setDescription(discriptionTexts[i+8]);
+		}
+		for (int i = 0; i < powerUpListHUD.size(); i++) {
+			powerUpListHUD[i]->setDescription(discriptionTexts[i+17]);
+		}
+		for (int i = 0; i < upgradeListHUD.size(); i++) {
+			upgradeListHUD[i]->setDescription(discriptionTexts[i+21]);
 		}
 		
-		
+
+
+
+
 		/************************************************blueprints INIT************************************************/
 
 		//The blueprints are used to store a single type of tower, then once the player has placed one, it will use its variables
 		//to create the actual tower object. 
 		int index = 0;	
-																																																				//damage              range  rof  cost  speed								
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index += 4;
+																																																			                        	//damage                            range  rof  cost  speed								
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "C-Class BASIC",               3,   0.5, 5,  0.2)); index += 4; //the final 5 here is the cost
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30,  "C-Class DEFENDER",            2,   1,   10, 0.4)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,   "C-Class BARRIER",             0,   0,   1,  0.0)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size, 20, "AOE", 1, 1, 30, 4));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,   "B-Class IGNITION Cannon",     1,   0.1, 10,  0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size,    20,  "AOE",                         1,   1,   30,  4));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Stealth Sniper",      20,  4,   100, 0.6)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1.5, 2, 300, 0.5));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1, 2,   300, 0.5));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,   "A-Class High Beam Laser",     30,  1,   200, 0));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")), textures["Explosion"], size, 5,   "Sell",     0,  0,   0, 0));//index += 4;
 		
 	
 		
@@ -768,17 +822,16 @@ int main(void){
 		hudObjects[8]->setGameObjects(turnButtons);
 		hudObjects.push_back(new HUD(glm::vec3(-0.158f, 2.0f, 0.0f), cameraZoom, objectS, textures["UI"][0], size, factor, "HUD4", window));
 		hudObjects[9]->setUpgrades(upgradeList);
-
+		
 		//MAP SELECTION HUD
 		float mapBoxSize = 0.6f;
 		objectS = glm::vec3(1.0f*mapBoxSize, 1.3f*mapBoxSize, 1.0f*mapBoxSize);
 		float mapBoxOffset = 0.04f;
-		mapHUD.push_back(new HUD(glm::vec3(1.1+ mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][0], size, factor, "map1", window));
-		mapHUD.push_back(new HUD(glm::vec3(0.0f+ mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][1], size, factor, "map2", window));
-		mapHUD.push_back(new HUD(glm::vec3(-1.1f+ mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][2], size, factor, "map3", window));
-		mapHUD.push_back(new HUD(glm::vec3(0.65f+ mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][3], size, factor, "map4", window));
-		mapHUD.push_back(new HUD(glm::vec3(-0.65f+ mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][4], size, factor, "map5", window));
-		
+		mapHUD.push_back(new HUD(glm::vec3(1.1 + mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][0], size, factor, "map1", window));
+		mapHUD.push_back(new HUD(glm::vec3(0.0f + mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][1], size, factor, "map2", window));
+		mapHUD.push_back(new HUD(glm::vec3(-1.1f + mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][2], size, factor, "map3", window));
+		mapHUD.push_back(new HUD(glm::vec3(0.65f + mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][3], size, factor, "map4", window));
+		mapHUD.push_back(new HUD(glm::vec3(-0.65f + mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][4], size, factor, "map5", window));
 		////selectionGraphic2->setCamPos(cameraTranslatePos);
 
 		/************************************************MENU INIT************************************************/
@@ -842,16 +895,14 @@ int main(void){
 		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "RANGE:", size, 0.04f, glm::vec3(50, 175, 255), "powerupRange"));//9
 		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -20.0f, 0.0f), fontTexture, "DURATION:", size, 0.04f, glm::vec3(50, 175, 255), "powerupDuration"));//10
 		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "MOD:", size, 0.04f, glm::vec3(50, 175, 255), "upgradeMod"));//11
-		
+
 		hudObjects[5]->addText(new Text(glm::vec3(-9.5f, -19.0f, 0.0f), fontTexture, "s: ", size, 0.04f, glm::vec3(50, 175, 255), "discription"));//11
 
-		
 		mapHUD[0]->addText(new Text(glm::vec3(-17.8f, -25.5f, 0.0f), fontTexture, "New Texas (Easy)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
 		mapHUD[1]->addText(new Text(glm::vec3(-5.3f, -25.5f, 0.0f), fontTexture, "Havan City (NORMAL)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
 		mapHUD[2]->addText(new Text(glm::vec3(7.8f, -25.5f, 0.0f), fontTexture, "Three Sols (NORMAL)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
 		mapHUD[3]->addText(new Text(glm::vec3(-14.0f, -45.0f, 0.0f), fontTexture, "New World Order (HARD)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
-		mapHUD[4]->addText(new Text(glm::vec3(0.0f, -45.0f, 0.0f), fontTexture, "Infernal Battlefield (HARD)", size, 0.05f,  glm::vec3(255, 255, 255), "mapbox"));//11
-																										
+		mapHUD[4]->addText(new Text(glm::vec3(0.0f, -45.0f, 0.0f), fontTexture, "Infernal Battlefield (HARD)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
 		int renderedFPS = 0;
@@ -866,13 +917,6 @@ int main(void){
 		//_state = Game;//comment out to see menu. 
 
 		glfwSetFramebufferSizeCallback(window, ResizeCallback);
-
-		Graph* g;
-
-		//g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
-		//g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
-		
-
 		while (!glfwWindowShouldClose(window)) {
 
 			//int Wwidth, Wheight;
@@ -896,16 +940,13 @@ int main(void){
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
-						_state = Map;
-						
+						_state = MapMenu;
+
 						timeOfLastMove = glfwGetTime();
 						background->setTex(textures["Background"][1]);
-						
-						
+
 					}
 				}
-				
-
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 					double xpos, ypos;
 					glfwGetCursorPos(window, &xpos, &ypos);
@@ -915,13 +956,14 @@ int main(void){
 					float x;
 					float y;
 					int id = g->getHover();
-					g->getHoverCoords(x, y);
+					//g->getHoverCoords(x, y);
 
 					//std::cout << xOut << "," << yOut << std::endl;
 				}
 				break;
 			}
-			case Map: {
+			case MapMenu: {
+				
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
 						(timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -951,9 +993,9 @@ int main(void){
 						selectionGraphic->setCamPos(cameraTranslatePos);
 
 						background->setTex(textures["Background"][2]);
-						
+
 						//background = new GameObject(glm::vec3(3.0f, -6.3f, 0.0f), textures["Background"][0], size, "map");
-						background->setImgScale(glm::vec3(90, 46, 46));
+						//background->setImgScale(glm::vec3(90, 46, 46));
 					}
 				}
 				//std::string fname = "Levels/map"+std::to_string(level)+".csv";
@@ -982,26 +1024,28 @@ int main(void){
 					timeOfLastMove = glfwGetTime();
 					fname = "Levels/map" + std::to_string(5) + ".csv";
 				}
-				
 
 				break;
 			}
+
 			case Game: {
+
 				if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && (timeOfLastMove + 0.3 < glfwGetTime()))
 				{
 					hudObjects[5]->setToggleInfo();
 					timeOfLastMove = glfwGetTime();
-					
-				}
 
+				}
+				//showRadius = 0;
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
 
-					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
-						(timeOfLastMove + 0.5 < glfwGetTime())) {
+					if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS &&
+						(timeOfLastMove + 0.25 < glfwGetTime())) {
 						_state = Pause;
-						audioObject->stop("menu");
-						audioObject->playRepeat("background");
+						audioObject->stop("background");
+						audioObject->playRepeat("menu");
 						timeOfLastMove = glfwGetTime();
+						
 					}
 
 					double xpos, ypos;
@@ -1066,6 +1110,8 @@ int main(void){
 						for (HUD* h : player2)h->setZoom(cameraZoom);
 						selectionGraphic->setZoom(cameraZoom);
 					}
+
+
 					if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
 						startWave = 1;
 						audioObject->playAgain("enemiesComing");
@@ -1073,8 +1119,9 @@ int main(void){
 						enemiesDestroyed = 0;
 						numEnemiesSpawned = enemyMap[turnIndex]->size();
 
+
 					}if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						showRadius ^= 2;
+						showRadius ^= 1;
 						timeOfLastMove = glfwGetTime();
 					}
 
@@ -1182,10 +1229,27 @@ int main(void){
 						}
 						timeOfLastMove = glfwGetTime();
 					}
+
+					if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						if ((hudObjects[2]->getSelectionPowerUps() != NULL)) {
+							std::cout<<"powerup not null\n";
+						}if ((hudObjects[9]->getSelectionUpgrades() != NULL)) {
+							std::cout<<"upgrade not null\n";
+						}if ((hudObjects[4]->getSelectionEnemy() != NULL)) {
+							std::cout<<"creep not null\n";
+						}if ((hudObjects[3]->getSelection() != NULL)) {
+							std::cout<<"tower not null\n";
+						}
+						//std::cout << "Powerup: " << ((hudObjects[2]->getSelectionPowerUps()==NULL)? 0 : hudObjects[2]->getSelectionPowerUps()->getType()) <<std::endl;
+						//std::cout << "Upgrade: " << hudObjects[2]->getSelectionUpgrades() << std::endl;
+						//std::cout << "Creep: " << hudObjects[2]->getSelectionEnemy() << std::endl;
+						//std::cout << "Tower: " << hudObjects[2]->getSelection() << std::endl;
+						timeOfLastMove = glfwGetTime();
+					}
 					
 					//centre screen
 					if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						cameraTranslatePos = glm::vec3(0.0f);
+						cameraTranslatePos = g->getFocalPoint(turnIndex);
 						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
@@ -1206,6 +1270,7 @@ int main(void){
 						g->setCamPos(cameraTranslatePos);
 						for (HUD* h : hudObjects) {
 							h->setCamPos(cameraTranslatePos);
+							h->setUpmod(upgrades[turnIndex]);
 						}
 						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
 						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
@@ -1222,7 +1287,7 @@ int main(void){
 					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 						std::cout << g->getHover() << std::endl;
 						//Node* tttt = &g.getNode(g.getHover());
-						g->selectRange(g->getHover(), 1.5);
+						g->selectRange(g->getHover(), selectionRadius);
 						//tttt->selected = true;
 						std::cout << g->getHover() << std::endl;
 						Node* tttt = g->getNode(g->getHover()).getNextNode(2024);
@@ -1251,9 +1316,28 @@ int main(void){
 
 						if (ypos <= 400*factor) {//prints on map
 							if (hudObjects[3]->getFlag()) {
+								TowerObject* selectedTower = hudObjects[3]->getSelection();
+								
+								if (selectedTower->getType().compare("Sell") == 0) {
+									TowerObject *t = g->getNode(id).getTower();
+									if (t != NULL) {
+										credits[turnIndex] += (int)(t->getCost() / 2);
+										g->getNode(id).setTower(NULL);
+										g->getNode(id).setTowerState(false, turn);
+										g->startPaths(turnIndex);
+										g->rePath(id, turn);
 
-								if (g->getNode(id).getBuildable(turn)) {
-									TowerObject* selectedTower = hudObjects[3]->getSelection();
+										for (std::vector<TowerObject*>::iterator it = towerMap[turnIndex]->begin(); it != towerMap[turnIndex]->end(); ++it) {
+											if ((*it)->getUniqueID() == t->getUniqueID()) {
+												towerMap[turnIndex]->erase(it);
+												delete(t);
+												break;
+											}
+										}
+										
+									}
+								}
+								else if (g->getNode(id).getBuildable(turn)) {
 									std::cout << "Tower costs: " << selectedTower->getCost() << std::endl;
 									if (credits[turnIndex] >= selectedTower->getCost()) {
 										
@@ -1265,6 +1349,11 @@ int main(void){
 											selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
 											selectedTower->getCost(), selectedTower->getSpeed());
 										t->setAudio(audioObject);
+										t->upDamage(upgrades[turnIndex]["Upgrade Damage"]);
+										t->upRange(upgrades[turnIndex]["Upgrade Range"]);
+										t->upROF(upgrades[turnIndex]["Upgrade Rate of Fire"]);
+
+										
 										
 										if (t->getType().compare("denderBlueprint---2") == 0) {
 
@@ -1319,6 +1408,7 @@ int main(void){
 							//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
 							hudObjects[3]->setFlag(false);
 							hudObjects[2]->setSelectionPowerUps(NULL);
+							audioObject->playAgain("menuClick");
 						}
 
 
@@ -1327,6 +1417,7 @@ int main(void){
 							selectionGraphic->setPosition(hudObjects[9]->getSelectionUpgrades()->getPosition());
 							//std::cout << hudObjects[9]->getSelectionUpgrades()->getType() << std::endl;
 							hudObjects[9]->setSelectionUpgrades(NULL);
+							audioObject->playAgain("menuClick");
 						}
 						//============================================================this is for the details render out put
 						hudObjects[5]->selection(xpos, ypos);
@@ -1339,37 +1430,13 @@ int main(void){
 					
 						if (hudObjects[4]->getSelectionEnemy() !=NULL) {
 							
-							
+							audioObject->playAgain("menuClick");
 							selectedEnemy = hudObjects[4]->getSelectionEnemy();
 							selectionGraphic->setPosition(hudObjects[4]->getSelectionEnemy()->getPosition());
 
 							hudObjects[4]->setSelectionEnemy(NULL);
 						}
-						/*
-						if (hudObjects[4]->getSelectionEnemy() != NULL)
-						{
-							if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
-								std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-								income[turnIndex] += 5;
-								credits[turnIndex] -= 5;
-								Node* cur;
-								for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
-									cur = &g.getNode(s);
-									if (hudObjects[4]->getSelectionEnemy()->getType() == "normal") { normalCount += 1; }
-									EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), hudObjects[4]->getSelectionEnemy()->getTex(), size, hudObjects[4]->getSelectionEnemy()->getHealth(), hudObjects[4]->getSelectionEnemy()->getType(), hudObjects[4]->getSelectionEnemy()->getEnemyDeathTex(), hudObjects[4]->getSelectionEnemy()->getDefaultSpeed(), hudObjects[4]->getSelectionEnemy()->getCost());
-									e->setAudio(audioObject);
-									enemyMap[turnIndex ^ 1]->push_back(e);
-
-									e->oldx = round(e->getPosition().x * 100) / 100;
-									e->oldy = round(e->getPosition().y * 100) / 100;
-									e->setCur(cur);
-									e->setCurDestId(cur->getNextId());
-								}
-								timeOfLastMove = glfwGetTime();
-							}
-						}
-						hudObjects[4]->setSelectionEnemy(NULL);
-						*/
+						
 						hudObjects[6]->turns(xpos, ypos);
 
 						if (hudObjects[7]->turns(xpos, ypos) == "wave") {
@@ -1393,80 +1460,166 @@ int main(void){
 						//--------end of click button------------ 
 					}
 
-					if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-						cursor->setTex(textures["Cursor"][0]);
-						selectedEnemy = NULL;
-						hudObjects[1]->setFlag(false);
-					}
-					/*
-					if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(0);
-					}if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(1);
-					}if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(2);
-					}if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-						selectedEnemy = enemyBlueprint.at(3);
-					}*/
-					if (selectedEnemy != NULL) {
-						//std::cout << selectedEnemy->getType() << std::endl;
-					}
+										
 					//hudObjects[3]->selection(xpos, ypos);
 					hudObjects[4]->selectionEnemy(xpos, ypos);
 					selectedEnemy = hudObjects[4]->getSelectionEnemy();
-					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS &&
-						selectedEnemy != NULL && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						//std::cout << selectedEnemy->getType() << std::endl;
-						/////////////////////////////////
-						/////////////////////////////////
-						/////////////////////////////////
-						/////////////////////////////////
-						//code for getting from hud here
-						/////////////////////////////////
-						/////////////////////////////////
-						/////////////////////////////////
-						/////////////////////////////////
+					PowerUpObject* selectedPower = hudObjects[2]->getSelectionPowerUps();
+					UpgradeObject* selectedUpgrade = hudObjects[9]->getSelectionUpgrades();
+					TowerObject* selectedTower = hudObjects[3]->getSelection();
 
-						if (credits[turnIndex] >= selectedEnemy->getCost() && enemyMap[turnIndex ^ 1]->size() < 200) { //>=selectedEnemy->getCost()
-							std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-							income[turnIndex] += selectedEnemy->getCost();
-							credits[turnIndex] -= selectedEnemy->getCost();
-							Node* cur;
-							for (int s : g->getStartSet(turnArr[turnIndex ^ 1])) {
-								cur = &g->getNode(s);
-								EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), selectedEnemy->getTex(), size, selectedEnemy->getHealth(),
-									selectedEnemy->getType(), selectedEnemy->getEnemyDeathTex(), selectedEnemy->getCurSpeed(), selectedEnemy->getCost(), selectedEnemy->getRegen());
-								e->setAudio(audioObject);
-								enemyMap[turnIndex ^ 1]->push_back(e);
-								if (gottaGoFast) {
-									e->modCurSpeed(1.5);
-									e->setEffectDuration(20);
-								}
-								if (hpUp) {
-									e->modCurHealthCap(2);
-									e->setEffectDuration(20);
-								}
-								e->oldx = round(e->getPosition().x * 100) / 100;
-								e->oldy = round(e->getPosition().y * 100) / 100;
-								e->setCur(cur);
-								e->setCurDestId(cur->getNextId());
-							}
-							timeOfLastMove = glfwGetTime();
-
-							audioObject->playAgain("enemySelected");
+					if (selectedPower != NULL) {
+						showRadius = 1;
+						selectionRadius = selectedPower->getRange();
+						if (selectedPower->getType().compare("Null Zone") == 0 || selectedPower->getType().compare("Time Stop") == 0) {
+							cursor->setTex(selectedPower->getTex());
 						}
+						else {
+							//cursor->setTex(textures["Cursor"][0]);
+						}
+					}
+					else if (selectedTower != NULL) {
+						showRadius = 1;
+						selectionRadius = selectedTower->getRange()*upgrades[turnIndex]["Upgrade Range"];
+						cursor->setTex(hudObjects[3]->getCursor());
+					}
+					
+					//showRadius = 1;
+
+					if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+						cursor->setTex(textures["Cursor"][0]);
+						selectedEnemy = NULL;
+						selectedPower = NULL;
+						selectedUpgrade = NULL;
+						//selectedTower = NULL;
+						hudObjects[5]->setPowerUpFlag(false);
+						hudObjects[1]->setFlag(false);
+						showRadius = 0;
+					}
+
+					if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						
+						if (selectedEnemy != NULL) {
+							if (credits[turnIndex] >= selectedEnemy->getCost() && enemyMap[turnIndex ^ 1]->size() < 200) { //>=selectedEnemy->getCost()
+								std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
+								income[turnIndex] += selectedEnemy->getCost();
+								credits[turnIndex] -= selectedEnemy->getCost();
+								Node* cur;
+								for (int s : g->getStartSet(turnArr[turnIndex ^ 1])) {
+									cur = &g->getNode(s);
+									EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), selectedEnemy->getTex(), size, selectedEnemy->getHealth(),
+										selectedEnemy->getType(), selectedEnemy->getEnemyDeathTex(), selectedEnemy->getCurSpeed(), selectedEnemy->getCost(), selectedEnemy->getRegen());
+									e->setAudio(audioObject);
+									e->upHardiness(upgrades[turnIndex]["Upgrade Hardiness"]);
+									e->upSpeed(upgrades[turnIndex]["Upgrade Speed"]);
+									e->upCost(upgrades[turnIndex]["Increase Cost"]);
+									enemyMap[turnIndex ^ 1]->push_back(e);
+									if (gottaGoFast) {
+										e->modCurSpeed(1.5);
+										e->setEffectDuration(20);
+									}
+									if (hpUp) {
+										e->modCurHealthCap(2);
+										e->setEffectDuration(20);
+									}
+									e->oldx = round(e->getPosition().x * 100) / 100;
+									e->oldy = round(e->getPosition().y * 100) / 100;
+									e->setCur(cur);
+									e->setCurDestId(cur->getNextId());
+								}
+								
+
+								audioObject->playAgain("enemySelected");
+							}
+						}
+						
+						else if (selectedPower != NULL) {
+							showRadius = 1;
+						
+							selectionRadius = selectedPower->getRange();
+							std::cout << "powerup not null\n";
+							if (credits[turnIndex] >= selectedPower->getCost()) {
+								credits[turnIndex] -= selectedPower->getCost();
+								/*
+								if("Null Zone"){
+									selectionRadius = 1.5;
+									for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+										if (e->getType().compare("Undying") != 0) {
+											e->setExists(false);
+										}
+									}
+								}
+								else if("Time Stop"){
+									selectionRadius = 1.5;
+									for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+										e->modCurSpeed(0);
+										e->setEffectDuration(4);
+									}
+								}
+								else if("Morphine"){
+									hpUp = true;
+									for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
+										e->modCurHealthCap(2);
+										e->setEffectDuration(20);
+									}
+								}
+								else if("Stimpack"){
+									gottaGoFast = true;
+									for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
+										e->modCurSpeed(1.5);
+										e->setEffectDuration(20);
+									}
+								}
+								else if("Give 'Em Lead"){
+									rainingLead = true;
+									rainingLeadEnd = glfwGetTime() + 15;
+									for (TowerObject* t : *(towerMap[turnIndex])) {
+										t->modCurROF(0.5);
+										t->setEffectDuration(15);
+									}
+								}
+								*/
+
+							}
+						}
+						if (selectedUpgrade != NULL) {
+							std::cout << "upgrade not null\n";
+
+							if (credits[turnIndex] >= selectedUpgrade->getCost()) {
+								credits[turnIndex] -= selectedUpgrade->getCost();
+								upgrades[turnIndex][selectedUpgrade->getType()] *= selectedUpgrade->getMod();
+								std::cout << selectedUpgrade->getType() << std::endl;
+								std::cout << upgrades[turnIndex][selectedUpgrade->getType()] << std::endl;
+								for (TowerObject* t : *(towerMap[turnIndex])) {
+									t->upDamage(upgrades[turnIndex]["Upgrade Damage"]);
+									t->upRange(upgrades[turnIndex]["Upgrade Range"]);
+									t->upROF(upgrades[turnIndex]["Upgrade Rate of Fire"]);
+								}
+								for (EnemyObject* e : *(enemyMap[turnIndex])) {
+									e->upHardiness(upgrades[turnIndex]["Upgrade Hardiness"]);
+									e->upSpeed(upgrades[turnIndex]["Upgrade Speed"]);
+									e->upCost(upgrades[turnIndex]["Increase Cost"]);
+								}
+								for (HUD* h : hudObjects) {
+									h->setUpmod(upgrades[turnIndex]);
+								}
+							}
+						}
+						timeOfLastMove = glfwGetTime();
 					}
 
 				}
 				break;
 			}
 			case Pause: {
-				if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
+				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS &&
 					(timeOfLastMove + 0.25 < glfwGetTime())) {
 					_state = Game;
 					audioObject->stop("menu");
 					audioObject->playRepeat("background");
 					timeOfLastMove = glfwGetTime();
+				
+
 				}
 				break;
 			}
@@ -1519,9 +1672,10 @@ int main(void){
 				background->render(shaders);
 				break;
 			}
-			case Map: {
+			
+			case MapMenu: {
 				for (HUD* h : mapHUD) {
-				
+
 					h->setFactor(factor);
 					h->update(deltaTime);
 
@@ -1530,10 +1684,11 @@ int main(void){
 					}
 
 					h->render(shaders);
-					
+
 				}
 				background->render(shaders);
 				break;
+					
 			}
 			case Game: {
 				//shader =  Shader("shader.vert", "shader.frag");
@@ -1552,11 +1707,13 @@ int main(void){
 				if (hudObjects[4]->updateHotkeysEnemy()) {
 					hudObjects[5]->updateHotkeysEnemy();
 					selectionGraphic->setPosition(hudObjects[4]->getSelectionEnemy()->getPosition());
+					audioObject->playAgain("menuClick");
 				}
 
 				if (hudObjects[9]->updateHotkeysUpgrade()) {
 					hudObjects[5]->updateHotkeysUpgrade();
 					selectionGraphic->setPosition(hudObjects[9]->getSelectionUpgrades()->getPosition());
+					audioObject->playAgain("menuClick");
 				}
 				
 				
@@ -1570,32 +1727,7 @@ int main(void){
 				}
 				//=====================================================>>>>>>>>>>>>>>>>>DONT ERASE!!!!!!, THIS IS THE CODE TO BUY CREEPS WITH HOTKEYS
 
-				//=====================================================
-				/*
-				if (hudObjects[4]->getSelectionEnemy() != NULL)
-				{
-					if (credits[turnIndex] >= 5) { //>=selectedEnemy->getCost()
-						std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
-						income[turnIndex] += 5;
-						credits[turnIndex] -= 5;
-						Node* cur;
-						for (int s : g.getStartSet(turnArr[turnIndex ^ 1])) {
-							cur = &g.getNode(s);
-
-							EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), hudObjects[4]->getSelectionEnemy()->getTex(), size, hudObjects[4]->getSelectionEnemy()->getHealth(), hudObjects[4]->getSelectionEnemy()->getType(), hudObjects[4]->getSelectionEnemy()->getEnemyDeathTex(), hudObjects[4]->getSelectionEnemy()->getDefaultSpeed(), hudObjects[4]->getSelectionEnemy()->getCost());
-							e->setAudio(audioObject);
-							enemyMap[turnIndex ^ 1]->push_back(e);
-
-							e->oldx = round(e->getPosition().x * 100) / 100;
-							e->oldy = round(e->getPosition().y * 100) / 100;
-							e->setCur(cur);
-							e->setCurDestId(cur->getNextId());
-						}
-						timeOfLastMove = glfwGetTime();
-					}
-				}
-				hudObjects[4]->setSelectionEnemy(NULL);*/
-				//=====================================================
+		
 				
 				hudObjects[0]->setTex(textures["UI"][turnIndex]);
 				hudObjects[0]->setFactor(factor);
@@ -1611,14 +1743,17 @@ int main(void){
 				hudObjects[2]->setFactor(factor);
 				hudObjects[2]->update(deltaTime);
 				hudObjects[2]->render(shaders);
+
 				hudObjects[3]->setTex(textures["UI"][turnIndex]);
 				hudObjects[3]->setFactor(factor);
 				hudObjects[3]->update(deltaTime);
 				hudObjects[3]->render(shaders);
+
 				hudObjects[4]->setTex(textures["UI"][turnIndex]);
 				hudObjects[4]->setFactor(factor);
 				hudObjects[4]->update(deltaTime);
 				hudObjects[4]->render(shaders);
+
 				hudObjects[5]->setTex(textures["UI"][turnIndex]);
 				hudObjects[5]->setFactor(factor);
 				hudObjects[5]->update(deltaTime);

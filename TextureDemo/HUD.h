@@ -70,8 +70,9 @@ public:
 	inline void setSelectionEnemy(EnemyObject* newEnemy) { outEnemy = newEnemy; }
 	inline void setSelectionPowerUps(PowerUpObject* power) { outPowerUP = power; }
 	inline void setSelectionUpgrades(UpgradeObject* up) { outUpgrade = up; }
+
+	inline void setUpmod(std::map<std::string, float> u) { upmod = u; }
 	inline void setToggleInfo() { toggleItemInfo = !toggleItemInfo; }
-	
 private:
 	float zoom;
 	glm::vec3 camPos;
@@ -83,7 +84,6 @@ private:
 	bool upgradeFlag;
 	bool enemyFlag;
 	bool toggleItemInfo;
-	float timeOfLastMove;
 	std::vector<int> out;
 	//vectors storing all the items in the game
 	std::vector<TowerObject*> blueprints;
@@ -100,6 +100,8 @@ private:
 	EnemyObject* outEnemy;
 	TowerObject* outSelection;
 	GLuint currentCursor;
+
+	std::map<std::string, float> upmod;
 
 	std::string round(float num, int places);
 

@@ -12,8 +12,12 @@ EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entit
 	enemyDeathTex(edt), framesDeath(-1), deathParticles(NULL) {
 	health = h;
 	defaultHealthCap = h;
+	baseHealthCap = h;
+	baseCost = c;
 	curHealthCap = h;
 	this->regen = regen;
+	baseRegen = regen;
+	baseSpeed = std::fmin(2.5, speed);
 	hit = false;
 	killed = false;
 	spawned = false;
@@ -23,8 +27,10 @@ EnemyObject::EnemyObject(glm::vec3 &entityPos, GLuint entityTexture, GLint entit
 }
 
 void EnemyObject::enemyHit(float damage) {
-	health -= damage;
-	hit = true;
+	if (spawned) {
+		health -= damage;
+		hit = true;
+	}
 }
 void EnemyObject::enemyBurn(float b) {
 	burn += b;

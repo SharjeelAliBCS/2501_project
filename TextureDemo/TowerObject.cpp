@@ -18,12 +18,15 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	_state = Init;
 	curROF = ROF;
 	defaultROF = ROF;
+	baseROF = ROF;
 	lastShotTime = 0;
 	frames = 0;
 	explosion_tex = explosion;
 	damage = d;
+	baseDamage = d;
 	texvec = tex;
 	range = r;
+	baseRange = r;
 	projectileSpeed = speed;
 	orgCoord = position;
 	explosion_num = -1;
@@ -44,7 +47,7 @@ TowerObject::~TowerObject() {
 		particle = NULL;
 
 	}
-
+	
 	for (int i = 0; i< bullObjects.size();i++)
 	{
 		delete (bullObjects[i]);

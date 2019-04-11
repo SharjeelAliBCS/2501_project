@@ -20,13 +20,13 @@ GameObject::GameObject(glm::vec3 &entityPosition, GLuint entityTexture, GLint en
 	effectTimeLeft = -1;
 	timeSince - 1;
 
-	uniqueID = std::to_string(std::rand() % (100000000 - 0 + 1));
-
+	uniqueID = std::to_string(++nextUniqueID);
+	//std::cout << "UID" << uniqueID << std::endl;
 	acceleration = 0.09f;
 	accelerationSlow = 0.04f;
 	a = glm::vec3(0.0f, 0.0f, 0.0f);
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	description = "";
+	
 
 	//uniqueID = std::to_string
 

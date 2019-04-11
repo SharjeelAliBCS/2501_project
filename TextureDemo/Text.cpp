@@ -31,7 +31,7 @@ void Text::render(std::vector<Shader*> shaders) {
 
 
 	glm::vec3 textPos = position;
-	
+
 	for (int i = 0; i < renderText.size();i++) {
 		//std::cout << renderText << ": " << renderText[i] << std::endl;
 		char c = renderText[i];

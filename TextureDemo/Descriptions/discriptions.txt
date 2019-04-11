@@ -111,5 +111,26 @@ are controlled by the literal servents
 of Ur-Sol. If you see one, then do not 
 dare attack, only be ready for death.  
 
+Powerup: NULL Zone type text 
 
-TEST
+Powerup: Time Stop type text
+
+Powerup: Morphine type text 
+
+Powerup: Stimpack type text 
+ 
+Powerup: Give 'Em Lead type text 
+
+Upgrade Damage type text 
+
+Upgrade Rate of Fire type text 
+
+Upgrade Range type text 
+
+Upgrade Hardiness type text 
+
+Upgrade Speed type text 
+
+Upgrade Cost type text 
+
+

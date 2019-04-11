@@ -19,12 +19,9 @@ public:
 //takes the width, height of graph, as well as a gameobject used to render each node.
 Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std::string, GLuint> &tex, std::string fname, int x, int y, GLFWwindow* w) :
 	nodeObj(nodeSprite), camPos(glm::vec3(0.0f)) {
-	
 	//initializes the 2d nodes array and nodeMap
 	nodes = std::vector<std::vector<Node*>>();
-	nodes.clear();
 	nodeMap = std::map<int, Node*>();
-	nodeMap.clear();
 	std::deque<pair<int,int>> removeNode = std::deque<pair<int,int>>();
 	texMap = tex;
 	nodeWid = nodeWidth;
@@ -39,7 +36,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	window_width_g = x;
 	window = w;
 
-	
+
 	//fills the 2d nodes array with nodes.
 	for (int i = 0; i < nodeHeight; i++) {
 		std::vector<Node*> nodeRow = std::vector<Node*>();
@@ -87,7 +84,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		}
 	}
 
-	
+
 	std::ifstream in(fname);
 	
 	//std::map<std::string, int, std::greater<std::string>> checkpoints;
@@ -105,7 +102,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		std::cout << it->first << std::endl;
 	}
 	std::cout << "\n\n\n";
-	
+
 	//int qwer = 0;
 	while (getline(in, line))    // get next line in file
 	{
@@ -115,7 +112,6 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		//std::cout<< id<< std::endl;
 		while (getline(ss, field, ','))  // break line into comma delimitted fields
 		{
-			
 			//asfd++;
 			//std::cout << qwer << ", " << asfd << std::endl;
 			//std::cout << "field: " << field << std::endl;
@@ -124,10 +120,8 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 				removeNode.push_front(pair<int, int>(row, col));
 			}
 			else if (field[0]=='b') {
-				
 				nodeMap[id]->setTex(texMap[field]);
 				getNode(id).setPathable(false);
-				
 			}
 			else if (texMap.find(field) != texMap.end()) {
 				nodeMap[id]->setTex(texMap[field]);
@@ -265,22 +259,6 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	
 }
 
-Graph::~Graph() {
-
-	for (int i = 0; i < nodes.size();i++) {
-		for (int j = 0; j < nodes[i].size(); j++) {
-			delete (nodes[i][j]);
-		}
-	}
-
-	for (std::map<int, Node*>::iterator itr = nodeMap.begin(); itr != nodeMap.end(); itr++)
-	{
-		delete (itr->second);
-	}
-	nodeMap.clear();
-
-	nodes.clear();
-}
 //Loops through array and prints out associated data for each node.
 void Graph::printData() {
 	for (int i = 0; i < nodes.size(); i++) {

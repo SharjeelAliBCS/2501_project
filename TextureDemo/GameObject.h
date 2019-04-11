@@ -44,6 +44,7 @@ public:
 	inline bool getExists() { return exists; }
 	inline float getRotation() { return rotation; }
 	inline std::string getDescription() { return description; }
+	inline std::string getUniqueID() { return uniqueID; }
 
 	inline int getCost() { return cost; }
 	inline void setCost(int c) { cost = c; }
@@ -51,8 +52,10 @@ public:
 	inline void setBurnDuration(float t) { burnTimeLeft = t; }
 	inline void setDescription(std::string d) { description = d;std::cout << d << std::endl; }
 
+
 	static float cameraZoom;
 	static glm::vec3 cameraTranslatePos;
+	static int nextUniqueID;
 	//inline void setTex(GLuint)
 protected:
 	// Object's Transform Variables
@@ -62,6 +65,7 @@ protected:
 	glm::vec3 direction;
 	float defaultSpeed, curSpeed,rotation=0.0f;
 	float effectTimeLeft, laserCoolDownTime, burnTimeLeft, timeSince;
+
 	glm::vec3 imgScale;
 	glm::vec3 targetPos;
 	bool exists;
@@ -70,6 +74,7 @@ protected:
 	float objectSize; // Not currently being used (will be needed for collision detection when objects have a different scale)
 	std::string type;
 	std::string uniqueID;
+	
 
 	float acceleration, accelerationSlow;
 	glm::vec3 velocity, a;

@@ -17,7 +17,6 @@ HUD::HUD(glm::vec3 &entityPos, float zoomHUD, glm::vec3 objectScale, GLuint enti
 	outPowerUP = NULL;
 	win = window;
 	toggleItemInfo = true;
-
 }
 
 
@@ -204,6 +203,7 @@ void HUD::selectionEnemy(double x, double y) {
 		upgradeFlag = false;
 		powerUpFlag = false;
 	}
+
 }
 
 void HUD::selectionPowerUp(double x, double y) {
@@ -291,6 +291,7 @@ void HUD::selectionUpgrades(double x, double y) {
 		upgradeFlag = true;
 		powerUpFlag = false;
 	}
+
 }
 
 std::string HUD::turns(double x, double y) {
@@ -315,8 +316,7 @@ void HUD::update(double deltaTime)// use it to compute the x and y coord of the 
 }
 
 bool HUD::updateHotkeysTower() {
-
-	
+	float timeOfLastMove = 0.0f;
 	if (glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[0];
@@ -325,7 +325,6 @@ bool HUD::updateHotkeysTower() {
 		upgradeFlag = false;
 		powerUpFlag = false;
 		currentCursor = blueprints[0]->getIcon();
-
 		return true;
 	}
 	if (glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
@@ -408,7 +407,6 @@ bool HUD::updateHotkeysTower() {
 		currentCursor = blueprints[8]->getIcon();
 		return true;
 	}
-	
 	return false;
 }
 
@@ -498,6 +496,7 @@ bool HUD::updateHotkeysEnemy() {
 			powerUpFlag = false;
 			return true;
 		}
+
 		//==============================================
 	}
 	return false;
@@ -768,14 +767,11 @@ void HUD::updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int h
 }
 
 void HUD::detailRender(std::vector<Shader*> shaders) {
-
 	if (toggleItemInfo) {
 		if (upgradeFlag) {
 
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
-			textObjects[11]->setRenderedText(textObjects[11]->getText() + std::to_string(outUpgrade->getMod()));//range
-
-
+			textObjects[11]->setRenderedText(textObjects[11]->getText() + round(outUpgrade->getMod(),0.5));//range
 
 			textObjects[0]->render(shaders);
 			textObjects[11]->render(shaders);
@@ -806,8 +802,8 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		}
 		if (powerUpFlag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outPowerUP->getType());//name
-			textObjects[9]->setRenderedText(textObjects[9]->getText() + std::to_string(outPowerUP->getRange()));//range
-			textObjects[10]->setRenderedText(textObjects[10]->getText() + std::to_string(outPowerUP->getDur()));//duration
+			textObjects[9]->setRenderedText(textObjects[9]->getText() + round(outPowerUP->getRange(),0.5));//range
+			textObjects[10]->setRenderedText(textObjects[10]->getText() + round(outPowerUP->getDur(),0.5));//duration
 
 
 			textObjects[0]->render(shaders);
@@ -841,9 +837,9 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
 			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
 			textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
-			textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage(), 1));//damage
-			textObjects[4]->setRenderedText(textObjects[4]->getText() + round(outSelection->getROF(), 1));//ROF
-			textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange(), 1));//range
+			textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage()*upmod["Upgrade Damage"], 1));//damage
+			textObjects[4]->setRenderedText(textObjects[4]->getText() + round(std::fmax(outSelection->getROF()*upmod["Upgrade Rate of Fire"], 0.05), 3));//ROF
+			textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange()*upmod["Upgrade Range"], 1));//range
 
 			textObjects[0]->render(shaders);
 			textObjects[1]->render(shaders);
@@ -878,11 +874,11 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		if (enemyFlag) {
 
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
-			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outEnemy->getCost()));//cost
+			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)(outEnemy->getCost()*upmod["Increase Cost"])));//cost
 			textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
-			textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)outEnemy->getHealth()));//hp
-			textObjects[7]->setRenderedText(textObjects[7]->getText() + round(outEnemy->getCurSpeed(), 1));//speed
-			textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen(), 1));//range
+			textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)(outEnemy->getHealth()*upmod["Upgrade Hardiness"])));//hp
+			textObjects[7]->setRenderedText(textObjects[7]->getText() + round(std::fmin(2.5, outEnemy->getCurSpeed()*upmod["Upgrade Speed"]), 1));//speed
+			textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen()*upmod["Upgrade Hardiness"], 1));//range
 
 			textObjects[0]->render(shaders);
 			textObjects[1]->render(shaders);
@@ -900,7 +896,6 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
 			glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
 
-
 			glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
 
 			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
@@ -914,29 +909,47 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		}
-	}
-	else if (flag || enemyFlag){
+
+		}
+	else if (flag || enemyFlag || upgradeFlag || powerUpFlag) {
 		std::cout << "info" << std::endl;
 
 		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-		glm::mat4 oMatrix,posMat,scaleMatrix,zoomMatrix,camMat,transformationMatrix; 
-		
+		glm::mat4 oMatrix, posMat, scaleMatrix, zoomMatrix, camMat, transformationMatrix;
+
 		camMat = glm::translate(glm::mat4(1.0f), testCam);
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
 
 		zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
 
-		
-		if (flag) {
+		if (upgradeFlag) {
+
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
+			textObjects[12]->setRenderedText(outUpgrade->getDescription());//discription
+			glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
+			posMat = glm::translate(glm::mat4(1.0f), outUpgrade->getPosition());
+			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outUpgrade->getPosition().x, -outUpgrade->getPosition().y, -outUpgrade->getPosition().z));
+			
+		}
+		else if (powerUpFlag) {
+			textObjects[0]->setRenderedText(textObjects[0]->getText() + outPowerUP->getType());//name
+			textObjects[12]->setRenderedText(outPowerUP->getDescription());//discription
+			glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
+			posMat = glm::translate(glm::mat4(1.0f), outPowerUP->getPosition());
+			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outPowerUP->getPosition().x, -outPowerUP->getPosition().y, -outPowerUP->getPosition().z));
+			
+		}
+
+		else if (flag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
 			textObjects[12]->setRenderedText(outSelection->getDescription());//discription
 			glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
 			posMat = glm::translate(glm::mat4(1.0f), outSelection->getPosition());
 			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outSelection->getPosition().x, -outSelection->getPosition().y, -outSelection->getPosition().z));
-	
-			
 
-		
+
+
+
 		}
 		else if (enemyFlag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
@@ -945,20 +958,15 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			posMat = glm::translate(glm::mat4(1.0f), outEnemy->getPosition());
 			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
 		}
-		
+
 		transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		textObjects[0]->render(shaders);
 		textObjects[12]->render(shaders);
 
-		
 
-		
-	
-	
 	}
-
 	// Bind the entities texture
 	glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -985,6 +993,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 	glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+	
 }
 
 void HUD::render(std::vector<Shader*> shaders) {
