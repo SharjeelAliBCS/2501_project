@@ -63,7 +63,7 @@ std::map<char, GLuint > fontTexture;
 
 std::map<int, std::vector<EnemyObject*>*> enemyMap;
 std::map<int, std::vector<TowerObject*>*> towerMap;
-
+std::map<std::string, GLuint> texMap = std::map<std::string, GLuint>();
 
 std::vector<TowerObject*> towerObjects;
 std::vector<EnemyObject*> enemyObjects;
@@ -90,6 +90,13 @@ std::vector<PowerUpObject*> powerUpList;
 std::vector<UpgradeObject*> upgradeList;
 
 std::vector<HUD*>mapHUD;
+
+Graph* g;
+GLFWwindow* window;
+Audio* audio;
+FileUtils fileLoader;
+
+
 
 int normalCount = 10000, fastCount = 10000, heartyCount = 10000, flyingCount = 10000, splitterCount = 10000, regeneratingCount = 10000, fast_heartyCount = 10000, fast_flyingCount = 10000, fast_regeneratingCount = 10000, fast_splitterCount = 10000, fast_hearty_regenerating_flyingCount = 10000;
 int normalCount2 = 10000, fastCount2 = 10000, heartyCount2 = 10000, flyingCount2 = 10000, splitterCount2 = 10000, regeneratingCount2 = 10000, fast_heartyCount2 = 10000, fast_flyingCount2 = 10000, fast_regeneratingCount2 = 10000, fast_splitterCount2 = 10000, fast_hearty_regenerating_flyingCount2 = 10000;
@@ -364,43 +371,43 @@ void setallTexture(void)
 
 }
 
-void setAudioTracks(Audio* audioObject) {
+void setAudioTracks() {
 
-	audioObject->addAudio("Audio/Soundtrack/infected.mp3", "background");
-	audioObject->volume("background", 20);
-	//audioObject->playRepeat("background");
-	audioObject->addAudio("Audio/Soundtrack/mainMenu.mp3", "menu");
-	audioObject->volume("menu", 100);
-	audioObject->playRepeat("menu");
+	audio->addAudio("Audio/Soundtrack/infected.mp3", "background");
+	audio->volume("background", 20);
+	//audio->playRepeat("background");
+	audio->addAudio("Audio/Soundtrack/mainMenu.mp3", "menu");
+	audio->volume("menu", 100);
+	audio->playRepeat("menu");
 
-	audioObject->addAudio("Audio/Towers/rocket.mp3", "bullet");
-	audioObject->volume("bullet", 100);
-	audioObject->addAudio("Audio/Towers/place.mp3", "towerPlaced");
-	audioObject->volume("towerPlaced", 30);
-	audioObject->addAudio("Audio/Towers/ship.mp3", "ship");
-	audioObject->volume("ship", 30);
-	audioObject->addAudio("Audio/Towers/laser.mp3", "laser");
-	audioObject->addAudio("Audio/Towers/cooldown.mp3", "cooldown");
-	audioObject->volume("cooldown", 30);
+	audio->addAudio("Audio/Towers/rocket.mp3", "bullet");
+	audio->volume("bullet", 100);
+	audio->addAudio("Audio/Towers/place.mp3", "towerPlaced");
+	audio->volume("towerPlaced", 30);
+	audio->addAudio("Audio/Towers/ship.mp3", "ship");
+	audio->volume("ship", 30);
+	audio->addAudio("Audio/Towers/laser.mp3", "laser");
+	audio->addAudio("Audio/Towers/cooldown.mp3", "cooldown");
+	audio->volume("cooldown", 30);
 
-	audioObject->addAudio("Audio/HUD/menuClick.mp3", "menuClick");
-	audioObject->volume("menuClick", 100);
-	audioObject->addAudio("Audio/HUD/teamChange.mp3", "teamChange");
-	audioObject->volume("teamChange", 200);
-	audioObject->addAudio("Audio/HUD/enemySelected.mp3", "enemySelected");
-	audioObject->volume("enemySelected", 100);
+	audio->addAudio("Audio/HUD/menuClick.mp3", "menuClick");
+	audio->volume("menuClick", 100);
+	audio->addAudio("Audio/HUD/teamChange.mp3", "teamChange");
+	audio->volume("teamChange", 200);
+	audio->addAudio("Audio/HUD/enemySelected.mp3", "enemySelected");
+	audio->volume("enemySelected", 100);
 
-	audioObject->addAudio("Audio/Enemy/enemy.mp3", "enemyDeath");
-	audioObject->volume("enemyDeath", 100);
+	audio->addAudio("Audio/Enemy/enemy.mp3", "enemyDeath");
+	audio->volume("enemyDeath", 100);
 
-	audioObject->addAudio("Audio/Voice/BaseUnderAttack.mp3", "baseAttack");
-	audioObject->volume("baseAttack", 100);
-	audioObject->addAudio("Audio/Voice/EnemiesApproaching.mp3", "enemiesComing");
-	audioObject->volume("EnemiesComing", 100);
-	audioObject->addAudio("Audio/Voice/EnemyEliminated.mp3", "enemiesDestroyed");
-	audioObject->volume("EnemiesDestroyed", 100);
-	audioObject->addAudio("Audio/Voice/UnitReady.mp3", "unitReady");
-	audioObject->volume("unitReady", 100);
+	audio->addAudio("Audio/Voice/BaseUnderAttack.mp3", "baseAttack");
+	audio->volume("baseAttack", 100);
+	audio->addAudio("Audio/Voice/EnemiesApproaching.mp3", "enemiesComing");
+	audio->volume("EnemiesComing", 100);
+	audio->addAudio("Audio/Voice/EnemyEliminated.mp3", "enemiesDestroyed");
+	audio->volume("EnemiesDestroyed", 100);
+	audio->addAudio("Audio/Voice/UnitReady.mp3", "unitReady");
+	audio->volume("unitReady", 100);
 
 
 
@@ -420,6 +427,38 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 	}
 	return targets;
 }
+//std::string fname,Audio* audio, FileUtils fileLoader, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size
+void startGame(std::string fname,glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size) {
+
+	_state = Game;
+	audio->stop("menu");
+	audio->playRepeat("background");
+	
+	std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
+	float wid = tempSize.first;
+	float height = tempSize.second;
+	int start = 1149;
+
+	g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
+	cameraTranslatePos = g->getFocalPoint(0);
+	std::cout << cameraTranslatePos.x << ", " << cameraTranslatePos.y << std::endl;
+	start = *(g->getBotStartSet().begin());
+	g->setZoom(cameraZoom);
+	g->setCamPos(cameraTranslatePos);
+
+	g->setStart(start);
+
+	g->setStart(start);
+	for (HUD* h : hudObjects) {
+		h->setCamPos(cameraTranslatePos);
+	}
+	for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
+	for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
+	selectionGraphic->setCamPos(cameraTranslatePos);
+
+	background->setTex(textures["Background"][2]);
+
+}
 
 
 // Main function that builds and runs the game
@@ -427,10 +466,8 @@ int main(void){
 	try {
 
 		/************************************************AUDIO INIT************************************************/
-
-
-		Audio* audioObject = new Audio();
-		setAudioTracks(audioObject);
+		audio = new Audio();
+		setAudioTracks();
 
 		/************************************************OPENGL INIT************************************************/
 
@@ -442,7 +479,7 @@ int main(void){
 		}
 		// Setup window
 		//Window window(window_width_g, window_height_g, window_title_g);
-		GLFWwindow* window;
+		
 		window = glfwCreateWindow(window_width_g, window_height_g, window_title_g.c_str(), NULL, NULL);
 		if (!window) {
 			glfwTerminate();
@@ -490,7 +527,7 @@ int main(void){
 		/************************************************TEXTURE INIT************************************************/
 		setallTexture();
 
-		std::map<std::string, GLuint> texMap = std::map<std::string, GLuint>();
+		
 		texMap.insert(std::pair<std::string, GLuint >("0.5", textures["Map"][0]));//cliff
 		texMap.insert(std::pair<std::string, GLuint >("0", textures["Map"][1]));//snow area
 		texMap.insert(std::pair<std::string, GLuint >("T", textures["Map"][2]));//empty, buildable grass plains
@@ -581,8 +618,7 @@ int main(void){
 		background->setImgScale(glm::vec3(90, 46, 46));
 
 		/************************************************FILE INIT************************************************/
-
-		FileUtils fileLoader;
+		
 		std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
 		wid = tempSize.first;
 		height = tempSize.second;
@@ -590,8 +626,7 @@ int main(void){
 		std::vector < std::string>  discriptionTexts = fileLoader.LoadVectorTextFile("Descriptions/discriptions.txt");
 		std::cout << "size = " << discriptionTexts.size() << std::endl;
 		/************************************************GRAPH INIT************************************************/
-		
-		Graph* g;
+
 		glm::vec3 cameraTranslatePos = glm::vec3(0.1125f, 6.3f, 0.0f);
 		
 
@@ -997,40 +1032,6 @@ int main(void){
 			}
 			case MapMenu: {
 				
-				if (timeOfLastMove + 0.05 < glfwGetTime()) {
-					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
-						(timeOfLastMove + 0.15 < glfwGetTime())) {
-						_state = Game;
-						audioObject->stop("menu");
-						audioObject->playRepeat("background");
-						timeOfLastMove = glfwGetTime();
-
-						std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
-						wid = tempSize.first;
-						height = tempSize.second;
-						g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
-						cameraTranslatePos = g->getFocalPoint(turnIndex);
-						std::cout << cameraTranslatePos.x << ", " << cameraTranslatePos.y << std::endl;
-						start = *(g->getBotStartSet().begin());
-						g->setZoom(cameraZoom);
-						g->setCamPos(cameraTranslatePos);
-
-						g->setStart(start);
-
-						g->setStart(start);
-						for (HUD* h : hudObjects) {
-							h->setCamPos(cameraTranslatePos);
-						}
-						for (HUD* h : player1)h->setCamPos(cameraTranslatePos);
-						for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
-						selectionGraphic->setCamPos(cameraTranslatePos);
-
-						background->setTex(textures["Background"][2]);
-
-						//background = new GameObject(glm::vec3(3.0f, -6.3f, 0.0f), textures["Background"][0], size, "map");
-						//background->setImgScale(glm::vec3(90, 46, 46));
-					}
-				}
 				//std::string fname = "Levels/map"+std::to_string(level)+".csv";
 				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
@@ -1039,23 +1040,23 @@ int main(void){
 				}
 				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					fname = "Levels/map" + std::to_string(1) + ".csv";
+					startGame("Levels/map" + std::to_string(1) + ".csv",cameraTranslatePos,cameraZoom,background,selectionGraphic,size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					fname = "Levels/map" + std::to_string(2) + ".csv";
+					startGame("Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					fname = "Levels/map" + std::to_string(3) + ".csv";
+					startGame("Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					fname = "Levels/map" + std::to_string(4) + ".csv";
+					startGame("Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					fname = "Levels/map" + std::to_string(5) + ".csv";
+					startGame("Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 
 				break;
@@ -1075,8 +1076,8 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS &&
 						(timeOfLastMove + 0.25 < glfwGetTime())) {
 						_state = Pause;
-						audioObject->stop("background");
-						audioObject->playRepeat("menu");
+						audio->stop("background");
+						audio->playRepeat("menu");
 						timeOfLastMove = glfwGetTime();
 						
 					}
@@ -1147,7 +1148,7 @@ int main(void){
 
 					if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
 						startWave = 1;
-						audioObject->playAgain("enemiesComing");
+						audio->playAgain("enemiesComing");
 						roundOver = false;
 						enemiesDestroyed = 0;
 						numEnemiesSpawned = enemyMap[turnIndex]->size();
@@ -1360,7 +1361,7 @@ int main(void){
 						g->clearNextNodeMaps();
 						g->startPaths(turnIndex);
 
-						audioObject->playAgain("teamChange");
+						audio->playAgain("teamChange");
 					}
 					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 						std::cout << g->getHover() << std::endl;
@@ -1426,7 +1427,7 @@ int main(void){
 											selectedTower->getExplosion_tex(), size, selectedTower->getDamage(),
 											selectedTower->getType(), selectedTower->getRange(), selectedTower->getROF(),
 											selectedTower->getCost(), selectedTower->getSpeed());
-										t->setAudio(audioObject);
+										t->setAudio(audio);
 										t->upDamage(upgrades[turnIndex]["Upgrade Damage"]);
 										t->upRange(upgrades[turnIndex]["Upgrade Range"]);
 										t->upROF(upgrades[turnIndex]["Upgrade Rate of Fire"]);
@@ -1453,8 +1454,8 @@ int main(void){
 													rainingLead = false;
 												}
 											}
-											audioObject->playAgain("towerPlaced");
-											audioObject->playAgain("unitReady");
+											audio->playAgain("towerPlaced");
+											audio->playAgain("unitReady");
 
 										}
 										else {
@@ -1486,7 +1487,7 @@ int main(void){
 							//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
 							hudObjects[3]->setFlag(false);
 							hudObjects[2]->setSelectionPowerUps(NULL);
-							audioObject->playAgain("menuClick");
+							audio->playAgain("menuClick");
 
 							hudObjects[3]->setSelection(NULL);
 							hudObjects[3]->setFlag(false);
@@ -1515,7 +1516,7 @@ int main(void){
 							cursor->setTex(textures["Cursor"][0]);
 							selectedEnemy = NULL;
 							hudObjects[9]->setSelectionUpgrades(NULL);
-							audioObject->playAgain("menuClick");
+							audio->playAgain("menuClick");
 						}
 						//============================================================this is for the details render out put
 						hudObjects[5]->selection(xpos, ypos);
@@ -1534,7 +1535,7 @@ int main(void){
 							hudObjects[3]->setFlag(false);
 							hudObjects[9]->setSelectionUpgrades(NULL);
 							hudObjects[9]->setUpgradeFlag(false);
-							audioObject->playAgain("menuClick");
+							audio->playAgain("menuClick");
 							cursor->setTex(textures["Cursor"][0]);
 							selectedEnemy = hudObjects[4]->getSelectionEnemy();
 							selectionGraphic->setPosition(hudObjects[4]->getSelectionEnemy()->getPosition());
@@ -1546,7 +1547,7 @@ int main(void){
 
 						if (hudObjects[7]->turns(xpos, ypos) == "wave") {
 							startWave = 1;
-							audioObject->playAgain("enemiesComing");
+							audio->playAgain("enemiesComing");
 							roundOver = false;
 							enemiesDestroyed = 0;
 							numEnemiesSpawned = enemyMap[turnIndex]->size();
@@ -1556,7 +1557,7 @@ int main(void){
 							
 							cursor->setTex(hudObjects[3]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 							selectionGraphic->setPosition(hudObjects[3]->getSelection()->getPosition());
-							audioObject->playAgain("menuClick");
+							audio->playAgain("menuClick");
 
 							hudObjects[2]->setSelectionPowerUps(NULL);
 							hudObjects[2]->setPowerUpFlag(false);
@@ -1635,7 +1636,7 @@ int main(void){
 									cur = &g->getNode(s);
 									EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), selectedEnemy->getTex(), size, selectedEnemy->getHealth(),
 										selectedEnemy->getType(), selectedEnemy->getEnemyDeathTex(), selectedEnemy->getCurSpeed(), selectedEnemy->getCost(), selectedEnemy->getRegen());
-									e->setAudio(audioObject);
+									e->setAudio(audio);
 									e->upHardiness(upgrades[turnIndex]["Upgrade Hardiness"]);
 									e->upSpeed(upgrades[turnIndex]["Upgrade Speed"]);
 									e->upCost(upgrades[turnIndex]["Increase Cost"]);
@@ -1655,7 +1656,7 @@ int main(void){
 								}
 								
 
-								audioObject->playAgain("enemySelected");
+								audio->playAgain("enemySelected");
 							}
 						}
 						
@@ -1741,8 +1742,8 @@ int main(void){
 				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS &&
 					(timeOfLastMove + 0.25 < glfwGetTime())) {
 					_state = Game;
-					audioObject->stop("menu");
-					audioObject->playRepeat("background");
+					audio->stop("menu");
+					audio->playRepeat("background");
 					timeOfLastMove = glfwGetTime();
 				
 
@@ -1842,7 +1843,7 @@ int main(void){
 					hudObjects[5]->updateHotkeysEnemy();
 					hudObjects[5]->updateHotkeysEnemy();
 					selectionGraphic->setPosition(hudObjects[4]->getSelectionEnemy()->getPosition());
-					audioObject->playAgain("menuClick");
+					audio->playAgain("menuClick");
 				}
 
 				if (hudObjects[9]->updateHotkeysUpgrade()) {
@@ -1856,7 +1857,7 @@ int main(void){
 
 					hudObjects[5]->updateHotkeysUpgrade();
 					selectionGraphic->setPosition(hudObjects[9]->getSelectionUpgrades()->getPosition());
-					audioObject->playAgain("menuClick");
+					audio->playAgain("menuClick");
 				}
 				
 				
@@ -1876,7 +1877,7 @@ int main(void){
 					
 					cursor->setTex(hudObjects[3]->getCursor());//sets the texture for the cursor with the tower icon <-----------
 					selectionGraphic->setPosition(hudObjects[3]->getSelection()->getPosition());
-					audioObject->playAgain("menuClick");
+					audio->playAgain("menuClick");
 				}
 				//=====================================================>>>>>>>>>>>>>>>>>DONT ERASE!!!!!!, THIS IS THE CODE TO BUY CREEPS WITH HOTKEYS
 
@@ -2026,7 +2027,7 @@ int main(void){
 				if (enemyMap[turnIndex]->size() == 0 && !roundOver && enemiesDestroyed == numEnemiesSpawned) {
 					roundOver = true;
 					std::cout << enemiesDestroyed << "-" << numEnemiesSpawned << std::endl;
-					audioObject->playAgain("enemiesDestroyed");
+					audio->playAgain("enemiesDestroyed");
 				}
 				if (glfwGetTime() > lastSpawnTime + 0.2) {
 					//std::cout << "\n\n\n\nHERE"<<spawnCount<<"\n\n\n";
@@ -2185,7 +2186,7 @@ int main(void){
 							hp[turnIndex] = 0;
 						}
 						std::cout << "hp = " << hp[turnIndex] << std::endl;
-						audioObject->playAgain("baseAttack");
+						audio->playAgain("baseAttack");
 						e->setExists(false);
 						if (hp[turnIndex] <= 0) {
 							gameOver = true;

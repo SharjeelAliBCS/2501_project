@@ -947,7 +947,6 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		textObjects[0]->render(shaders);
 		textObjects[12]->render(shaders);
 
-
 	}
 	// Bind the entities texture
 	glBindTexture(GL_TEXTURE_2D, texture);
