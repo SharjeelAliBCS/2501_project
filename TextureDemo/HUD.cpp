@@ -923,56 +923,27 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		}
 	}
 	else if (flag || enemyFlag || upgradeFlag || powerUpFlag) {
-		std::cout << "info" << std::endl;
-
-		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-		glm::mat4 oMatrix, posMat, scaleMatrix, zoomMatrix, camMat, transformationMatrix;
-
-		camMat = glm::translate(glm::mat4(1.0f), testCam);
-		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));//scale the tower
-
-		zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
-
+	
 		if (upgradeFlag) {
 
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
 			textObjects[12]->setRenderedText(outUpgrade->getDescription());//discription
-			glBindTexture(GL_TEXTURE_2D, outUpgrade->getTex());
-			posMat = glm::translate(glm::mat4(1.0f), outUpgrade->getPosition());
-			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outUpgrade->getPosition().x, -outUpgrade->getPosition().y, -outUpgrade->getPosition().z));
-			
 		}
 		else if (powerUpFlag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outPowerUP->getType());//name
 			textObjects[12]->setRenderedText(outPowerUP->getDescription());//discription
-			glBindTexture(GL_TEXTURE_2D, outPowerUP->getTex());
-			posMat = glm::translate(glm::mat4(1.0f), outPowerUP->getPosition());
-			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outPowerUP->getPosition().x, -outPowerUP->getPosition().y, -outPowerUP->getPosition().z));
 			
 		}
 
 		else if (flag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
 			textObjects[12]->setRenderedText(outSelection->getDescription());//discription
-			glBindTexture(GL_TEXTURE_2D, outSelection->getIcon());
-			posMat = glm::translate(glm::mat4(1.0f), outSelection->getPosition());
-			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outSelection->getPosition().x, -outSelection->getPosition().y, -outSelection->getPosition().z));
-
-
-
-
 		}
 		else if (enemyFlag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
 			textObjects[12]->setRenderedText(outEnemy->getDescription());//discription
-			glBindTexture(GL_TEXTURE_2D, outEnemy->getTex());
-			posMat = glm::translate(glm::mat4(1.0f), outEnemy->getPosition());
-			oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-outEnemy->getPosition().x, -outEnemy->getPosition().y, -outEnemy->getPosition().z));
 		}
 
-		transformationMatrix = camMat * zoomMatrix *scaleMatrix *oMatrix;
-		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
-		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		textObjects[0]->render(shaders);
 		textObjects[12]->render(shaders);
 
