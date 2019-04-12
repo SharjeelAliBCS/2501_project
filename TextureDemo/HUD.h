@@ -33,6 +33,8 @@ public:
 
 	// Renders the GameObject using a shader
 	virtual void  render(std::vector<Shader*> shaders) override;
+	virtual void newRender(std::vector<Shader*> shaders);
+	virtual void buttonRender(std::vector<Shader*> shaders);
 
 	void addText(Text* t);
 	// Getters
@@ -67,6 +69,7 @@ public:
 	inline void setGeneralList(std::vector<HUD*> list) { generalList = list; }
 	inline void setGameObjects(std::vector<GameObject*> g) { gameObjectList = g; }
 	//outs
+	inline void setSelection(TowerObject* t) { outSelection = t; }
 	inline void setSelectionEnemy(EnemyObject* newEnemy) { outEnemy = newEnemy; }
 	inline void setSelectionPowerUps(PowerUpObject* power) { outPowerUP = power; }
 	inline void setSelectionUpgrades(UpgradeObject* up) { outUpgrade = up; }

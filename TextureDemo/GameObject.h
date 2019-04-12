@@ -56,11 +56,15 @@ public:
 	static float cameraZoom;
 	static glm::vec3 cameraTranslatePos;
 	static int nextUniqueID;
+
+	inline void setHotKey(std::string s) { hotKey = s; }
+	inline std::string getHotKey() { return hotKey; }
 	//inline void setTex(GLuint)
 protected:
 	// Object's Transform Variables
 	// TODO: Add more transformation variables
 	int cost;
+	std::string hotKey;
 	glm::vec3 position;
 	glm::vec3 direction;
 	float defaultSpeed, curSpeed,rotation=0.0f;
