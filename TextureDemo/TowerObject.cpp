@@ -84,8 +84,8 @@ void TowerObject::update(double deltaTime) {
 			//std::cout << "dis " << dis << std::endl;
 			if (dis < range && prevEnemy != currentEnemy) {
 				//currentEnemy->enemyHit(damage);
-				currentEnemy->setBurnDuration(3);
-				currentEnemy->enemyBurn(0.5);
+				currentEnemy->setBurnDuration(curROF);
+				currentEnemy->enemyBurn(damage);
 				prevEnemy = currentEnemy;
 			}
 		}
@@ -118,7 +118,7 @@ void TowerObject::update(double deltaTime) {
 		break;
 	}
 	case Fire: {
-		fireEnemy();
+		fireEnemy(deltaTime);
 		break;
 	}
 
@@ -279,7 +279,7 @@ void TowerObject::locateEnemy() {
 }
 
 
-void TowerObject::fireEnemy() {
+void TowerObject::fireEnemy(double deltaTime) {
 
 	if (type.compare("AOE") == 0) {
 
@@ -290,7 +290,7 @@ void TowerObject::fireEnemy() {
 			for (EnemyObject* e : currentEnemies) e->enemyHit(damage);
 			
 			std::cout << "duraton " << timeSince * projectileSpeed << std::endl;
-			laserCoolDownTime = 3;
+			laserCoolDownTime = curROF;
 			_state = CoolDown;
 			delete(bullObjects[0]);
 			bullObjects.pop_back();
@@ -324,8 +324,8 @@ void TowerObject::fireEnemy() {
 			audio->volume(uniqueID, 10);
 			audio->playRepeat(uniqueID);
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
-			bullObjects[0]->setImgScale(glm::vec3(range, 1, 1));
-			laserCoolDownTime = 5;
+			bullObjects[0]->setImgScale(glm::vec3(range*3.5, 1, 1));
+			laserCoolDownTime = curROF;
 		}
 
 		if (currentEnemy != NULL) {
@@ -335,13 +335,14 @@ void TowerObject::fireEnemy() {
 
 			for (EnemyObject* e : allEnemies) {
 				if (lineCollision(e)) {
-					e->enemyHit(damage);
+					std::cout << "dmg = " << (damage * deltaTime / curROF) << std::endl;
+					e->enemyHit(damage*deltaTime/curROF);
 				}
 			}
 
 			if (laserCoolDownTime <= 0) {
 				_state = CoolDown;
-				laserCoolDownTime = 3;
+				laserCoolDownTime = curROF;
 				audio->close(uniqueID);
 				delete(bullObjects[0]);
 				bullObjects.pop_back();
@@ -389,8 +390,8 @@ void TowerObject::fireEnemy() {
 bool TowerObject::lineCollision(EnemyObject* enemy) {
 	float x1 = position.x;
 	float y1 = position.y;
-	float x2 = 2 * (range / 9)*cos(rotation*3.14159 / 180) + x1;
-	float y2 = 2 * (range / 9) *sin(rotation*3.14159 / 180) + y1;
+	float x2 = 2 * (range*0.4)*cos(rotation*3.14159 / 180) + x1;
+	float y2 = 2 * (range*0.4) *sin(rotation*3.14159 / 180) + y1;
 	float ex = enemy->getPosition().x;
 	float ey = enemy->getPosition().y;
 

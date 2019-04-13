@@ -52,7 +52,8 @@ void EnemyObject::update(double deltaTime) {
 	case Move: {
 		if (burn > 0) {
 			if (burnTimeLeft > 0) {
-				health -= burn;
+				health -= burn*deltaTime;
+				std::cout << "healt = " << health << std::endl;
 
 			}
 			else {

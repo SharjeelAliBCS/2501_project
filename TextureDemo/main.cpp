@@ -434,7 +434,7 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 //std::string fname,Audio* audio, FileUtils fileLoader, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size
 void startGame(std::string fname, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size) {
 
-	std::cout << "stuff happens" << std::endl;
+	std::cout << "stuff happens"  << fname << std::endl;
 	_state = Game;
 	audio->stop("menu");
 	audio->playRepeat("background");
@@ -739,7 +739,7 @@ int main(void){
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 500, "A-Class Stealth Sniper",  5, 4,   150, 0.6));index2 += 4;
 
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1, 2, 1000, 0.5));index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5,   "A-Class High Beam Laser",     4, 1, 500, 0));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 100,   "A-Class High Beam Laser",     4, 4, 500, 0));
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")) , textures["Explosion"], size, 0, "Sell", 0, 0, 0, 0));
 
 
@@ -814,12 +814,12 @@ int main(void){
 		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 25,  "C-Class DEFENDER",            1.5, 1,   20, 0.4)); index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,   "C-Class BARRIER",             0,   0,   5,  0.0)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,   "B-Class IGNITION Cannon",     1,   0.1, 50,  0.1)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size,    10,  "AOE",                         1,   1,   75,  4));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,   "B-Class IGNITION Cannon",     1,   3, 50,  0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size,    10,  "AOE",                         1,   3,   75,  4));index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 500, "A-Class Stealth Sniper",      5,   4,   150, 0.6)); index += 4;
 		
 		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1,  2,   1000, 0.5));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,   "A-Class High Beam Laser",     4,  1,   500, 0));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 100,   "A-Class High Beam Laser",     4,  4,   500, 0));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")), textures["Explosion"], size, 5,   "Sell",     0,  0,   0, 0));//index += 4;
 		
 	
@@ -1047,6 +1047,9 @@ int main(void){
 
 		pauseHUD->addText(new Text(glm::vec3(-5.8f, -3.0f, 0.0f), fontTexture, "CLICK ANYWHERE TO QUIT", size, 0.15f, glm::vec3(255, 255, 255), "mapbox"));//11
 
+		for (HUD* h : hudObjects) {
+			h->setUpmod(upgrades[turnIndex]);
+		}
 
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
@@ -1093,26 +1096,31 @@ int main(void){
 						_state = MapMenu;
 						timeOfLastMove = glfwGetTime();
 						background->setTex(textures["Background"][1]);
+						std::cout << " P press" << std::endl;
 					}
 					
 				}
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+					std::cout << " click press" << std::endl;
 					std::cout << xpos / factor << "," << ypos / factor << std::endl;
 					if ((300.8 * factor <= xpos && xpos <= 496 * factor) && (124.8 * factor <= ypos && ypos <= 265.6 * factor)) {//start first row
 						_state = MapMenu;
 						timeOfLastMove = glfwGetTime();
+					
 						background->setTex(textures["Background"][1]);
 					}
 					if ((300.8 * factor <= xpos && xpos <= 496 * factor) && (333.6 * factor <= ypos && ypos <= 472.8 * factor)) {//start first row
 						glfwSetWindowShouldClose(window, 1);
 					}
 				}
+				break;
 			}
 			case MapMenu: {
 				double xpos, ypos;
 				glfwGetCursorPos(window, &xpos, &ypos);
+				std::cout << "mapmenu" << std::endl;
 				if ((16 * factor <= xpos && xpos <= 254.4 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(1.0f, 0.85f, 0.0f));
 				}
 				if ((282.4 * factor <= xpos && xpos <= 517.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
@@ -1120,16 +1128,17 @@ int main(void){
 						selectionGraphic2->setPosition(glm::vec3(0.07f, 0.85f, 0.0f));
 				}
 				if ((546.6* factor <= xpos && xpos <= 781.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(-0.9f, 0.85f, 0.0f));
+						
 				}
 				//lower levels
 				if ((127.2 * factor <= xpos && xpos <= 360.8 * factor) && (317.6 * factor <= ypos && ypos <= 550.4 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(0.6f, 1.82f, 0.0f));
 				}
 				if ((436 * factor <= xpos && xpos <= 676.8 * factor) && (317.6 * factor <= ypos && ypos <= 550.4 * factor)) {//start first row
-						if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(-0.5f, 1.82f, 0.0f));
 					
 				}
@@ -1284,7 +1293,8 @@ int main(void){
 					//powerups:
 					//kill all in 1.5 range
 					if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						
+						std::cout << "ddd" << std::endl;
+						audio->playAgain("menuClick");
 						hudObjects[2]->setSelectionPowerUps(powerUpList[0]);
 						hudObjects[5]->setSelectionPowerUps(powerUpListHUD[0]);
 						selectionGraphic->setPosition(hudObjects[2]->getSelectionPowerUps()->getPosition());
@@ -1315,7 +1325,7 @@ int main(void){
 					}
 					//Stop all in 1.5 range for 4 seconds
 					if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						
+						audio->playAgain("menuClick");
 						hudObjects[2]->setSelectionPowerUps(powerUpList[1]);
 						hudObjects[5]->setSelectionPowerUps(powerUpListHUD[1]);
 						selectionGraphic->setPosition(hudObjects[2]->getSelectionPowerUps()->getPosition());
@@ -1345,7 +1355,7 @@ int main(void){
 					}
 					//Inc outgoing creep hp 100% for 20 seconds.
 					if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						
+						audio->playAgain("menuClick");
 						hudObjects[2]->setSelectionPowerUps(powerUpList[2]);
 						hudObjects[5]->setSelectionPowerUps(powerUpListHUD[2]);
 						selectionGraphic->setPosition(hudObjects[2]->getSelectionPowerUps()->getPosition());
@@ -1374,6 +1384,7 @@ int main(void){
 					}
 					//Inc outgoing creep speed 50% for 20 seconds. up to 2.5 speed
 					if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
+						audio->playAgain("menuClick");
 						hudObjects[2]->setSelectionPowerUps(powerUpList[3]);
 						hudObjects[5]->setSelectionPowerUps(powerUpListHUD[3]);
 						selectionGraphic->setPosition(hudObjects[2]->getSelectionPowerUps()->getPosition());
@@ -1401,7 +1412,7 @@ int main(void){
 					}
 					//inc allied tower rof by 100% for 15 seconds
 					if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-			
+						audio->playAgain("menuClick");
 						hudObjects[2]->setSelectionPowerUps(powerUpList[4]);
 						hudObjects[5]->setSelectionPowerUps(powerUpListHUD[4]);
 						selectionGraphic->setPosition(hudObjects[2]->getSelectionPowerUps()->getPosition());
@@ -1619,6 +1630,7 @@ int main(void){
 							//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
 							hudObjects[3]->setFlag(false);
 							hudObjects[2]->setSelectionPowerUps(NULL);
+
 							audio->playAgain("menuClick");
 
 							hudObjects[3]->setSelection(NULL);
@@ -1639,12 +1651,14 @@ int main(void){
 						if (hudObjects[9]->getSelectionUpgrades() !=NULL) {
 							selectionGraphic->setPosition(hudObjects[9]->getSelectionUpgrades()->getPosition());
 							hudObjects[2]->setSelectionPowerUps(NULL);
+							hudObjects[5]->setSelectionPowerUps(NULL);
 							hudObjects[2]->setPowerUpFlag(false);
 							hudObjects[3]->setSelection(NULL);
 							hudObjects[3]->setFlag(false);
 							hudObjects[4]->setSelectionEnemy(NULL);
 							hudObjects[4]->setEnemyFlag(false);
 
+							showRadius = 0;
 							cursor->setTex(textures["Cursor"][0]);
 							selectedEnemy = NULL;
 							hudObjects[9]->setSelectionUpgrades(NULL);
@@ -1662,6 +1676,7 @@ int main(void){
 						if (hudObjects[4]->getSelectionEnemy() !=NULL) {
 							
 							hudObjects[2]->setSelectionPowerUps(NULL);
+							hudObjects[5]->setSelectionPowerUps(NULL);
 							hudObjects[2]->setPowerUpFlag(false);
 							hudObjects[3]->setSelection(NULL);
 							hudObjects[3]->setFlag(false);
@@ -1671,7 +1686,7 @@ int main(void){
 							cursor->setTex(textures["Cursor"][0]);
 							selectedEnemy = hudObjects[4]->getSelectionEnemy();
 							selectionGraphic->setPosition(hudObjects[4]->getSelectionEnemy()->getPosition());
-
+							showRadius = 0;
 							hudObjects[4]->setSelectionEnemy(NULL);
 						}
 						
@@ -1692,6 +1707,7 @@ int main(void){
 							audio->playAgain("menuClick");
 
 							hudObjects[2]->setSelectionPowerUps(NULL);
+							hudObjects[5]->setSelectionPowerUps(NULL);
 							hudObjects[2]->setPowerUpFlag(false);
 							hudObjects[9]->setSelectionUpgrades(NULL);
 							hudObjects[9]->setUpgradeFlag(false);
@@ -1726,7 +1742,7 @@ int main(void){
 					}
 					else if (selectedTower != NULL) {
 						showRadius = 1;
-						selectionRadius = selectedTower->getRange()*upgrades[turnIndex]["Upgrade Range"];
+						selectionRadius = selectedTower->getRange()*upgrades[turnIndex]["Upgrade Range"]*0.7;
 						cursor->setTex(hudObjects[3]->getCursor());
 					}
 					
@@ -1741,6 +1757,9 @@ int main(void){
 						//selectedTower = NULL;
 						hudObjects[3]->setSelection(NULL);
 						hudObjects[3]->setFlag(false);
+						hudObjects[5]->setPowerUpFlag(false);
+						hudObjects[5]->setSelectionPowerUps(NULL);
+						hudObjects[2]->setSelectionPowerUps(NULL);
 						/*//These crash the game????
 						hudObjects[9]->setSelectionUpgrades(NULL);
 						hudObjects[9]->setUpgradeFlag(false);
@@ -1980,13 +1999,14 @@ int main(void){
 				selectedEnemy = hudObjects[4]->getSelectionEnemy();
 
 				if (hudObjects[4]->updateHotkeysEnemy()) {
+					hudObjects[5]->setSelectionPowerUps(NULL);
 					hudObjects[2]->setSelectionPowerUps(NULL);
 					hudObjects[2]->setPowerUpFlag(false);
 					hudObjects[3]->setSelection(NULL);
 					hudObjects[3]->setFlag(false);
 					hudObjects[9]->setSelectionUpgrades(NULL);
 					hudObjects[9]->setUpgradeFlag(false);
-
+					showRadius = 0;
 					cursor->setTex(textures["Cursor"][0]);
 					hudObjects[5]->updateHotkeysEnemy();
 					hudObjects[5]->updateHotkeysEnemy();
@@ -1996,13 +2016,14 @@ int main(void){
 
 				if (hudObjects[9]->updateHotkeysUpgrade()) {
 
+					hudObjects[5]->setSelectionPowerUps(NULL);
 					hudObjects[2]->setSelectionPowerUps(NULL);
 					hudObjects[2]->setPowerUpFlag(false);
 					hudObjects[3]->setSelection(NULL);
 					hudObjects[3]->setFlag(false);
 					hudObjects[4]->setSelectionEnemy(NULL);
 					hudObjects[4]->setEnemyFlag(false);
-
+					showRadius = 0;
 					hudObjects[5]->updateHotkeysUpgrade();
 					selectionGraphic->setPosition(hudObjects[9]->getSelectionUpgrades()->getPosition());
 					audio->playAgain("menuClick");
@@ -2012,6 +2033,7 @@ int main(void){
 
 				if (hudObjects[3]->updateHotkeysTower()) {
 
+					hudObjects[5]->setSelectionPowerUps(NULL);
 					hudObjects[2]->setSelectionPowerUps(NULL);
 					hudObjects[2]->setPowerUpFlag(false);
 					hudObjects[9]->setSelectionUpgrades(NULL);

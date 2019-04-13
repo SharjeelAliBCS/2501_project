@@ -60,7 +60,7 @@ private:
 	State _state;
 
 	void locateEnemy();
-	void fireEnemy();
+	void fireEnemy(double deltaTime);
 	void move();
 	bool lineCollision(EnemyObject* enemy);
 	std::vector<EnemyObject*> enemiesInRange(float range);

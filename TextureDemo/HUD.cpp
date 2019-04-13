@@ -846,6 +846,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		}
 		if (flag) {
+			std::cout << "mod = " << upmod["Upgrade Damage"] << std::endl;
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
 		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
 		textObjects[2]->setRenderedText(textObjects[2]->getText() + outSelection->getHotKey());//hotkey
