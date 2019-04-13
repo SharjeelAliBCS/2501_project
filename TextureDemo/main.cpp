@@ -92,6 +92,8 @@ std::vector<UpgradeObject*> upgradeList;
 
 std::vector<HUD*>mapHUD;
 
+HUD* gameOverHUD;
+HUD* pauseHUD;
 Graph* g;
 GLFWwindow* window;
 Audio* audio;
@@ -347,6 +349,8 @@ void setallTexture(void)
 	textures["Player"].push_back(createTexture("Graphics/playerStats/hp.png"));
 	textures["Player"].push_back(createTexture("Graphics/playerStats/gold2.png"));
 	textures["Player"].push_back(createTexture("Graphics/playerStats/income2.png"));
+	textures["MENUHUD"].push_back(createTexture("Graphics/MENU/Play.png"));//0
+	textures["MENUHUD"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Play.png"));//0
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
 	//textures["MENU"].push_back(createTexture("Graphics/MENU/Score.png"));//2
@@ -430,6 +434,7 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 //std::string fname,Audio* audio, FileUtils fileLoader, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size
 void startGame(std::string fname, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size) {
 
+	std::cout << "stuff happens" << std::endl;
 	_state = Game;
 	audio->stop("menu");
 	audio->playRepeat("background");
@@ -458,7 +463,7 @@ void startGame(std::string fname, glm::vec3 &cameraTranslatePos, float cameraZoo
 
 	background->setTex(textures["Background"][2]);
 	background->setImgScale(glm::vec3(41, 41, 1));
-	background->setPosition(glm::vec3(-0.1f, -3.3f, 0.0f));
+	background->setPosition(glm::vec3(-0.1f, -5.0f, 0.0f));
 
 }
 
@@ -584,6 +589,26 @@ int main(void){
 		int roundNum=1;
 		long gameTime = glfwGetTime();
 
+		int hours = gameTime / 3600;
+		int minutes = (gameTime - hours * 3600) / 60;
+
+		int seconds = gameTime - hours * 3600 - minutes * 60;
+		std::string m = std::to_string(minutes);
+
+		if (m.length() == 1) {
+
+			m.insert(0, "0");
+
+		}
+
+		std::string s = std::to_string(seconds);
+
+		if (s.length() == 1) {
+
+			s.insert(0, "0");
+
+		}
+
 		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
 
 		int hp[2] = { 20,20 };
@@ -609,6 +634,7 @@ int main(void){
 		float maxCamZoom = 0.60f;
 		float minCamZoom = 0.10f;
 		float cameraZoom = 0.22f;
+		float currentCameraZoom = cameraZoom;
 		
 		float camShiftInc = 0.05f;
 		float camZoomInc = 0.01f;
@@ -636,6 +662,7 @@ int main(void){
 		/************************************************GRAPH INIT************************************************/
 		
 		glm::vec3 cameraTranslatePos = glm::vec3(0.1125f, 6.3f, 0.0f);
+		glm::vec3 currentCameraTranslatePos = cameraTranslatePos;
 		
 
 	
@@ -857,7 +884,9 @@ int main(void){
 
 		/************************************************HUD INIT************************************************/
 		GameObject* cursor = new GameObject(glm::vec3(0.0f), cursorTex, size, "cursor");
+		glm::vec3 objectS9 = glm::vec3(0.7f, 1.0f, 0.0f);
 		HUD* selectionGraphic = new HUD(glm::vec3(50.0f, 50.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, factor, "selection", window);
+		HUD* selectionGraphic2 = new HUD(glm::vec3(50.0f, 50.0f, 50.0f), cameraZoom, objectS9, selectGraphicTex, size, factor, "selection", window);
 		//HUD* //selectionGraphic2 = new HUD(glm::vec3(50.0f, 50.0f, 0.0f), cameraZoom, glm::vec3(0.1f, 0.1f, 0.0f), selectGraphicTex, size, factor, "selection", window);
 		//==================================================================================================
 
@@ -907,6 +936,10 @@ int main(void){
 		mapHUD.push_back(new HUD(glm::vec3(-1.1f + mapBoxOffset, 1.1f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][2], size, factor, "map3", window));
 		mapHUD.push_back(new HUD(glm::vec3(0.65f + mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][3], size, factor, "map4", window));
 		mapHUD.push_back(new HUD(glm::vec3(-0.65f + mapBoxOffset, 2.35f, 0.0f), cameraZoom, objectS, textures["MAPBOX"][4], size, factor, "map5", window));
+
+		gameOverHUD = new HUD(glm::vec3(2.0, 2.1f, 0.0f), cameraZoom, glm::vec3(0.4f, 0.4f, 0.0f), textures["Enemy"][0], size, factor, "GameOver", window);
+		pauseHUD = new HUD(glm::vec3(2000.0, 2.1f, 0.0f), cameraZoom, glm::vec3(0.4f, 0.4f, 0.0f), textures["Enemy"][0], size, factor, "Pause", window);
+	
 		////selectionGraphic2->setCamPos(cameraTranslatePos);
 
 		/************************************************MENU INIT************************************************/
@@ -915,6 +948,8 @@ int main(void){
 		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][2], size, factor, "SCORE", window));
 		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][3], size, factor, "OPTION", window));
 		//HUDMenu.push_back(new HUD(glm::vec3(0.0f, 1.5f, 0.0f), cameraZoom, buttonScale, textures["MENU"][1], size, factor, "QUIT", window));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, -0.7f, 0.0f), cameraZoom, buttonScale, textures["MENUHUD"][0], size, factor, "PLAY", window));
+		HUDMenu.push_back(new HUD(glm::vec3(0.0f, 0.7f, 0.0f), cameraZoom, buttonScale, textures["MENUHUD"][1], size, factor, "QUIT", window));
 
 		/************************************************TEXT INIT************************************************/
 
@@ -979,6 +1014,40 @@ int main(void){
 		mapHUD[2]->addText(new Text(glm::vec3(7.8f, -25.5f, 0.0f), fontTexture, "Three Sols (NORMAL)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
 		mapHUD[3]->addText(new Text(glm::vec3(-14.0f, -45.0f, 0.0f), fontTexture, "New World Order (HARD)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
 		mapHUD[4]->addText(new Text(glm::vec3(0.0f, -45.0f, 0.0f), fontTexture, "Infernal Battlefield (HARD)", size, 0.05f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-5.5f, -8.0f, 0.0f), fontTexture, "VICTOR:", size, 0.1f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-5.5f, -9.0f, 0.0f), fontTexture, "Round:", size, 0.1f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-5.5f, -10.0f, 0.0f), fontTexture, "Game Time:", size, 0.1f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-5.8f, -3.0f, 0.0f), fontTexture, "CLICK ANYWHERE TO QUIT", size, 0.15f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-8.0f, -16.0f, 0.0f), fontTexture, "STATS", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-3.0f, -16.0f, 0.0f), fontTexture, "PLAYER1", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(2.5f, -16.0f, 0.0f), fontTexture, "PLAYER2", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-8.0f, -18.0f, 0.0f), fontTexture, "Creeps\nKilled", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-8.0f, -21.0f, 0.0f), fontTexture, "Creeps\nBought", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-8.0f, -24.0f, 0.0f), fontTexture, "Damage\nDealt", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-8.0f, -27.0f, 0.0f), fontTexture, "Towers\nBuilt", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(-8.0f, -30.0f, 0.0f), fontTexture, "Total\nCredits\nSpent", size, 0.07f, glm::vec3(255, 255, 255), "mapbox"));//11
+		
+		gameOverHUD->addText(new Text(glm::vec3(-4.0f, -22.0f, 0.0f), fontTexture,"0Creeps Killed: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(2.4f, -22.0f, 0.0f), fontTexture, "1Creeps Killed: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-4.0f, -25.5f, 0.0f), fontTexture, "0Creeps Bought: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(2.4f, -25.5f, 0.0f), fontTexture, "1Creeps Bought: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-4.0f, -29.0f, 0.0f), fontTexture, "0Damage Dealt: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(2.4f, -29.0f, 0.0f), fontTexture, "1Damage Dealt: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-4.0f, -33.0f, 0.0f), fontTexture, "0Towers Built: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(2.4f, -33.0f, 0.0f), fontTexture, "1Towers Built: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		gameOverHUD->addText(new Text(glm::vec3(-4.0f, -37.0f, 0.0f), fontTexture, "0Total Credits Spent: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+		gameOverHUD->addText(new Text(glm::vec3(2.4f, -37.0f, 0.0f), fontTexture, "1Total Credits Spent: ", size, 0.06f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+		pauseHUD->addText(new Text(glm::vec3(-5.8f, -3.0f, 0.0f), fontTexture, "CLICK ANYWHERE TO QUIT", size, 0.15f, glm::vec3(255, 255, 255), "mapbox"));//11
+
+
 		/************************************************GAME LOOP************************************************/
 		int fps = 0;
 		int renderedFPS = 0;
@@ -1011,36 +1080,59 @@ int main(void){
 			
 			switch (_state) {
 			case MainMenu: {
+
+				double xpos, ypos;
+				glfwGetCursorPos(window, &xpos, &ypos);
+
+
 				for (HUD* b : HUDMenu)b->setCamPos(cameraTranslatePos);
 
 				if (timeOfLastMove + 0.05 < glfwGetTime()) {
-					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS &&
-						(timeOfLastMove + 0.15 < glfwGetTime())) {
+					if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
+					{
 						_state = MapMenu;
-
 						timeOfLastMove = glfwGetTime();
 						background->setTex(textures["Background"][1]);
-
 					}
+					
 				}
 				if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-					double xpos, ypos;
-					glfwGetCursorPos(window, &xpos, &ypos);
-					float xOut = (float)xpos;
-					float yOut = (float)ypos;
-
-					float x;
-					float y;
-					//int id = g->getHover();
-					//g->getHoverCoords(x, y);
-
-					//std::cout << xOut << "," << yOut << std::endl;
+					std::cout << xpos / factor << "," << ypos / factor << std::endl;
+					if ((300.8 * factor <= xpos && xpos <= 496 * factor) && (124.8 * factor <= ypos && ypos <= 265.6 * factor)) {//start first row
+						_state = MapMenu;
+						timeOfLastMove = glfwGetTime();
+						background->setTex(textures["Background"][1]);
+					}
+					if ((300.8 * factor <= xpos && xpos <= 496 * factor) && (333.6 * factor <= ypos && ypos <= 472.8 * factor)) {//start first row
+						glfwSetWindowShouldClose(window, 1);
+					}
 				}
-				break;
 			}
 			case MapMenu: {
-				
-				
+				double xpos, ypos;
+				glfwGetCursorPos(window, &xpos, &ypos);
+				if ((16 * factor <= xpos && xpos <= 254.4 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						selectionGraphic2->setPosition(glm::vec3(1.0f, 0.85f, 0.0f));
+				}
+				if ((282.4 * factor <= xpos && xpos <= 517.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						selectionGraphic2->setPosition(glm::vec3(0.07f, 0.85f, 0.0f));
+				}
+				if ((546.6* factor <= xpos && xpos <= 781.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						selectionGraphic2->setPosition(glm::vec3(-0.9f, 0.85f, 0.0f));
+				}
+				//lower levels
+				if ((127.2 * factor <= xpos && xpos <= 360.8 * factor) && (317.6 * factor <= ypos && ypos <= 550.4 * factor)) {//start first row
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						selectionGraphic2->setPosition(glm::vec3(0.6f, 1.82f, 0.0f));
+				}
+				if ((436 * factor <= xpos && xpos <= 676.8 * factor) && (317.6 * factor <= ypos && ypos <= 550.4 * factor)) {//start first row
+						if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						selectionGraphic2->setPosition(glm::vec3(-0.5f, 1.82f, 0.0f));
+					
+				}
 				//std::string fname = "Levels/map"+std::to_string(level)+".csv";
 				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
@@ -1085,6 +1177,8 @@ int main(void){
 					if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS &&
 						(timeOfLastMove + 0.25 < glfwGetTime())) {
 						_state = Pause;
+						currentCameraTranslatePos = cameraTranslatePos;
+						currentCameraZoom = cameraZoom;
 						audio->stop("background");
 						audio->playRepeat("menu");
 						timeOfLastMove = glfwGetTime();
@@ -1781,18 +1875,30 @@ int main(void){
 				break;
 			}
 			case Pause: {
-				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS &&
+				cameraTranslatePos = glm::vec3(0.1125f, 6.3f, 0.0f);
+				cameraZoom = 0.22f;
+				if ((glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS || glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)&&
 					(timeOfLastMove + 0.25 < glfwGetTime())) {
 					_state = Game;
 					audio->stop("menu");
 					audio->playRepeat("background");
 					timeOfLastMove = glfwGetTime();
-				
+					g->getFocalPoint(0);
+					cameraTranslatePos = currentCameraTranslatePos;
+					cameraZoom = currentCameraZoom;
+
 
 				}
+
+				
 				break;
 			}
 			case GameOver: {
+				cameraTranslatePos = glm::vec3(0.1125f, 6.3f, 0.0f);
+				cameraZoom = 0.22f;
+				if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+					glfwSetWindowShouldClose(window, 1);
+				}
 				break;
 			}
 			default:
@@ -1835,14 +1941,14 @@ int main(void){
 			
 			switch(_state) {
 			case MainMenu: {
-				for (HUD* b : HUDMenu) {
-					b->render(shaders);
-				}
+				for (HUD* b : HUDMenu)b->render(shaders);
+				
 				background->render(shaders);
 				break;
 			}
 			
 			case MapMenu: {
+				selectionGraphic2->render(shaders);
 				for (HUD* h : mapHUD) {
 
 					h->setFactor(factor);
@@ -2281,12 +2387,54 @@ int main(void){
 				break;
 			}
 			case Pause: {
-				
+				pauseHUD->render(shaders);
 				background->render(shaders);
 				break;
 			}
 			case GameOver: {
-				break;
+				
+				hours = gameTime / 3600;
+				minutes = (gameTime - hours * 3600) / 60;
+
+				seconds = gameTime - hours * 3600 - minutes * 60;
+				std::string m = std::to_string(minutes);
+
+				if (m.length() == 1) {
+					m.insert(0, "0");
+				}
+				std::string s = std::to_string(seconds);
+
+				if (s.length() == 1) {
+					s.insert(0, "0");
+
+				}
+
+		
+				for (int i = 0; i < gameOverHUD->getTextObjects().size(); i++) {
+					Text* t = gameOverHUD->getTextObjects()[i];
+					if (t->getType().compare("VICTOR:") == 0) {
+						std::string temp = t->getText() + "PLAYER " + std::to_string((turnIndex+1)%2+1);
+						t->setRenderedText(temp);
+					}
+					else if (t->getType().compare("Round:") == 0) {
+						std::string temp = t->getText() + std::to_string(roundNum);
+						t->setRenderedText(temp);
+					}else if (t->getType().compare("Game Time:") == 0) {
+						std::string temp = t->getText() + std::to_string(hours) + ":" + m + ":" + s;
+						t->setRenderedText(temp);
+					}
+					else if (i > 11) {
+						std::string temp = std::to_string(stats[t->getText()[0] - '0'][t->getText().substr(1)]);
+						t->setRenderedText(temp);
+
+					}
+				
+					t->render(shaders);
+				}
+				background->render(shaders);
+
+				
+
 			}
 			default:
 				break;
