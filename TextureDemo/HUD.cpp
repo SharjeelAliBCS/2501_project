@@ -773,7 +773,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outUpgrade->getType());//name
 			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outUpgrade->getCost()));//cost
 			textObjects[2]->setRenderedText(textObjects[2]->getText() + outUpgrade->getHotKey());//hotkey
-			textObjects[11]->setRenderedText(textObjects[11]->getText() + std::to_string((int)outUpgrade->getMod()));//mod
+			textObjects[11]->setRenderedText(textObjects[11]->getText() + std::to_string((int)(outUpgrade->getMod()*100-100)) + "%");//mod
 
 
 
@@ -847,11 +847,11 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		}
 		if (flag) {
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
-			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
-			textObjects[2]->setRenderedText(textObjects[2]->getText() + outSelection->getHotKey());//hotkey
-			textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage(), 2));//damage
-			textObjects[4]->setRenderedText(textObjects[4]->getText() + round(outSelection->getROF(), 2));//ROF
-			textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange(), 2));//range
+		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
+		textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
+		textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage()*upmod["Upgrade Damage"], 1));//damage
+		textObjects[4]->setRenderedText(textObjects[4]->getText() + round(std::fmax(outSelection->getROF()*(2-upmod["Upgrade Rate of Fire"]),0.05),3));//ROF
+		textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange()*upmod["Upgrade Range"],2));//rangestd::fmax(baseROF *(2-mod),0.05)
 
 			textObjects[0]->render(shaders);
 			textObjects[1]->render(shaders);
@@ -886,11 +886,11 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		if (enemyFlag) {
 
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outEnemy->getType());//name
-			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outEnemy->getCost()));//cost
-			textObjects[2]->setRenderedText(textObjects[2]->getText() + outEnemy->getHotKey());//hotkey
-			textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)outEnemy->getHealth()));//hp
-			textObjects[7]->setRenderedText(textObjects[7]->getText() + round(outEnemy->getCurSpeed(), 2));//speed
-			textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen(), 2));//range
+			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)(outEnemy->getCost()*upmod["Increase Cost"])));//cost
+			textObjects[2]->setRenderedText(textObjects[2]->getText() + "PlaceHOlder");//hotkey
+			textObjects[6]->setRenderedText(textObjects[6]->getText() + std::to_string((int)(outEnemy->getHealth()*upmod["Upgrade Hardiness"])));//hp
+			textObjects[7]->setRenderedText(textObjects[7]->getText() + round(std::fmin(2.5, outEnemy->getCurSpeed()*upmod["Upgrade Speed"]), 2));//speed
+			textObjects[8]->setRenderedText(textObjects[8]->getText() + round(outEnemy->getRegen()*upmod["Upgrade Hardiness"], 2));//range
 
 			textObjects[0]->render(shaders);
 			textObjects[1]->render(shaders);
@@ -946,6 +946,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 
 		textObjects[0]->render(shaders);
 		textObjects[12]->render(shaders);
+
 
 	}
 	// Bind the entities texture

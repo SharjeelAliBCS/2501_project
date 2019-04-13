@@ -15,7 +15,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	icon = tex[3];
 	rotation = 0.0f;
 	size = numElements;
-	_state = Init;
+	_state = Idle;
 	curROF = ROF;
 	defaultROF = ROF;
 	baseROF = ROF;
@@ -101,23 +101,10 @@ void TowerObject::update(double deltaTime) {
 		curROF = defaultROF;
 	}
 
-	if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("B-Class IGNITION Cannon") == 0) {
-		std::cout << "Right";
-		if (particle != NULL) {
-			delete(particle);
-			particle = NULL;
-		}
-		std::cout << "Now\n";
-		audio->close(uniqueID);
-	}
+	
 	//state machine used to move around (right now only uses locate)
 	switch (_state) {
-	case Init: {
-		_state = Locate;
-		positions[0] = targetPos;
-		positions[1] = position;
-		break;
-	}
+
 	case Idle: {
 		if (allEnemies.size() > 0) {
 
@@ -134,22 +121,15 @@ void TowerObject::update(double deltaTime) {
 		fireEnemy();
 		break;
 	}
-	case Stop: {
-		//std::cout << "speed  = " << projectileSpeed << std::endl;
-		if (projectileSpeed <= 0.005) {
-			projectileSpeed = 0.0f;
-			_state = Idle;
-		}
-		else {
-			projectileSpeed -= acceleration;
-			move();
-		}
-		break;
-	}
+
 	case SlowDown: {
 		//std::cout << "speed  = " << projectileSpeed << std::endl;
 		if (projectileSpeed <= orgSpeed * 0.5) {
-			_state = SpeedUp;
+			if (allEnemies.size() == 0) {
+				_state = Idle;
+			}
+
+			else _state = SpeedUp;
 		}
 		else {
 			projectileSpeed -= accelerationSlow;
@@ -235,11 +215,22 @@ void TowerObject::locateEnemy() {
 
 		}
 	}
+	else if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("B-Class IGNITION Cannon") == 0) {
+		std::cout << "Right";
+		if (particle != NULL) {
+			delete(particle);
+			particle = NULL;
+		}
+		_state = Idle;
+		std::cout << "Now\n";
+		audio->close(uniqueID);
+	}
+
 	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (allEnemies.size() == 0) {
 			std::cout << "idle" << std::endl;
-			_state = Stop;
+			_state = SlowDown;
 			int angle = (std::rand() % (360));
 
 			targetPos.x += 10 * cos(angle*3.14159 / 180);

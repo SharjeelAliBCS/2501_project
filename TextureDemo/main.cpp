@@ -65,6 +65,7 @@ std::map<int, std::vector<EnemyObject*>*> enemyMap;
 std::map<int, std::vector<TowerObject*>*> towerMap;
 std::map<std::string, GLuint> texMap = std::map<std::string, GLuint>();
 
+
 std::vector<TowerObject*> towerObjects;
 std::vector<EnemyObject*> enemyObjects;
 std::vector<HUD*> hudObjects;
@@ -95,8 +96,6 @@ Graph* g;
 GLFWwindow* window;
 Audio* audio;
 FileUtils fileLoader;
-
-
 
 int normalCount = 10000, fastCount = 10000, heartyCount = 10000, flyingCount = 10000, splitterCount = 10000, regeneratingCount = 10000, fast_heartyCount = 10000, fast_flyingCount = 10000, fast_regeneratingCount = 10000, fast_splitterCount = 10000, fast_hearty_regenerating_flyingCount = 10000;
 int normalCount2 = 10000, fastCount2 = 10000, heartyCount2 = 10000, flyingCount2 = 10000, splitterCount2 = 10000, regeneratingCount2 = 10000, fast_heartyCount2 = 10000, fast_flyingCount2 = 10000, fast_regeneratingCount2 = 10000, fast_splitterCount2 = 10000, fast_hearty_regenerating_flyingCount2 = 10000;
@@ -341,7 +340,7 @@ void setallTexture(void)
 
 	textures["Background"].push_back(createTexture("Graphics/Background/menu.png"));//0
 	textures["Background"].push_back(createTexture("Graphics/Background/mapMenu.png"));//0
-	textures["Background"].push_back(createTexture("Graphic/Background/pauseMenu.png"));
+	textures["Background"].push_back(createTexture("Graphics/Background/pauseMenu.png"));
 
 
 
@@ -427,13 +426,14 @@ std::vector<EnemyObject*> enemiesInRange(Node &n, float range, std::vector<Enemy
 	}
 	return targets;
 }
+
 //std::string fname,Audio* audio, FileUtils fileLoader, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size
-void startGame(std::string fname,glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size) {
+void startGame(std::string fname, glm::vec3 &cameraTranslatePos, float cameraZoom, GameObject* background, HUD* selectionGraphic, int size) {
 
 	_state = Game;
 	audio->stop("menu");
 	audio->playRepeat("background");
-	
+
 	std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
 	float wid = tempSize.first;
 	float height = tempSize.second;
@@ -457,16 +457,20 @@ void startGame(std::string fname,glm::vec3 &cameraTranslatePos, float cameraZoom
 	selectionGraphic->setCamPos(cameraTranslatePos);
 
 	background->setTex(textures["Background"][2]);
+	background->setImgScale(glm::vec3(41, 41, 1));
+	background->setPosition(glm::vec3(-0.1f, -3.3f, 0.0f));
 
 }
-
 
 // Main function that builds and runs the game
 int main(void){
 	try {
 
 		/************************************************AUDIO INIT************************************************/
+
+
 		audio = new Audio();
+
 		setAudioTracks();
 
 		/************************************************OPENGL INIT************************************************/
@@ -479,7 +483,7 @@ int main(void){
 		}
 		// Setup window
 		//Window window(window_width_g, window_height_g, window_title_g);
-		
+	
 		window = glfwCreateWindow(window_width_g, window_height_g, window_title_g.c_str(), NULL, NULL);
 		if (!window) {
 			glfwTerminate();
@@ -527,7 +531,6 @@ int main(void){
 		/************************************************TEXTURE INIT************************************************/
 		setallTexture();
 
-		
 		texMap.insert(std::pair<std::string, GLuint >("0.5", textures["Map"][0]));//cliff
 		texMap.insert(std::pair<std::string, GLuint >("0", textures["Map"][1]));//snow area
 		texMap.insert(std::pair<std::string, GLuint >("T", textures["Map"][2]));//empty, buildable grass plains
@@ -565,12 +568,21 @@ int main(void){
 		long income[2] = { 20,20 };
 		long credits[2] = { 30,30 };
 		std::map<std::string, float> upgrades[2];
-		std::string keys[6] = { "Upgrade Damage","Upgrade Rate of Fire","Upgrade Range","Upgrade Hardiness","Upgrade Speed","Increase Cost" };
+		std::string upgradeKeys[6] = { "Upgrade Damage","Upgrade Rate of Fire","Upgrade Range","Upgrade Hardiness","Upgrade Speed","Increase Cost" };
 		for (int i = 0; i < 2; ++i) {
 			for (int j = 0; j < 6; ++j) {
-				upgrades[i][keys[j]]=1;
+				upgrades[i][upgradeKeys[j]]=1;
 			}
 		}
+		std::map<std::string, long> stats[2];
+		std::string statKeys[5] = { "Creeps Killed: ", "Creeps Bought: ", "Damage Dealt: ", "Towers Built: ", "Total Credits Spent: "};
+		for (int i = 0; i < 2; ++i) {
+			for (int j = 0; j < 5; ++j) {
+				stats[i][statKeys[j]] = 0;
+			}
+		}
+		int roundNum=1;
+		long gameTime = glfwGetTime();
 
 		glm::vec3 hudColors[2] = { glm::vec3(50, 175, 255),glm::vec3(179, 0, 0) };
 
@@ -618,15 +630,11 @@ int main(void){
 		background->setImgScale(glm::vec3(90, 46, 46));
 
 		/************************************************FILE INIT************************************************/
-		
-		std::pair<int, int> tempSize = fileLoader.loadMapSize(fname);
-		wid = tempSize.first;
-		height = tempSize.second;
 
 		std::vector < std::string>  discriptionTexts = fileLoader.LoadVectorTextFile("Descriptions/discriptions.txt");
 		std::cout << "size = " << discriptionTexts.size() << std::endl;
 		/************************************************GRAPH INIT************************************************/
-
+		
 		glm::vec3 cameraTranslatePos = glm::vec3(0.1125f, 6.3f, 0.0f);
 		
 
@@ -662,7 +670,7 @@ int main(void){
 		//for (int i = 0; i < 3; i++) {
 			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][6], size, "Upgrade Damage",1.2, 500));
 			upgradeUpStartPosition.y += 1;
-			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][7], size, "Upgrade Rate of Fire",1.2,1000));
+			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][7], size, "Upgrade Rate of Fire",1.1,1000));
 			upgradeUpStartPosition.y += 1;
 			upgradeList.push_back(new UpgradeObject(upgradeUpStartPosition, textures["MENU"][8], size, "Upgrade Range",1.1,750));
 			upgradeUpStartPosition.y += 1;
@@ -685,7 +693,7 @@ int main(void){
 		//	upgradeListHUD.push_back(new UpgradeObject(glm::vec3(3.7f, 8.0f, 0.0f), textures["MENU"][0], size, "upgrade" + std::to_string(i)));
 			
 			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(1.8f, 3.8f, 0.0f), textures["MENU"][6], size, "Upgrade Damage", 1.2, 500));
-			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(1.8f, 3.8f, 0.0f), textures["MENU"][7], size, "Upgrade Rate of Fire", 1.2, 1000));
+			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(1.8f, 3.8f, 0.0f), textures["MENU"][7], size, "Upgrade Rate of Fire", 1.1, 1000));
 			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(1.8f, 3.8f, 0.0f), textures["MENU"][8], size, "Upgrade Range", 1.1, 750));
 		
 			upgradeListHUD.push_back(new UpgradeObject(glm::vec3(1.8f, 3.8f, 0.0f), textures["MENU"][9], size, "Upgrade Hardiness", 1.2, 500));
@@ -695,16 +703,16 @@ int main(void){
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>NEW STUFF
 		int index2 = 0;
 		
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10, "C-Class BASIC", 3, 0.5, 5, 0.2)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 30, "C-Class DEFENDER", 2, 1, 10, 0.4)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0, "C-Class BARRIER", 0, 0, 1, 0.0)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5,   "C-Class BASIC",    2, 0.5, 10, 0.2)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 25,  "C-Class DEFENDER", 1.5, 1, 20, 0.4)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 0,   "C-Class BARRIER",  0, 0, 5, 0.0)); index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7, "B-Class IGNITION Cannon", 1, 0.1, 10, 0.1)); index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 20, "AOE", 1, 1, 30, 4));index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Stealth Sniper", 20, 4, 100, 0.6));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 7,   "B-Class IGNITION Cannon", 1, 0.1, 50,  0.1)); index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 10,  "AOE",                     1, 1,   75,  4));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 500, "A-Class Stealth Sniper",  5, 4,   150, 0.6));index2 += 4;
 
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1, 2, 300, 0.5));index2 += 4;
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5, "A-Class High Beam Laser", 30, 1, 200, 0));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1, 2, 1000, 0.5));index2 += 4;
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 5,   "A-Class High Beam Laser",     4, 1, 500, 0));
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")) , textures["Explosion"], size, 0, "Sell", 0, 0, 0, 0));
 
 
@@ -775,33 +783,33 @@ int main(void){
 		//to create the actual tower object. 
 		int index = 0;	
 																																																			                        	//damage                            range  rof  cost  speed								
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 10,  "C-Class BASIC",               3,   0.5, 5,  0.2)); index += 4; //the final 5 here is the cost
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 30,  "C-Class DEFENDER",            2,   1,   10, 0.4)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,   "C-Class BARRIER",             0,   0,   1,  0.0)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,   "C-Class BASIC",               2,   0.5, 10,  0.2)); index += 4; //the final 5 here is the cost
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 25,  "C-Class DEFENDER",            1.5, 1,   20, 0.4)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 7.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 0,   "C-Class BARRIER",             0,   0,   5,  0.0)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,   "B-Class IGNITION Cannon",     1,   0.1, 10,  0.1)); index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size,    20,  "AOE",                         1,   1,   30,  4));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Stealth Sniper",      20,  4,   100, 0.6)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 7,   "B-Class IGNITION Cannon",     1,   0.1, 50,  0.1)); index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Button"], size,    10,  "AOE",                         1,   1,   75,  4));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 8.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 500, "A-Class Stealth Sniper",      5,   4,   150, 0.6)); index += 4;
 		
-		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1, 2,   300, 0.5));index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,   "A-Class High Beam Laser",     30,  1,   200, 0));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 1,  2,   1000, 0.5));index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 5,   "A-Class High Beam Laser",     4,  1,   500, 0));//index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")), textures["Explosion"], size, 5,   "Sell",     0,  0,   0, 0));//index += 4;
 		
 	
 		
 		/************************************************enemyBlueprints INIT************************************************/
-//																								         health							                                     speed, cost regen
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 7.3f, 0.0f), textures["Enemy"][0], size, 50,      "Servent Minor",                         textures["Particle"][1], 1.0, 10,   0));//0
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 7.3f, 0.0f), textures["Enemy"][1], size, 200,     "Glutton Minor",                        textures["Particle"][1], 0.8, 40,   0));//1
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 7.3f, 0.0f), textures["Enemy"][2], size, 100,     "Fleeting Minor",                      textures["Particle"][1], 1.7, 70,   0));//2
+//																								         health				                                    speed, cost regen
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 7.3f, 0.0f), textures["Enemy"][0], size, 50,      "Servent Minor",      textures["Particle"][1], 1.0, 10,   0));//0
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 7.3f, 0.0f), textures["Enemy"][1], size, 200,     "Glutton Minor",      textures["Particle"][1], 0.8, 40,   0));//1
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 7.3f, 0.0f), textures["Enemy"][2], size, 100,     "Fleeting Minor",     textures["Particle"][1], 1.7, 70,   0));//2
 		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 150,     "Lifegiver Minor",                    textures["Particle"][1], 1,   100,  10));//3
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][4], size, 350,     "Fleeting Colossal",              textures["Particle"][1], 1.5, 250,  0));//4
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][5], size, 400,     "Life Colossal",           textures["Particle"][1], 1.0, 400,  15));//5
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 8.3f, 0.0f), textures["Enemy"][3], size, 150,     "Lifegiver Minor",    textures["Particle"][1], 1,   100,  10));//3
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 8.3f, 0.0f), textures["Enemy"][4], size, 350,     "Fleeting Colossal",  textures["Particle"][1], 1.5, 250,  0));//4
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 8.3f, 0.0f), textures["Enemy"][5], size, 400,     "Life Colossal",      textures["Particle"][1], 1.0, 400,  15));//5
 		
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][6], size, 300,     "Fleeting Lifeblood",        textures["Particle"][1], 1.6, 500,  15));//6
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][7], size, 1000,    "Absolute Zenith", textures["Particle"][1], 2.0, 1500, 20));//7
-		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith",                        textures["Particle"][1], 2.5, 1000000,   1000000));//7
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(9.35f, 9.3f, 0.0f), textures["Enemy"][6], size, 300,     "Fleeting Lifeblood", textures["Particle"][1], 1.6, 500,  15));//6
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(8.35f, 9.3f, 0.0f), textures["Enemy"][7], size, 1000,    "Absolute Zenith",    textures["Particle"][1], 2.0, 1500, 20));//7
+		enemyBlueprint.push_back(new EnemyObject(glm::vec3(7.35f, 9.3f, 0.0f), textures["Enemy"][8], size, 1000000, "Undying Zenith",     textures["Particle"][1], 2.5, 1000000,   1000000));//7
 																																						  
 		/*for (TowerObject* t : blueprints) {
 			towerDetailHUD.push_back(t);
@@ -1023,7 +1031,7 @@ int main(void){
 
 					float x;
 					float y;
-					int id = g->getHover();
+					//int id = g->getHover();
 					//g->getHoverCoords(x, y);
 
 					//std::cout << xOut << "," << yOut << std::endl;
@@ -1031,6 +1039,7 @@ int main(void){
 				break;
 			}
 			case MapMenu: {
+				
 				
 				//std::string fname = "Levels/map"+std::to_string(level)+".csv";
 				if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -1040,7 +1049,7 @@ int main(void){
 				}
 				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					startGame("Levels/map" + std::to_string(1) + ".csv",cameraTranslatePos,cameraZoom,background,selectionGraphic,size);
+					startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
@@ -1063,7 +1072,7 @@ int main(void){
 			}
 
 			case Game: {
-
+				gameTime = glfwGetTime();
 				if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && (timeOfLastMove + 0.3 < glfwGetTime()))
 				{
 					hudObjects[5]->setToggleInfo();
@@ -1155,8 +1164,26 @@ int main(void){
 
 
 					}if (glfwGetKey(window, GLFW_KEY_TAB) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
-						showRadius ^= 1;
-						timeOfLastMove = glfwGetTime();
+						int hours = gameTime/3600;
+						int minutes = (gameTime - hours * 3600)/ 60;
+						int seconds = gameTime - hours * 3600 - minutes * 60;
+						std::string m = std::to_string(minutes);
+						if(m.length()==1){
+							m.insert(0, "0");
+						}
+						std::string s = std::to_string(seconds);
+						if(s.length()==1){
+							s.insert(0, "0");
+						}
+						
+						std::cout << "\n\nGameTime:" << hours << ":" << m << ":" << s<<std::endl;
+						std::cout << "Current Round: " << roundNum << std::endl;
+						for (int i = 0; i < 2; ++i) {
+							std::cout << "Player: " << turnIndex + 1 << std::endl;;
+							for (int j = 0; j < 5; ++j) {
+								std::cout<<"\t"<< statKeys[j]<< stats[i][statKeys[j]]<<std::endl;
+							}
+						}
 					}
 
 					
@@ -1183,14 +1210,14 @@ int main(void){
 						selectedEnemy = NULL;
 
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
-
+						/*
 						selectionRadius = 1.5;
 						for (EnemyObject* e : enemiesInRange(g->getNode(g->getHover()), selectionRadius, enemyMap[turnIndex])) {
 							if (e->getType().compare("Undying") != 0) {
 								e->setExists(false);
 							}
 						}
-						timeOfLastMove = glfwGetTime();
+						timeOfLastMove = glfwGetTime();*/
 					}
 					//Stop all in 1.5 range for 4 seconds
 					if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -1214,13 +1241,13 @@ int main(void){
 
 
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
-
+						/*
 						selectionRadius = 1.5;
 						for (EnemyObject* e : enemiesInRange(g->getNode(g->getHover()), selectionRadius, enemyMap[turnIndex])) {
 							e->modCurSpeed(0);
 							e->setEffectDuration(4);
 						}
-						timeOfLastMove = glfwGetTime();
+						timeOfLastMove = glfwGetTime();*/
 					}
 					//Inc outgoing creep hp 100% for 20 seconds.
 					if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -1243,13 +1270,13 @@ int main(void){
 						selectedEnemy = NULL;
 
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
-
+						/*
 						hpUp = true;
 						for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
 							e->modCurHealthCap(2);
 							e->setEffectDuration(20);
 						}
-						timeOfLastMove = glfwGetTime();
+						timeOfLastMove = glfwGetTime();*/
 					}
 					//Inc outgoing creep speed 50% for 20 seconds. up to 2.5 speed
 					if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -1270,13 +1297,13 @@ int main(void){
 						cursor->setTex(textures["Cursor"][0]);
 						selectedEnemy = NULL;
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
-
+						/*
 						gottaGoFast = true;
 						for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
 							e->modCurSpeed(1.5);
 							e->setEffectDuration(20);
 						}
-						timeOfLastMove = glfwGetTime();
+						timeOfLastMove = glfwGetTime();*/
 					}
 					//inc allied tower rof by 100% for 15 seconds
 					if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -1299,14 +1326,14 @@ int main(void){
 						selectedEnemy = NULL;
 
 						//std::cout << hudObjects[2]->getSelectionPowerUps()->getType() << std::endl;
-
+						/*
 						rainingLead = true;
 						rainingLeadEnd = glfwGetTime() + 15;
 						for (TowerObject* t : *(towerMap[turnIndex])) {
 							t->modCurROF(0.5);
 							t->setEffectDuration(15);
 						}
-						timeOfLastMove = glfwGetTime();
+						timeOfLastMove = glfwGetTime();*/
 					}
 
 					if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
@@ -1358,6 +1385,10 @@ int main(void){
 						std::cout << "T \n";
 						turn = turnArr[turnIndex];
 						credits[turnIndex] += income[turnIndex];
+						
+						if (!turnIndex) {
+							roundNum += 1;
+						}
 						g->clearNextNodeMaps();
 						g->startPaths(turnIndex);
 
@@ -1393,13 +1424,14 @@ int main(void){
 
 						//std::cout << ypos << ", " << 400*factor << std::endl;
 
-						if (ypos <= 400*factor) {//prints on map
+						if (ypos <= 390*factor) {//prints on map
 							if (hudObjects[3]->getFlag()) {
 								TowerObject* selectedTower = hudObjects[3]->getSelection();
 								
 								if (selectedTower->getType().compare("Sell") == 0) {
 									TowerObject *t = g->getNode(id).getTower();
 									if (t != NULL) {
+										//stats[turnIndex]["Towers Built: "] -= 1;
 										credits[turnIndex] += (int)(t->getCost() / 2);
 										g->getNode(id).setTower(NULL);
 										g->getNode(id).setTowerState(false, turn);
@@ -1444,7 +1476,9 @@ int main(void){
 										//g.startPaths();
 										if (g->startPaths(turnIndex) && g->rePath(id, turn)) {
 											g->getNode(id).setTower(t);
+											stats[turnIndex]["Towers Built: "] += 1;
 											credits[turnIndex] -= selectedTower->getCost();
+											stats[turnIndex]["Total Credits Spent: "] += selectedTower->getCost();
 											towerMap[turnIndex]->push_back(t);
 											std::cout << "GRAPH STUFF " << selectedTower->getCost() << std::endl;
 											if (rainingLead) {
@@ -1476,6 +1510,10 @@ int main(void){
 								}
 							}
 						}
+						else {
+							showRadius = 0;
+						}
+
 
 						
 						
@@ -1578,8 +1616,8 @@ int main(void){
 					//hudObjects[3]->selection(xpos, ypos);
 					hudObjects[4]->selectionEnemy(xpos, ypos);
 					selectedEnemy = hudObjects[4]->getSelectionEnemy();
-					PowerUpObject* selectedPower = hudObjects[2]->getSelectionPowerUps();
-					UpgradeObject* selectedUpgrade = hudObjects[9]->getSelectionUpgrades();
+					PowerUpObject* selectedPower = hudObjects[5]->getSelectionPowerUps();
+					UpgradeObject* selectedUpgrade = hudObjects[5]->getSelectionUpgrades();
 					TowerObject* selectedTower = hudObjects[3]->getSelection();
 
 					if (selectedPower != NULL) {
@@ -1631,9 +1669,11 @@ int main(void){
 								std::cout << "Spawned new enemy. Total: " << enemyMap[turnIndex ^ 1]->size() + 1 << std::endl;
 								income[turnIndex] += selectedEnemy->getCost();
 								credits[turnIndex] -= selectedEnemy->getCost();
+								stats[turnIndex]["Total Credits Spent: "] += selectedEnemy->getCost();
 								Node* cur;
 								for (int s : g->getStartSet(turnArr[turnIndex ^ 1])) {
 									cur = &g->getNode(s);
+									stats[turnIndex]["Creeps Bought: "] += 1;
 									EnemyObject* e = new EnemyObject(glm::vec3(cur->getX(), cur->getY(), 0.0f), selectedEnemy->getTex(), size, selectedEnemy->getHealth(),
 										selectedEnemy->getType(), selectedEnemy->getEnemyDeathTex(), selectedEnemy->getCurSpeed(), selectedEnemy->getCost(), selectedEnemy->getRegen());
 									e->setAudio(audio);
@@ -1665,39 +1705,41 @@ int main(void){
 						
 							selectionRadius = selectedPower->getRange();
 							std::cout << "powerup not null\n";
+							std::cout << "Cost: " << selectedPower->getCost() << std::endl;
+							std::cout << "Type: " << selectedPower->getType() << std::endl;
 							if (credits[turnIndex] >= selectedPower->getCost()) {
 								credits[turnIndex] -= selectedPower->getCost();
-								/*
-								if("Null Zone"){
+								
+								if(selectedPower->getType().compare("Null Zone")==0){
 									selectionRadius = 1.5;
-									for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+									for (EnemyObject* e : enemiesInRange(g->getNode(g->getHover()), selectionRadius, enemyMap[turnIndex])) {
 										if (e->getType().compare("Undying") != 0) {
 											e->setExists(false);
 										}
 									}
 								}
-								else if("Time Stop"){
+								else if(selectedPower->getType().compare("Time Stop") == 0){
 									selectionRadius = 1.5;
-									for (EnemyObject* e : enemiesInRange(g.getNode(g.getHover()), selectionRadius, enemyMap[turnIndex])) {
+									for (EnemyObject* e : enemiesInRange(g->getNode(g->getHover()), selectionRadius, enemyMap[turnIndex])) {
 										e->modCurSpeed(0);
 										e->setEffectDuration(4);
 									}
 								}
-								else if("Morphine"){
+								else if(selectedPower->getType().compare("Morphine") == 0){
 									hpUp = true;
 									for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
 										e->modCurHealthCap(2);
 										e->setEffectDuration(20);
 									}
 								}
-								else if("Stimpack"){
+								else if(selectedPower->getType().compare("Stimpack") == 0){
 									gottaGoFast = true;
 									for (EnemyObject* e : *(enemyMap[turnIndex ^ 1])) {
 										e->modCurSpeed(1.5);
 										e->setEffectDuration(20);
 									}
 								}
-								else if("Give 'Em Lead"){
+								else if(selectedPower->getType().compare("Give 'Em Lead") == 0){
 									rainingLead = true;
 									rainingLeadEnd = glfwGetTime() + 15;
 									for (TowerObject* t : *(towerMap[turnIndex])) {
@@ -1705,7 +1747,7 @@ int main(void){
 										t->setEffectDuration(15);
 									}
 								}
-								*/
+								
 
 							}
 						}
@@ -2081,6 +2123,8 @@ int main(void){
 							g->setEnd(e->getCurDestId());
 							if (!g->pathfind()) {
 								std::cout << "Welll fuck";
+								e->setExists(false);
+								e->setKilled(true);
 							}
 							next = cur->getNextNode(e->getCurDestId());
 						}
@@ -2119,6 +2163,8 @@ int main(void){
 									g->setEnd(e->getCurDestId());
 									if (!g->pathfind()) {
 										std::cout << "Welll fuck";
+										e->setExists(false);
+										e->setKilled(true);
 									}
 									next = cur->getNextNode(e->getCurDestId());
 								}
@@ -2182,6 +2228,9 @@ int main(void){
 					//stop moving if we're done
 					if (e->getExists() && (cur->getId() == g->getEndPoints(turnIndex) || (cur->getNextNode(e->getCurDestId()) == NULL))) {
 						hp[turnIndex] -= 1;
+						stats[turnIndex]["Creeps Killed: "] -= 1;
+						stats[turnIndex]["Damage Dealt: "] -= e->getHealthCap();
+						
 						if (e->getType().compare("Undying Zenith") == 0) {
 							hp[turnIndex] = 0;
 						}
@@ -2213,7 +2262,10 @@ int main(void){
 
 				//using the indices, delete the enemies that should be deleted. 
 				for (int i = 0; i < deleteEnemies.size(); i++) {
+					
 					EnemyObject* e = enemyMap[turnIndex]->at(deleteEnemies[i]);
+					stats[turnIndex]["Creeps Killed: "] += 1;
+					stats[turnIndex]["Damage Dealt: "] += e->getHealthCap();
 					if (e->getKilled()) {
 						credits[turnIndex] += e->getCost();
 					}

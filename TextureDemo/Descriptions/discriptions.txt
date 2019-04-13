@@ -111,26 +111,56 @@ are controlled by the literal servents
 of Ur-Sol. If you see one, then do not 
 dare attack, only be ready for death.  
 
-Powerup: NULL Zone type text 
+Powerup: Creates a powerful NULL Zone 
+instantly destorying all but the 
+strongest of hostiles in range.
+NOTE: No credits earned from creeps 
+killed by NULL Zone.
 
-Powerup: Time Stop type text
+Powerup: Freezes all enemies in range 
+for four seconds.
 
-Powerup: Morphine type text 
+Powerup: Load up all outgoing troops
+with Morphine, by increasing their
+pain tolerance they can take twice
+as many hits for twenty seconds
+before falling in battle.
 
-Powerup: Stimpack type text 
+Powerup: Equip all outgoing troops
+with a stimpack, increasing their 
+movement speed by 50% for twenty
+seconds.
+NOTE: creep speed capped at 2.5
  
-Powerup: Give 'Em Lead type text 
+Powerup: Double tower attack rate for
+15 seconds.
+NOTE: tower rate of fire capped at 
+twenty attacks per second (0.05).
 
-Upgrade Damage type text 
+Permanently increase all tower damage
+by 20%. Effects are multiplicative.
 
-Upgrade Rate of Fire type text 
+Permanently increase all tower attack
+rates by 10%. Effects are multiplicative.
+NOTE: tower rate of fire capped at 
+twenty attacks per second (0.05).
 
-Upgrade Range type text 
+Permanently increase all tower range
+by 10%. Effects are multiplicative.
 
-Upgrade Hardiness type text 
+Permanently increase all creep health
+and regeneration per second by 20%. 
+Effects are multiplicative.
 
-Upgrade Speed type text 
+Permanently increase all creep 
+speed by 20%. 
+NOTE: creep speed capped at 2.5
 
-Upgrade Cost type text 
+Permanently increase all creep
+costs by 50%
+WARNING: this act is irreversible
+and is only intended to ensure no 
+credits go to waste once you begin
+reaching the 200 creep cap.
 
 

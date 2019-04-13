@@ -53,7 +53,7 @@ void ProjectileObject::update(double deltaTime) {
 			float distanceTower = glm::length(position - orgCoord);
 
 			//if it should despawn, increments the explosion counter. 
-			if (distanceTar <= 0.2 || distanceTower >= 10) {
+			if ((distanceTar <= 0.2 || distanceTower >= 10) && type.compare("circle")) {
 				explosion_num++;
 				target->enemyHit(damage);
 			}

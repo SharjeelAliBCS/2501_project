@@ -47,11 +47,9 @@ private:
 
 	//*********Finite State Machine******
 	enum State {
-		Init,
 		Idle,
 		Locate,
 		Fire,
-		Stop,
 		SpeedUp,
 		SlowDown,
 		CoolDown
