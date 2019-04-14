@@ -20,6 +20,8 @@ public:
 	// Update function for moving the player object around
 	virtual void render(std::vector<Shader*> shaders);
 	virtual void update(double deltaTime) override;
+
+	inline void setRange(float r) { range = r; }
 	
 private:
 
@@ -30,7 +32,7 @@ private:
 	int particlesize;
 	double time;
 	int shaderIndex;//Used to identify what shader to use. 
-	
+	float range;
 
 
 };

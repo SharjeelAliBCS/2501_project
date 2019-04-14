@@ -23,6 +23,7 @@ Particle::Particle(glm::vec3 &entityPos, GLuint entityTexture, GLint entityNumEl
 	particlesize = n;
 	time = 0.0;
 	shaderIndex = shade;
+	range = 1.0f;
 }
 
 
@@ -46,6 +47,8 @@ void Particle::render(std::vector<Shader*> shaders) {
 	shaders[0]->disable();
 	shaders[shaderIndex]->enable();
 	shaders[shaderIndex]->setAttribute(shaderIndex);
+	
+	glUniform1f(glGetUniformLocation(shaders[shaderIndex]->getShaderID(), "range"),range);
 	//shaders[shaderIndex]->setRadius(shaderIndex);
 	//std::cout << "ddd" << std::endl;
 

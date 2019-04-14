@@ -38,7 +38,7 @@ public:
 	inline void modCurROF(float rof) { curROF *= rof; }
 
 	inline void upDamage(float mod) { damage = baseDamage * mod; }
-	inline void upRange(float mod) { range = baseRange * mod; }
+	inline void upRange(float mod) { range = std::fmin(baseRange * mod,baseRange*2); }
 	inline void upROF(float mod) { defaultROF = std::fmax(baseROF *(2-mod),0.05); }
 
 

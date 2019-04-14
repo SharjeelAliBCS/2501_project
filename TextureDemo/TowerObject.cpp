@@ -324,7 +324,7 @@ void TowerObject::fireEnemy(double deltaTime) {
 			audio->volume(uniqueID, 10);
 			audio->playRepeat(uniqueID);
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
-			bullObjects[0]->setImgScale(glm::vec3(range*3.5, 1, 1));
+			bullObjects[0]->setImgScale(glm::vec3(range*4.0, 1, 1));
 			laserCoolDownTime = curROF;
 		}
 
@@ -370,7 +370,8 @@ void TowerObject::fireEnemy(double deltaTime) {
 			audio->volume(uniqueID, 30);
 			audio->playRepeat(uniqueID);
 
-			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000, 1);
+			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000*range, 1);
+			particle->setRange(range);
 		}
 		_state = Locate;
 	}
@@ -390,8 +391,8 @@ void TowerObject::fireEnemy(double deltaTime) {
 bool TowerObject::lineCollision(EnemyObject* enemy) {
 	float x1 = position.x;
 	float y1 = position.y;
-	float x2 = 2 * (range*0.4)*cos(rotation*3.14159 / 180) + x1;
-	float y2 = 2 * (range*0.4) *sin(rotation*3.14159 / 180) + y1;
+	float x2 = 2 * (range*0.43)*cos(rotation*3.14159 / 180) + x1;
+	float y2 = 2 * (range*0.43) *sin(rotation*3.14159 / 180) + y1;
 	float ex = enemy->getPosition().x;
 	float ey = enemy->getPosition().y;
 
@@ -425,11 +426,23 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 	glm::mat4 transformationMatrix;
 
 	if (type.compare("A-Class Auto Assault Bomber") == 0) {
+
+		glBindTexture(GL_TEXTURE_2D, turretTexture);
+
+		// Setup the transformation matrix for the shader
+		translationMatrix = glm::translate(glm::mat4(1.0f), orgCoord);
+		
+		transformationMatrix = translationMatrix * scaleMatrix;
+
+		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
+		rotationMatrix = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
+		// Draw the entity
+		glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
+
+		translationMatrix = glm::translate(glm::mat4(1.0f), position);
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation - 90, glm::vec3(0.0f, 0.0f, 1.0f));
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.6f, 0.6f));
-		for (int i = 0; i < bullObjects.size(); i++) {
-			bullObjects[i]->render(shaders);
-		}
+		
 	}
 	else if (type.compare("C-Class BARRIER")) {
 

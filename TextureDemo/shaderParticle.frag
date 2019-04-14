@@ -6,7 +6,7 @@ in vec4 color_interp;
 in vec2 uv_interp;
 in float tout;
 in float timeout;
-
+in float inrange;
 out vec4 FragColor;
 
 uniform sampler2D onetex;
@@ -18,7 +18,7 @@ void main()
 {
 
 	float acttime;
-	acttime = mod(timeout + tout*2.0, 2.0);
+	acttime = mod(timeout + tout*2.0*inrange, 2.0*inrange);
 	
 	vec4 color = texture2D(onetex, uv_interp);
 	FragColor = vec4(color.r,color.g,color.b,color.a);

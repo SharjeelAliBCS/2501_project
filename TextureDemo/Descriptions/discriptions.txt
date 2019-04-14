@@ -50,6 +50,9 @@ cut through anything, including ships.
 Ideal for firing at long, straight 
 paths. Cools down. 
 
+Salvage and existing tower for scrap
+and get 50% of it's value back.
+
 Commanded by the lowest of the Infernal
 Emissary's followers, the Servent Minor
 ship is easy to deal with. Even our 
@@ -105,8 +108,8 @@ lightspeed movement and regeneration.
 DO NOT ENGAGE without a bomber. 
 
 We have very little intel on the 
-Undying. However, rumors from the 
-Infernal Emissary suggest that they 
+Undying Zenith. However, rumors from
+the Infernal Emissary suggest that they 
 are controlled by the literal servents
 of Ur-Sol. If you see one, then do not 
 dare attack, only be ready for death.  
@@ -131,7 +134,7 @@ with a stimpack, increasing their
 movement speed by 50% for twenty
 seconds.
 NOTE: creep speed capped at 2.5
- 
+
 Powerup: Double tower attack rate for
 15 seconds.
 NOTE: tower rate of fire capped at 
@@ -147,6 +150,7 @@ twenty attacks per second (0.05).
 
 Permanently increase all tower range
 by 10%. Effects are multiplicative.
+NOTE: capped at 2x original range.
 
 Permanently increase all creep health
 and regeneration per second by 20%. 
@@ -162,5 +166,4 @@ WARNING: this act is irreversible
 and is only intended to ensure no 
 credits go to waste once you begin
 reaching the 200 creep cap.
-
 

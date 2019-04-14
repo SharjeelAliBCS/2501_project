@@ -49,6 +49,9 @@ void HUD::selection(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	if ((677.6 * factor <= x && x <= 710.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {//start first row
 		outSelection = blueprints[0];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -57,6 +60,9 @@ void HUD::selection(double x, double y) {
 	}
 	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[3];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -66,6 +72,9 @@ void HUD::selection(double x, double y) {
 	}
 	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outSelection = blueprints[6];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -76,6 +85,9 @@ void HUD::selection(double x, double y) {
 	//==============================next column
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outSelection = blueprints[1];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -85,12 +97,21 @@ void HUD::selection(double x, double y) {
 	}
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[4];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
-		currentCursor = blueprints[4]->getIcon();
 		enemyFlag = false;
+		upgradeFlag = false;
+		powerUpFlag = false;
+		currentCursor = blueprints[4]->getIcon();
+	
 	}
 	else if ((716.8 * factor <= x && x <= 749.44 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outSelection = blueprints[7];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -101,6 +122,9 @@ void HUD::selection(double x, double y) {
 	//==============================next column
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outSelection = blueprints[2];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -110,6 +134,9 @@ void HUD::selection(double x, double y) {
 	}
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[5];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -119,15 +146,18 @@ void HUD::selection(double x, double y) {
 	}
 	
 	else if ((756 * factor <= x && x <= 788.8 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
-		/*
+		
 		outSelection = blueprints[8];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
 		powerUpFlag = false;
 		currentCursor = blueprints[8]->getIcon();
 
-	*/
+	
 	}
 
 }
@@ -137,6 +167,9 @@ void HUD::selectionEnemy(double x, double y) {
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	if ((9.6 * factor <= x && x <= 42.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[0];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -144,6 +177,9 @@ void HUD::selectionEnemy(double x, double y) {
 	}
 	else if ((9.6 * factor <= x && x <= 42.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[3];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -152,6 +188,9 @@ void HUD::selectionEnemy(double x, double y) {
 	}
 	else if ((9.6 * factor <= x && x <= 42.4 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[6];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -160,6 +199,9 @@ void HUD::selectionEnemy(double x, double y) {
 	//====================================new column
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[1];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -168,6 +210,9 @@ void HUD::selectionEnemy(double x, double y) {
 	}
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[4];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -176,6 +221,9 @@ void HUD::selectionEnemy(double x, double y) {
 	}
 	else if ((50.4 * factor <= x && x <= 80 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[7];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -184,6 +232,9 @@ void HUD::selectionEnemy(double x, double y) {
 	//====================================new column
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[2];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -191,6 +242,9 @@ void HUD::selectionEnemy(double x, double y) {
 	}
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outEnemy = enemyBlueprints2[5];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -198,6 +252,9 @@ void HUD::selectionEnemy(double x, double y) {
 	}
 	else if ((89 * factor <= x && x <= 121.6 * factor) && (565.6 * factor <= y && y <= 590.4 * factor)) {
 		outEnemy = enemyBlueprints2[8];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = true;
 		upgradeFlag = false;
@@ -212,12 +269,18 @@ void HUD::selectionPowerUp(double x, double y) {
 	
 	if ((266.4 * factor <= x && x <= 294.4 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[0];
+		outEnemy = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = false;
 		powerUpFlag = true;
 	}else if ((326.4* factor <= x && x <= 353.6 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[1];
+		outEnemy = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -225,6 +288,9 @@ void HUD::selectionPowerUp(double x, double y) {
 	}
 	else if ((388* factor <= x && x <= 415.2 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[2];
+		outEnemy = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -232,6 +298,9 @@ void HUD::selectionPowerUp(double x, double y) {
 	}
 	else if ((446.4* factor <= x && x <= 474 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[3];
+		outEnemy = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -239,6 +308,9 @@ void HUD::selectionPowerUp(double x, double y) {
 	}
 	else if ((504.8* factor <= x && x <= 535.2 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
 		outPowerUP = powerUps[4];
+		outEnemy = NULL;
+		outUpgrade = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -251,6 +323,9 @@ void HUD::selectionUpgrades(double x, double y) {
 	//std::cout << "====================>" << x / factor << "," << y / factor << std::endl;
 	if ((628 * factor <= x && x <= 656 * factor) && (505.6 * factor <= y && y <= 526.4 * factor)) {//start first row
 		outUpgrade = upgrades[0];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -258,6 +333,9 @@ void HUD::selectionUpgrades(double x, double y) {
 	}
 	else if ((628 * factor <= x && x <= 656 * factor) && (536 * factor <= y && y <= 556 * factor)) {//start first row
 		outUpgrade = upgrades[1];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -265,6 +343,9 @@ void HUD::selectionUpgrades(double x, double y) {
 	}
 	else if ((628 * factor <= x && x <= 656 * factor) && (567.2 * factor <= y && y <= 587.2 * factor)) {//start first row
 		outUpgrade = upgrades[2];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -272,6 +353,9 @@ void HUD::selectionUpgrades(double x, double y) {
 	}
 	else if ((147.2 * factor <= x && x <= 174.4 * factor) && (505.6 * factor <= y && y <= 526.4 * factor)) {//start first row
 		outUpgrade = upgrades[3];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -279,6 +363,9 @@ void HUD::selectionUpgrades(double x, double y) {
 	}
 	else if ((147.2 * factor <= x && x <= 174.4 * factor) && (536 * factor <= y && y <= 556 * factor)) {//start first row
 		outUpgrade = upgrades[4];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -286,6 +373,9 @@ void HUD::selectionUpgrades(double x, double y) {
 	}
 	else if ((147.2 * factor <= x && x <= 174.4 * factor) && (567.2 * factor <= y && y <= 587.2 * factor)) {//start first row
 		outUpgrade = upgrades[5];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -295,11 +385,11 @@ void HUD::selectionUpgrades(double x, double y) {
 }
 
 std::string HUD::turns(double x, double y) {
-	if ((427.2 * factor <= x && x <= 455.2 * factor) && (406.4 * factor <= y && y <= 429.6 * factor))
+	if ((404.8 * factor <= x && x <= 456.8 * factor) && (383.2 * factor <= y && y <= 444.8 * factor))
 	{
 		return "turn";
 	}
-	if ((347.2 * factor <= x && x <= 373 * factor) && (406.4 * factor <= y && y <= 429.6 * factor))
+	if ((344 * factor <= x && x <= 396 * factor) && (383.2 * factor <= y && y <= 444.8 * factor))
 	{
 		return "wave";
 	}
@@ -320,6 +410,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[0];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -330,6 +423,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_I) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[1];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -340,6 +436,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_O) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[2];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -350,6 +449,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_J) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[3];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -360,6 +462,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_K) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[4];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -370,6 +475,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_L) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[5];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -380,6 +488,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_N) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[6];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -390,6 +501,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_M) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[7];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -400,6 +514,9 @@ bool HUD::updateHotkeysTower() {
 	if (glfwGetKey(win, GLFW_KEY_COMMA) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[8];
+		outPowerUP = NULL;
+		outUpgrade = NULL;
+		outEnemy = NULL;
 		flag = true;
 		enemyFlag = false;
 		upgradeFlag = false;
@@ -418,6 +535,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_Q) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[0];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -427,6 +547,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_W) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[1];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -436,6 +559,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_E) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[2];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -445,6 +571,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_A) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[3];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -454,6 +583,10 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_S) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[4];
+
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -463,6 +596,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_D) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[5];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -472,6 +608,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_Z) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[6];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -481,6 +620,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_X) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[7];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -490,6 +632,9 @@ bool HUD::updateHotkeysEnemy() {
 		if (glfwGetKey(win, GLFW_KEY_C) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 		{
 			outEnemy = enemyBlueprints2[8];
+			outPowerUP = NULL;
+			outUpgrade = NULL;
+			outSelection = NULL;
 			flag = false;
 			enemyFlag = true;
 			upgradeFlag = false;
@@ -507,6 +652,9 @@ bool HUD::updateHotkeysUpgrade() {
 	if (glfwGetKey(win, GLFW_KEY_Y) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[0];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -516,6 +664,9 @@ bool HUD::updateHotkeysUpgrade() {
 	else if (glfwGetKey(win, GLFW_KEY_H) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[1];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -525,6 +676,9 @@ bool HUD::updateHotkeysUpgrade() {
 	else if (glfwGetKey(win, GLFW_KEY_B) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[2];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -534,6 +688,9 @@ bool HUD::updateHotkeysUpgrade() {
 	else if (glfwGetKey(win, GLFW_KEY_R) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[3];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -543,6 +700,9 @@ bool HUD::updateHotkeysUpgrade() {
 	else if (glfwGetKey(win, GLFW_KEY_F) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[4];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -552,6 +712,9 @@ bool HUD::updateHotkeysUpgrade() {
 	else if (glfwGetKey(win, GLFW_KEY_V) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[5];
+		outEnemy = NULL;
+		outPowerUP = NULL;
+		outSelection = NULL;
 		flag = false;
 		enemyFlag = false;
 		upgradeFlag = true;
@@ -852,7 +1015,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 		textObjects[2]->setRenderedText(textObjects[2]->getText() + outSelection->getHotKey());//hotkey
 		textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage()*upmod["Upgrade Damage"], 1));//damage
 		textObjects[4]->setRenderedText(textObjects[4]->getText() + round(std::fmax(outSelection->getROF()*(2-upmod["Upgrade Rate of Fire"]),0.05),3));//ROF
-		textObjects[5]->setRenderedText(textObjects[5]->getText() + round(outSelection->getRange()*upmod["Upgrade Range"],2));//rangestd::fmax(baseROF *(2-mod),0.05)
+		textObjects[5]->setRenderedText(textObjects[5]->getText() + round(std::fmin(outSelection->getRange()*upmod["Upgrade Range"], outSelection->getRange()*2),2));//rangestd::fmax(baseROF *(2-mod),0.05)
 
 			textObjects[0]->render(shaders);
 			textObjects[1]->render(shaders);
