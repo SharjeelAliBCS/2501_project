@@ -1,3 +1,8 @@
+/*
+Class: Shader
+Purposes: handles the shader for rendering
+Contributers: Sharjeel Ali
+*/
 #pragma once
 
 #include <GL/glew.h>
@@ -36,10 +41,14 @@ public:
 	// Sets a uniform matrix4x4 variable in your shader program to a matrix4x4
 	void setUniformMat4(const GLchar *name, const glm::mat4 &matrix);
 
-	int CreateParticleArray(int type);//creates the array from the assignment
+	//creates the array from the assignment
+	int CreateParticleArray(int type);
 
+	//sets the attributes
 	void setAttribute(int type);
-	void setRadius(int type);//This switches between what array to use for the shader. 
+
+	//This switches between what array to use for the shader. 
+	void setRadius(int type);
 	// Getters
 	inline GLuint getShaderID() { return shaderProgram; }
 private:

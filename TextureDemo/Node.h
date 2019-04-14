@@ -1,4 +1,8 @@
-
+/*
+Class: Node
+Purposes: handles the nodes
+Contributers: David Neudorf
+*/
 #pragma once
 
 //#include "TowerObject.h"

@@ -141,7 +141,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 			}
 			else {
 				nodeMap[id]->setTex(texMap["ELSE"]);
-				std::cout << std::endl << "FIELD NOT FOUND : " << field << std::endl << std::endl;
+				//std::cout << std::endl << "FIELD NOT FOUND : " << field << std::endl << std::endl;
 				removeNode.push_front(pair<int,int>(row,col));
 				
 			}
@@ -152,7 +152,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		col = 0;
 	}
 	in.close();
-	std::cout << "file read" << std::endl;
+	//std::cout << "file read" << std::endl;
 	//erase the useless nodes
 	for (std::deque<pair<int, int>>::iterator it = removeNode.begin(); it != removeNode.end(); ++it) {
 		std::vector<Node*> row = nodes[it->first];

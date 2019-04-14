@@ -1,3 +1,8 @@
+/*
+Class: PowerUpObject
+Purposes: handles the powerup object
+Contributers: David Neudorf
+*/
 #pragma once
 #include "GameObject.h"
 class PowerUpObject :

@@ -49,17 +49,20 @@ void EnemyObject::update(double deltaTime) {
 		_state = Move;
 		break;
 	}
+	
+	//move state, move to the checkpoint
 	case Move: {
+
+		//if there is a burn damage, deal the damage to the health. 
 		if (burn > 0) {
 			if (burnTimeLeft > 0) {
 				health -= burn*deltaTime;
-				std::cout << "healt = " << health << std::endl;
-
 			}
 			else {
 				burn = 0;
 			}
 		}
+		//used for any effect on the enemy. 
 		if (effectTimeLeft <= 0) {
 			curHealthCap = defaultHealthCap;
 			health = std::fmin(curHealthCap, health);
@@ -78,18 +81,13 @@ void EnemyObject::update(double deltaTime) {
 			deathParticles = new Particle(position, enemyDeathTex, numElements, "particle", 0, 0.04f, 300, 2);
 			framesDeath++;
 			audio->playAgain("enemyDeath");
-			//std::cout << " death " << std::endl;
 			_state = Dying;
 		}
-		if (framesDeath >= 0) {
-
-		}
+	
 		break;
 	}
 
 	case Dying: {
-		//std::cout << "time : " << framesDeath << std::endl;
-
 		//Once the frames reaches 10, stop and remove the enemy/particles. 
 		if (framesDeath >= 10) {
 			_state = Dead;
@@ -97,6 +95,7 @@ void EnemyObject::update(double deltaTime) {
 		framesDeath++;
 		break;
 	}
+	//set it to not exist so the main can remove it. 
 	case Dead: {
 		exists = false;
 		killed = true;
@@ -113,11 +112,12 @@ void EnemyObject::update(double deltaTime) {
 }
 
 void EnemyObject::render(std::vector<Shader*> shaders) {
+	//does an fps boost based on zoom. 
 	if (position.x < -1.1 / cameraZoom - cameraTranslatePos.x ||
 		position.x > 1.1 / cameraZoom - cameraTranslatePos.x ||
 		position.y < -0.5 / cameraZoom - cameraTranslatePos.y ||
 		position.y > 1.1 / cameraZoom - cameraTranslatePos.y) {
-		return; //uncomment for fps boost based on zoom
+		return; 
 	}
 	switch (_state) {
 

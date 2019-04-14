@@ -1,3 +1,8 @@
+/*
+Class: TowerObject
+Purposes: handles the tower objects
+Contributers: Sharjeel Ali
+*/
 #pragma once
 
 #include "GameObject.h"
@@ -34,9 +39,10 @@ public:
 	inline float getDamage() { return damage; }
 	inline float getSpeed() { return projectileSpeed; }
 	inline float getROF() { return curROF; }
+
+	//mods for the upgrades/stats
 	inline void setCurROF(float rof) { curROF = rof; }
 	inline void modCurROF(float rof) { curROF *= rof; }
-
 	inline void upDamage(float mod) { damage = baseDamage * mod; }
 	inline void upRange(float mod) { range = std::fmin(baseRange * mod,baseRange*2); }
 	inline void upROF(float mod) { defaultROF = std::fmax(baseROF *(2-mod),0.05); }
@@ -75,6 +81,7 @@ private:
 	glm::vec3 explodePos;
 	EnemyObject* currentEnemy;
 	EnemyObject* prevEnemy;
+	//stores enemies within a certain range. 
 	std::vector<EnemyObject*> currentEnemies;
 	std::vector<EnemyObject*> allEnemies;
 

@@ -1,3 +1,8 @@
+/*
+Class: Graph
+Purposes: handles the graph and path planning
+Contributers: David Neudorf
+*/
 #pragma once
 
 #include "Node.h"

@@ -1,3 +1,8 @@
+/*
+Class: Particle
+Purposes: handles the particle system's flame/explosion particles. 
+Contributers: Sharjeel Ali
+*/
 #pragma once
 #include "GameObject.h"
 #include <iostream>
@@ -20,8 +25,6 @@ public:
 	// Update function for moving the player object around
 	virtual void render(std::vector<Shader*> shaders);
 	virtual void update(double deltaTime) override;
-
-	inline void setRange(float r) { range = r; }
 	
 private:
 
@@ -29,10 +32,12 @@ private:
 	glm::vec3 orgCoord;//stores the original coord of where it launched from. 
 	
 	glm::vec3 scale;
+	//used to specify the # of particles to spawn
 	int particlesize;
 	double time;
-	int shaderIndex;//Used to identify what shader to use. 
-	float range;
+	//Used to identify what shader to use. 
+	int shaderIndex;
+	
 
 
 };

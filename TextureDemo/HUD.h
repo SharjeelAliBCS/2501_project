@@ -1,3 +1,8 @@
+/*
+Class: HUD
+Purposes: handles the HUD and all selections
+Contributers: Raul Rodriguez
+*/
 #pragma once
 #include "Shader.h"
 #include "Window.h"
@@ -16,26 +21,32 @@ public:
 
 	// Update function for moving the player object around
 	virtual void update(double deltaTime) override;
-	virtual void selection(double x, double y);//Used to select towers
-	virtual void selectionEnemy(double x, double y);//Used to select enemies
-	virtual void selectionPowerUp(double x, double y);//used to select power ups
+	//Used to select towers
+	virtual void selection(double x, double y);
+	//Used to select enemies
+	virtual void selectionEnemy(double x, double y);
+	//used to select power ups
+	virtual void selectionPowerUp(double x, double y);
 	virtual void NewCoordinates(float&x, float&y, float objecWidth, float objectHeight);
 	virtual void counter(std::vector<EnemyObject*> l, std::vector<EnemyObject*> l2);
 	virtual void updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int hp2);
-	virtual bool updateHotkeysEnemy();
-	virtual bool updateHotkeysTower();
-	virtual bool updateHotkeysUpgrade();
+
 	virtual void selectionUpgrades(double x, double y);
-	//virtual bool updateHotkeysPowerUp();
 
 	virtual std::string turns(double x, double y);
 	virtual void detailRender(std::vector<Shader*> shaders);
 
-	// Renders the GameObject using a shader
+	//updates the hotkeys
+	virtual bool updateHotkeysEnemy();
+	virtual bool updateHotkeysTower();
+	virtual bool updateHotkeysUpgrade();
+
+	// Renders the GameObject using shaders based on the function type below: 
 	virtual void  render(std::vector<Shader*> shaders) override;
 	virtual void newRender(std::vector<Shader*> shaders);
 	virtual void buttonRender(std::vector<Shader*> shaders);
 
+	//this adds a text to the vector of texts that are rendered. 
 	void addText(Text* t);
 	// Getters
 	inline glm::vec3 getCamPos() { return camPos; }
@@ -61,7 +72,7 @@ public:
 	inline void setUpgradeFlag(bool newFlag) {upgradeFlag = newFlag; }
 	inline void setPowerUpFlag(bool power) { powerUpFlag = power; }
 	inline void setEnemyFlag(bool newEnemyFlag) { enemyFlag = newEnemyFlag; }
-	//
+	//lists
 	inline void setUpgrades(std::vector<UpgradeObject*> up) { upgrades = up; }
 	inline void setPowerUPs(std::vector<PowerUpObject*> power) { powerUps = power; }
 	inline void setBlueprints(std::vector<TowerObject*> b) { blueprints = b; }
@@ -82,7 +93,8 @@ private:
 	glm::vec3 scale;
 	float factor;
 	GLFWwindow* win;
-	bool flag;//only important flag becuase its flag for selection of towers /////the other flags are just for the selection square demonstration
+	//only important flag becuase its flag for selection of towers /////the other flags are just for the selection square demonstration
+	bool flag;
 	bool powerUpFlag;
 	bool upgradeFlag;
 	bool enemyFlag;
@@ -97,7 +109,6 @@ private:
 	std::vector<Text*> textObjects;
 	std::vector<HUD*> generalList;
 	//These are used to store the current selected item.
-	//GameObject* outGameObject;
 	PowerUpObject* outPowerUP;
 	UpgradeObject* outUpgrade;
 	EnemyObject* outEnemy;

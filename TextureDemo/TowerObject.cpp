@@ -32,10 +32,9 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	explosion_num = -1;
 	orgSpeed = speed;
 	duration = -1;
+
 	
-	//if (type.compare("A-Class Auto Assault Bomber") == 0)curSpeed = speed;
-	std::cout << type << " Cost: " << cost << " ROF: " << ROF << " range: " << range << " speed = " << projectileSpeed << std::endl;
-	
+
 
 
 
@@ -47,7 +46,7 @@ TowerObject::~TowerObject() {
 		particle = NULL;
 
 	}
-	
+
 	for (int i = 0; i< bullObjects.size();i++)
 	{
 		delete (bullObjects[i]);
@@ -62,7 +61,7 @@ void TowerObject::update(double deltaTime) {
 
 
 	std::deque<int> deleteBullets;
-
+	//if it isn't the laser, update te bullets and add the deleted indicies to the vector. 
 	if (type.compare("A-Class High Beam Laser")) {
 		for (int i = 0; i < bullObjects.size(); i++) {
 			bullObjects[i]->setCurrEnemy(currentEnemy);
@@ -75,15 +74,15 @@ void TowerObject::update(double deltaTime) {
 
 		}
 	}
-
+	//update the particle
 	if (particle != NULL) {
 		particle->setRotation(rotation - 90);
 
 		if (currentEnemy != NULL) {
 			float dis = glm::length(position - currentEnemy->getPosition());
-			//std::cout << "dis " << dis << std::endl;
+			
 			if (dis < range && prevEnemy != currentEnemy) {
-				//currentEnemy->enemyHit(damage);
+			
 				currentEnemy->setBurnDuration(curROF);
 				currentEnemy->enemyBurn(damage);
 				prevEnemy = currentEnemy;
@@ -97,33 +96,36 @@ void TowerObject::update(double deltaTime) {
 		delete(p);
 		p = NULL;
 	}
+
+	//set the rate of fire to current rate depending on the time left.
 	if (effectTimeLeft < 0) {
 		curROF = defaultROF;
 	}
 
-	
-	//state machine used to move around (right now only uses locate)
 	switch (_state) {
 
+	//do nothing until enemies spawn. 
 	case Idle: {
 		if (allEnemies.size() > 0) {
-
 			if (type.compare("A-Class Auto Assault Bomber") == 0) _state = SpeedUp;
 			else _state = Locate;
 		}
 		break;
 	}
+	//locate nearest enemy
 	case Locate: {
 		locateEnemy();
 		break;
 	}
+	//fire or hit the enemy. 
 	case Fire: {
 		fireEnemy(deltaTime);
 		break;
 	}
 
+	//slowdown the speed
 	case SlowDown: {
-		//std::cout << "speed  = " << projectileSpeed << std::endl;
+	
 		if (projectileSpeed <= orgSpeed * 0.5) {
 			if (allEnemies.size() == 0) {
 				_state = Idle;
@@ -137,11 +139,13 @@ void TowerObject::update(double deltaTime) {
 		}
 		break;
 	}
+
+	//increase speed
 	case SpeedUp: {
 		if (projectileSpeed >= orgSpeed) {
 			projectileSpeed = orgSpeed;
 			_state = Locate;
-			//bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "t_projectile", currentEnemy, rotation, damage, projectileSpeed*2));
+			
 		}
 		else {
 			projectileSpeed += accelerationSlow;
@@ -150,6 +154,7 @@ void TowerObject::update(double deltaTime) {
 
 		break;
 	}
+	//cooldown till the timer reaches zero. 
 	case CoolDown: {
 		if (laserCoolDownTime <= 0) {
 			_state = Locate;
@@ -164,15 +169,11 @@ void TowerObject::update(double deltaTime) {
 }
 
 void TowerObject::move() {
-	
-	if (currentEnemy != NULL && _state == Locate) {
-		std::cout << "target" << _state << std::endl;
-		targetPos = currentEnemy->getPosition();
-		
-	}
+	//uses steering chase behaviour to move towards the nearest target.
+	if (currentEnemy != NULL && _state == Locate) targetPos = currentEnemy->getPosition();
 
 	float dis = glm::length(position - (targetPos));
-	
+
 	if (dis > 0.1) {
 		rotation = (int)rotation % 360;
 		glm::vec3 dir = targetPos - position;
@@ -191,19 +192,13 @@ void TowerObject::move() {
 		float targetAngle = atan2(velocity.y, velocity.x);
 		rotation = targetAngle * (180 / 3.14f);
 	}
-	else {
-		
-		std::cout << "distance too short" << std::endl;
-	}
-	
-	
 
-	
 
 }
 //locates the enemy based off of it's coordinates
 void TowerObject::locateEnemy() {
 
+	//spawn a circle if found
 	if (type.compare("AOE") == 0) {
 
 		enemiesInRange(range);
@@ -215,21 +210,24 @@ void TowerObject::locateEnemy() {
 
 		}
 	}
+
+	//delete the particle
 	else if ((currentEnemy == NULL || glm::length(position - currentEnemy->getPosition())>range) && type.compare("B-Class IGNITION Cannon") == 0) {
-		std::cout << "Right";
+	
 		if (particle != NULL) {
 			delete(particle);
 			particle = NULL;
 		}
 		_state = Idle;
-		std::cout << "Now\n";
+	
 		audio->close(uniqueID);
 	}
 
+	//slow the ship down. 
 	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (allEnemies.size() == 0) {
-			std::cout << "idle" << std::endl;
+			
 			_state = SlowDown;
 			int angle = (std::rand() % (360));
 
@@ -240,19 +238,13 @@ void TowerObject::locateEnemy() {
 		move();
 
 		setCurrEnemies(enemiesInRange(range));
-		if(currentEnemy!=NULL &&  glm::length(position - currentEnemy->getPosition()) < 1) {
-			_state = Fire;
-			}
-		
-
-
+		if(currentEnemy!=NULL &&  glm::length(position - currentEnemy->getPosition()) < 1) _state = Fire;
+	
 	}
 	else {
 
-		if (allEnemies.size() == 0) {
-			std::cout << "idle" << std::endl;
-			_state = Idle;
-		}
+		if (allEnemies.size() == 0) _state = Idle;
+		
 		else if (!currentEnemy == NULL) {
 			float tx = position.x;
 			float ty = position.y;
@@ -266,7 +258,7 @@ void TowerObject::locateEnemy() {
 			rotation = targetAngle * (180 / 3.14f) + 180;
 
 			float dis = glm::length(position - currentEnemy->getPosition());
-			//std::cout << "dis " << dis << std::endl;
+			
 			if (dis <= range) {
 				_state = Fire;
 			}
@@ -281,15 +273,15 @@ void TowerObject::locateEnemy() {
 
 void TowerObject::fireEnemy(double deltaTime) {
 
+	//increase the circle's range and hit any enemies 
 	if (type.compare("AOE") == 0) {
 
 		bullObjects[0]->setImgScale(glm::vec3(6 * range*projectileSpeed*(timeSince / duration), 6 * range*projectileSpeed*(timeSince / duration), 1.0f));
-		std::cout << "range = " << range * projectileSpeed*(timeSince / duration) << std::endl;
+		
 		enemiesInRange(range*projectileSpeed*(timeSince / duration));
 		if (timeSince*projectileSpeed >= duration) {
 			for (EnemyObject* e : currentEnemies) e->enemyHit(damage);
-			
-			std::cout << "duraton " << timeSince * projectileSpeed << std::endl;
+
 			laserCoolDownTime = curROF;
 			_state = CoolDown;
 			delete(bullObjects[0]);
@@ -298,33 +290,35 @@ void TowerObject::fireEnemy(double deltaTime) {
 		}
 	}
 
+	//do an aoe damage affect. 
 	else if (type.compare("A-Class Auto Assault Bomber") == 0) {
 
 		if (explosion_num == -1) {
 			explosion_num++;
-			std::cout << "BOMBER RUN!" << std::endl;
+			
 			explodePos = position;
 			audio->playAgain("ship");
 			for (EnemyObject* e : currentEnemies) {
 				e->enemyHit(damage);
 			}
 			_state = SlowDown;
-			
+
 			int angle = (std::rand() % (360));
-			
+
 			targetPos.x+= 10 * cos(angle*3.14159 / 180);
 			targetPos.y += 10 * sin(angle*3.14159 / 180);
 
 		}
 
 	}
+	//spawn in the laser and deal damage to any that is within the line collision.
 	else if (type.compare("A-Class High Beam Laser") == 0) {
 		if (bullObjects.size() == 0) {
 			audio->addAudio("Audio/Towers/laser.mp3", uniqueID);
 			audio->volume(uniqueID, 10);
 			audio->playRepeat(uniqueID);
 			bullObjects.push_back(new ProjectileObject(position, projectileTex, explosion_tex, size, "Laserbeam", currentEnemy, rotation, damage, 0));
-			bullObjects[0]->setImgScale(glm::vec3(range*4.0, 1, 1));
+			bullObjects[0]->setImgScale(glm::vec3(range*3.5, 1, 1));
 			laserCoolDownTime = curROF;
 		}
 
@@ -335,7 +329,7 @@ void TowerObject::fireEnemy(double deltaTime) {
 
 			for (EnemyObject* e : allEnemies) {
 				if (lineCollision(e)) {
-					std::cout << "dmg = " << (damage * deltaTime / curROF) << std::endl;
+					
 					e->enemyHit(damage*deltaTime/curROF);
 				}
 			}
@@ -370,8 +364,7 @@ void TowerObject::fireEnemy(double deltaTime) {
 			audio->volume(uniqueID, 30);
 			audio->playRepeat(uniqueID);
 
-			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000*range, 1);
-			particle->setRange(range);
+			particle = new Particle(position, projectileTex, size, "particle", 0, 0.075f, 2000, 1);
 		}
 		_state = Locate;
 	}
@@ -391,8 +384,8 @@ void TowerObject::fireEnemy(double deltaTime) {
 bool TowerObject::lineCollision(EnemyObject* enemy) {
 	float x1 = position.x;
 	float y1 = position.y;
-	float x2 = 2 * (range*0.43)*cos(rotation*3.14159 / 180) + x1;
-	float y2 = 2 * (range*0.43) *sin(rotation*3.14159 / 180) + y1;
+	float x2 = 2 * (range*0.4)*cos(rotation*3.14159 / 180) + x1;
+	float y2 = 2 * (range*0.4) *sin(rotation*3.14159 / 180) + y1;
 	float ex = enemy->getPosition().x;
 	float ey = enemy->getPosition().y;
 
@@ -422,7 +415,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 
 	glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), 0.0f, glm::vec3(0.0f, 0.0f, 1.0f));
-	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though														// Set the transformation matrix in the shader
+	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); 												// Set the transformation matrix in the shader
 	glm::mat4 transformationMatrix;
 
 	if (type.compare("A-Class Auto Assault Bomber") == 0) {
@@ -431,7 +424,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 
 		// Setup the transformation matrix for the shader
 		translationMatrix = glm::translate(glm::mat4(1.0f), orgCoord);
-		
+
 		transformationMatrix = translationMatrix * scaleMatrix;
 
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
@@ -442,7 +435,7 @@ void TowerObject::render(std::vector<Shader*> shaders) {
 		translationMatrix = glm::translate(glm::mat4(1.0f), position);
 		rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation - 90, glm::vec3(0.0f, 0.0f, 1.0f));
 		scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.5f, 0.6f, 0.6f));
-		
+
 	}
 	else if (type.compare("C-Class BARRIER")) {
 

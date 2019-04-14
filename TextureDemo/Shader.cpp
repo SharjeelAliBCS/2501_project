@@ -176,7 +176,7 @@ int Shader::CreateParticleArray(int type) {
 	
 }
 void Shader::setRadius(int type) {
-	// Create buffer for vertices
+	// sets buffer for vertices
 	glGenBuffers(1, &vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(particleatt), particleatt, GL_STATIC_DRAW);

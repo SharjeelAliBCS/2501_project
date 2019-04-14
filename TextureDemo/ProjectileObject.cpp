@@ -68,15 +68,17 @@ void ProjectileObject::update(double deltaTime) {
 
 void ProjectileObject::render(std::vector<Shader*> shaders) {
 
+
 	if (type.compare("Laserbeam")) {
 		GameObject::render(shaders);
 	}
-	else {
+	else {//if it's laser, render this (allows the line only to render properly)
+		//gives an fps boost based on zoom. 
 		if (position.x < -1.1 / cameraZoom - cameraTranslatePos.x ||
 			position.x > 1.1 / cameraZoom - cameraTranslatePos.x ||
 			position.y < -0.5 / cameraZoom - cameraTranslatePos.y ||
 			position.y > 1.1 / cameraZoom - cameraTranslatePos.y) {
-			return; //uncomment for fps boost based on zoom
+			return; 
 		}
 		// Bind the entities texture
 		glBindTexture(GL_TEXTURE_2D, texture);
@@ -88,15 +90,13 @@ void ProjectileObject::render(std::vector<Shader*> shaders) {
 		glm::mat4 translationMatrix = glm::translate(glm::mat4(1.0f), position);
 		glm::mat4 offsetMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(tX, tY, 0.0f));
 		glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-		//glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.2f,0.3f,0.3f));
-		//glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.75f, 1.0f, 1.0f));
-		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); //unknown why not all same, 3:4:4 seems a good ratio though
-		glm::mat4 imgScaleMatrix = glm::scale(glm::mat4(1.0f), imgScale); //unknown why not all same, 3:4:4 seems a good ratio though
+		
+		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.225f, 0.3f, 0.3f)); 
+		glm::mat4 imgScaleMatrix = glm::scale(glm::mat4(1.0f), imgScale); 
 
-
-																		  // Set the transformation matrix in the shader
+		// Set the transformation matrix in the shader
 		glm::mat4 transformationMatrix = offsetMatrix * translationMatrix * rotationMatrix * scaleMatrix*imgScaleMatrix;
-		//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+		
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity

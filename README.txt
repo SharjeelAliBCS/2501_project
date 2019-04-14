@@ -4,7 +4,7 @@ Github: https://github.com/SharjeelAliBCS/2501_project
 ********************Developers********************
 David Neudorf #101029913
 	Roles:
-	Path planning, map rendering, enemies, gameplay
+	Path planning, graph setup, map rendering, enemies, gameplay
 
 Sharjeel Ali #101070889
 	Roles:
@@ -16,31 +16,29 @@ Raul Rodriguez Azurdia #101058745
 
 ********************Game********************
 A 2D Tower defense RTS type game. Set in a fictional Sci fi world,
-where aliens are attacking Earth. Here, the player must place towers
-to destroy the aliens who travel along a safe road they have built to
-a very important human base. If the aliens reach the base, game over. 
+two factions are at war sending legions of beasts to break the opponents
+stronghold, each side builds towers to destroy the invaders before they 
+reach a very important intel facility. If the aliens reach the base, game over. 
 
-********************Assignment 6 Requirments********************
-1. Particles system is incorporated into the game
-2. Flame like texture chosen. 
-3. Shader modified to produce flame effect
-4. Flame particles spawn at tower and move with it
-5. color becomes darker, and single particle becomes smaller over time. 
-6. Bonus is done, spawns in once an enemy has been destroyed. 
+********************Project Requirments********************
+1. Path planning done
+2. FSM AI done
+3. Game FSM done
+4. Particle systems done
+5. transformations done. 
+6. atleast one instance of hierachiral transformations done
+7. gameworld done
+8. enemy types: 9
+9. tower types: 8
+10. Auto defender done
+11. game economy: credits/income
+12. level design: different maps
+13. HUD design: complex and easy to use
+14. Power ups: 5
 
 ********************Features/Gameplay********************
-1. By default, two enemies move across the map to the goal using Dijkstra's algorithim. 
-2. Towers can be placed an infinite amount of times in empty grass areas. 
-3. Towers will locate the closest enemy and fire at it, and only it. 
-4. If there are no enemies, the towers will remain idle. 
-5. Once a bullet is fired, it will "home" in on the enemy and explode on hit.
-6. If a bullet did not hit anything, it will explode after a certain distance. 
-7. Enemies have 60 health, and each bullet does 10 damage. So it takes 6 to take one down. 
-8. Enemies can be spawned in an infinite amount of times.
-9. The map can be zoomed in or out of. 
-10. Once X amount of enemies have reached the endpoint, game over. 
-11. There is also a flamethrower tower. 
-12. Multiplayer component: Two teams, highest points win
+1. Once 20 enemies have reached the endpoint, game over. 
+2. Multiplayer component: Two teams, last one standing wins.
 
 ********************CODE LOCATIONS********************
 Particle system: Uses the shader.cpp/.h file, then is used in the towerobject and enemyobject classes alongside
@@ -48,42 +46,75 @@ Particle system: Uses the shader.cpp/.h file, then is used in the towerobject an
 
 ********************NOTES/USEFUL INFO********************
 -There are two videos in the texturedemo videos folder which showcases the assignment requirements. 
--Any buttons with an exit symbol (orange x) is non functional and should be assumed to be. 
+-Any buttons with an exit symbol (orange x) is non functional and should be assumed to be.
+-Cannot yet buy creeps from left shop.
+-Game does not end when hp<=0, again for testing purposes.
+-For now, both towers and creep are free, this will be changed soon.
 
 
 ********************BUGS/GLITCHES********************
--hud turns red when at a certain horizantal coordinate with the camera
--flames use the explosion vertex shader for the enemies when in close range to an exploding enemy
+-tower dps based on fps, more zoom = more dmg. must fix.
+-scroll speed varies a little too much for my liking with zoom.
+-radius is not lined up with the tower shooting radius (laser tower)
 
-********************Controls********************
+********************Controls********************s
 MAIN MENU:
 Start: P
 
+MAP MENU:
+MAP SELECTION: 1,2,3,4,5
+
 IN GAME:
-Scroll up: W
-Scroll down: S
-Scroll right: D
-Scroll left: A
+Scroll up: UP ARROW
+Scroll down: DOWN ARROW
+Scroll right: RIGHT ARROW
+Scroll left: LEFT ARROW 
 
-Zoom in: Z
-Zoom out: X
+Zoom in: PLUS +
+Zoom out: MINUS - 
 
-Switch Team: T
-Start Wave: B
+Switch Team: T (all enemies must be dead, can switch without starting wave for ease of testing)
+Start Wave: G
 
+CHOOSE TOWERS: U,I,P,J,K,L,N,M
+CHOOSE ENEMIES: Q,W,E,A,S,D,Z,X,C
+CHOOSE POWERUPS: 1,2,3,4,5
+CHOOSE ENEMY UPGRADES: RFV
+CHOOSE TOWER UPGRADES: Y,H,B
+
+toggle item discription: CTRL
+remove radius/deselect: SHIFT
 Place a tower: LEFT-MOUSE click
 Spawn an enemy: SPACE
+Deselect tower: SHIFT
 
 ********************HOW TO PLAY********************
-1. Once the game has started, press the P key to begin the game. 
-2. You will see two sets of the same map (one above, the other below). This is meant for the team
-   based gameplay. To begin, place some towers.
-3. To place a tower, click on the tower icon on the hud (bottom right section) then, place it on the map. 
-   The gray one is the base default, and the red one is the flamethrower. 
-4. Once placed, press the space bar to place three enemies. They will be added to the queue to be spawned. 
-5. Press T to change teams
-6. Place towers for player 2. 
-7. Press B to start the enemy wave. 
-8. Once the wave is over, spawn the enemies for player 1 and then press T 
+1. Once it has loaded, click the play button or press p. 
+2. Choose a map by pressing any key 1,2,3,4,5 (will show a different map depending on which)
+   or click on a map to start. 
+3. Once loaded, you will see two teams. One at the top and one at the bottom. 
+4. To start, keep track of the credits or money you currently have, defined on the middle
+   right side (the number at the bottom). This signifies your current credits you have
+   The top one siginfies your income per turn. 
+5. To begin playing, click on any tower you wish to select on the bottom right hand of the hud
+   or by pressing the corrasponding keys. Once this is done, you will see a tower on the mouse
+   selection cursor. If you have the credits (read the info panel) you will be able to place it. 
+   Do this for all towers you wish to place. 
+6. To choose enemies, you can select them from the bottom left panel or by using the keys. Once 
+   selected, you will see a red box around them. Now press space to spawn them in. The counter
+   on the top should update to show the new enemies (depending on team). 
+7. To place powerups, click on them in the top middle or use the keys, the place them if they have 
+   a radius in the area you wish for them to be. 
+8. To use upgrades, click on them in the bottom right (left to the tower) or bottom left (right to the enemies)
+   then press space to place them. 
+9. To switch teams, press the green button in the middle. 
+10. You can only start a round if you have enemies coming towards you. So a good way is to spawn one 
+   enemy on both teams (spawn on player 1, then switch to player 2 and spawn). 
+11. Once enemies are ready, press the big red button to begin the round. 
+12. You can place towers during rounds. 
+13. If 20 enemies reach the base, it's game over. 
+14. press escape to pause the game, then click to go back
+
+
 
 

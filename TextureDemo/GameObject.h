@@ -1,3 +1,8 @@
+/*
+Class: GameObject
+Purposes: handles the gameobjects
+Contributers: Sharjeel Ali, David Neudorf, David Neudorf
+*/
 #pragma once
 
 #include <GL/glew.h>
@@ -28,6 +33,7 @@ public:
 	inline std::string getType() { return type; }
 
 	inline GLuint getTex() { return texture; }
+	inline int getCost() { return cost; }
 
 	// Setters
 	inline void setPosition(glm::vec3& newPosition) { position = newPosition; }
@@ -46,12 +52,10 @@ public:
 	inline std::string getDescription() { return description; }
 	inline std::string getUniqueID() { return uniqueID; }
 
-	inline int getCost() { return cost; }
 	inline void setCost(int c) { cost = c; }
 	inline void setEffectDuration(float t) { effectTimeLeft = t; }
 	inline void setBurnDuration(float t) { burnTimeLeft = t; }
-	inline void setDescription(std::string d) { description = d;std::cout << d << std::endl; }
-
+	inline void setDescription(std::string d) { description = d; }
 
 	static float cameraZoom;
 	static glm::vec3 cameraTranslatePos;
@@ -59,10 +63,9 @@ public:
 
 	inline void setHotKey(std::string s) { hotKey = s; }
 	inline std::string getHotKey() { return hotKey; }
-	//inline void setTex(GLuint)
+
 protected:
-	// Object's Transform Variables
-	// TODO: Add more transformation variables
+
 	int cost;
 	std::string hotKey;
 	glm::vec3 position;
@@ -73,19 +76,22 @@ protected:
 	glm::vec3 imgScale;
 	glm::vec3 targetPos;
 	bool exists;
-	// Object's details
+
 	GLint numElements;
-	float objectSize; // Not currently being used (will be needed for collision detection when objects have a different scale)
+	float objectSize; 
 	std::string type;
+	//this uniqueID is used for the audio (to play different tracks of the same source file)
 	std::string uniqueID;
 	
-
+	//accelartions. One for steering behaviour, the other to directly actual vvelocity.  
 	float acceleration, accelerationSlow;
 	glm::vec3 velocity, a;
-	glm::vec3 orgCoord;//stores the original coord of where it launched from. glm::vec3 orgCoord;//stores the original coord of where it launched from. 
+	//stores the original coord of where it launched from. glm::vec3 orgCoord;//stores the original coord of where it launched from. 
+	glm::vec3 orgCoord;
 	std::string description;
 	// Object's texture
 	GLuint texture;
+	//audio
 	Audio* audio;
-	//std::string uniqueID;
+	
 };

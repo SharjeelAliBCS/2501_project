@@ -1,3 +1,8 @@
+/*
+Class: UpgradeObject
+Purposes: handles the upgrade object
+Contributers: David Neudorf
+*/
 #pragma once
 #include "GameObject.h"
 class UpgradeObject :

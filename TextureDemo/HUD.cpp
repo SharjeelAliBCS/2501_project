@@ -47,6 +47,8 @@ void HUD::NewCoordinates(float &x, float &y, float objecWidth, float objectHeigh
 void HUD::selection(double x, double y) {
 
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
+	//choose a tower based on mouse x, and y coordinates. 
+	//top left
 	if ((677.6 * factor <= x && x <= 710.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {//start first row
 		outSelection = blueprints[0];
 		outPowerUP = NULL;
@@ -58,6 +60,7 @@ void HUD::selection(double x, double y) {
 		powerUpFlag = false;
 		currentCursor = blueprints[0]->getIcon();
 	}
+	
 	else if ((667.6 * factor <= x && x <= 710.4 * factor) && (536 * factor <= y && y <= 560.8 * factor)) {
 		outSelection = blueprints[3];
 		outPowerUP = NULL;
@@ -163,7 +166,7 @@ void HUD::selection(double x, double y) {
 }
 
 void HUD::selectionEnemy(double x, double y) {
-	//std::cout << x / factor << "," << y / factor << std::endl;
+	
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	if ((9.6 * factor <= x && x <= 42.4 * factor) && (506.4 * factor <= y && y <= 531.2 * factor)) {
 		outEnemy = enemyBlueprints2[0];
@@ -264,7 +267,7 @@ void HUD::selectionEnemy(double x, double y) {
 }
 
 void HUD::selectionPowerUp(double x, double y) {
-	//std::cout << "====================>" << x / factor << "," << y / factor << std::endl;
+	
 	// -- posibility of going in to transformations a nd just get back the coordinates in hud coordinate and not in mouse coordiantes
 	
 	if ((266.4 * factor <= x && x <= 294.4 * factor) && (466.4 * factor <= y && y <= 490.4 * factor)) {//start first row
@@ -320,7 +323,7 @@ void HUD::selectionPowerUp(double x, double y) {
 }
 
 void HUD::selectionUpgrades(double x, double y) {
-	//std::cout << "====================>" << x / factor << "," << y / factor << std::endl;
+	
 	if ((628 * factor <= x && x <= 656 * factor) && (505.6 * factor <= y && y <= 526.4 * factor)) {//start first row
 		outUpgrade = upgrades[0];
 		outEnemy = NULL;
@@ -407,6 +410,7 @@ void HUD::update(double deltaTime)// use it to compute the x and y coord of the 
 
 bool HUD::updateHotkeysTower() {
 	float timeOfLastMove = 0.0f;
+	//updates the hot keys based on key pressed. 
 	if (glfwGetKey(win, GLFW_KEY_U) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outSelection = blueprints[0];
@@ -528,7 +532,7 @@ bool HUD::updateHotkeysTower() {
 }
 
 bool HUD::updateHotkeysEnemy() {
-
+	//updates the hot keys based on key pressed. 
 	float timeOfLastMove = 0.0f;
 	if (timeOfLastMove + 0.05 < glfwGetTime())
 	{
@@ -649,6 +653,7 @@ bool HUD::updateHotkeysEnemy() {
 
 bool HUD::updateHotkeysUpgrade() {
 	float timeOfLastMove = 0.0f;
+	//updates the hot keys based on key pressed. 
 	if (glfwGetKey(win, GLFW_KEY_Y) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))
 	{
 		outUpgrade = upgrades[0];
@@ -734,7 +739,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 	for (EnemyObject* g : l1) {
 		if (g->getType().compare("Servent Minor") == 0) {
 			normal += 1;
-			//std::cout << "NORMAL\n";
+			
 		}
 		if (g->getType().compare("Glutton Minor") == 0) {
 			fast += 1;
@@ -744,7 +749,7 @@ void HUD::counter(std::vector<EnemyObject*> l1, std::vector<EnemyObject*> l2)// 
 		}
 		if (g->getType().compare("Lifegiver Minor") == 0) {
 			flying += 1;
-			//std::cout << "REGEN\n";
+		
 		}
 		if (g->getType().compare("Fleeting Colossal") == 0) {
 			splitter += 1;
@@ -930,6 +935,7 @@ void HUD::updatePlayers(long crd1, long in1, int hp1, long crd2, long in2, int h
 }
 
 void HUD::detailRender(std::vector<Shader*> shaders) {
+	//toggleiteminfo is deafult true, so it will display stats. 
 	if (toggleItemInfo) {
 		if (upgradeFlag) {
 
@@ -1009,13 +1015,13 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		}
 		if (flag) {
-			std::cout << "mod = " << upmod["Upgrade Damage"] << std::endl;
+			
 			textObjects[0]->setRenderedText(textObjects[0]->getText() + outSelection->getType());//name
-		textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
-		textObjects[2]->setRenderedText(textObjects[2]->getText() + outSelection->getHotKey());//hotkey
-		textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage()*upmod["Upgrade Damage"], 1));//damage
-		textObjects[4]->setRenderedText(textObjects[4]->getText() + round(std::fmax(outSelection->getROF()*(2-upmod["Upgrade Rate of Fire"]),0.05),3));//ROF
-		textObjects[5]->setRenderedText(textObjects[5]->getText() + round(std::fmin(outSelection->getRange()*upmod["Upgrade Range"], outSelection->getRange()*2),2));//rangestd::fmax(baseROF *(2-mod),0.05)
+			textObjects[1]->setRenderedText(textObjects[1]->getText() + std::to_string((int)outSelection->getCost()));//cost
+			textObjects[2]->setRenderedText(textObjects[2]->getText() + outSelection->getHotKey());//hotkey
+			textObjects[3]->setRenderedText(textObjects[3]->getText() + round(outSelection->getDamage()*upmod["Upgrade Damage"], 1));//damage
+			textObjects[4]->setRenderedText(textObjects[4]->getText() + round(std::fmax(outSelection->getROF()*(2-upmod["Upgrade Rate of Fire"]),0.05),3));//ROF
+			textObjects[5]->setRenderedText(textObjects[5]->getText() + round(std::fmin(outSelection->getRange()*upmod["Upgrade Range"], outSelection->getRange()*2),2));//rangestd::fmax(baseROF *(2-mod),0.05)
 
 			textObjects[0]->render(shaders);
 			textObjects[1]->render(shaders);
@@ -1086,6 +1092,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 			glDrawElements(GL_TRIANGLES, numElements, GL_UNSIGNED_INT, 0);
 		}
 	}
+	//this outputs the descripitions. 
 	else if (flag || enemyFlag || upgradeFlag || powerUpFlag) {
 	
 		if (upgradeFlag) {
@@ -1118,8 +1125,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 
 	// Setup the transformation matrix for the shader
 	glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-	//std::cout<< testCam.x<<std::endl;
-	//glm::mat4 translationMatrix = glm::translate(glm::translate(glm::mat4(1.0f), testCam), position);
+
 	glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
 	glm::mat4 posMat = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
@@ -1128,7 +1134,7 @@ void HUD::detailRender(std::vector<Shader*> shaders) {
 	glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, -position.z));
 	glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));
 	glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity
@@ -1252,17 +1258,16 @@ void HUD::render(std::vector<Shader*> shaders) {
 		glBindTexture(GL_TEXTURE_2D, blueprints[i]->getIcon());
 		// Setup the transformation matrix for the shader
 		glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-		//std::cout<< testCam.x<<std::endl;
-		//glm::mat4 translationMatrix = glm::translate(glm::translate(glm::mat4(1.0f), testCam), position);
+
 		glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
 		glm::mat4 posMat = glm::translate(glm::mat4(1.0f), blueprints[i]->getPosition());
-		//glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));
+		
 		glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f, 0.1f, 0.0f));
 		glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-blueprints[i]->getPosition().x, -blueprints[i]->getPosition().y, -blueprints[i]->getPosition().z));
 		glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));//scale of the hud with zoom
 
 		glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-		//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+	
 		shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 		// Draw the entity
@@ -1280,8 +1285,6 @@ void HUD::render(std::vector<Shader*> shaders) {
 
 	// Setup the transformation matrix for the shader
 	glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-	//std::cout<< testCam.x<<std::endl;
-	//glm::mat4 translationMatrix = glm::translate(glm::translate(glm::mat4(1.0f), testCam), position);
 	glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
 	glm::mat4 posMat = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
@@ -1290,7 +1293,7 @@ void HUD::render(std::vector<Shader*> shaders) {
 	glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, -position.z));
 	glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));
 	glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+	
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity
@@ -1337,8 +1340,6 @@ void HUD::newRender(std::vector<Shader*> shaders) {
 
 	// Setup the transformation matrix for the shader
 	glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-	//std::cout<< testCam.x<<std::endl;
-	//glm::mat4 translationMatrix = glm::translate(glm::translate(glm::mat4(1.0f), testCam), position);
 	glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
 	glm::mat4 posMat = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
@@ -1347,7 +1348,6 @@ void HUD::newRender(std::vector<Shader*> shaders) {
 	glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, -position.z));
 	glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));
 	glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity
@@ -1393,8 +1393,6 @@ void HUD::buttonRender(std::vector<Shader*> shaders) {
 
 	// Setup the transformation matrix for the shader
 	glm::vec3 testCam = glm::vec3(-camPos.x, -camPos.y, -camPos.z);
-	//std::cout<< testCam.x<<std::endl;
-	//glm::mat4 translationMatrix = glm::translate(glm::translate(glm::mat4(1.0f), testCam), position);
 	glm::mat4 camMat = glm::translate(glm::mat4(1.0f), testCam);
 	glm::mat4 posMat = glm::translate(glm::mat4(1.0f), position);
 	glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), scale);
@@ -1403,7 +1401,7 @@ void HUD::buttonRender(std::vector<Shader*> shaders) {
 	glm::mat4 oMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(-position.x, -position.y, -position.z));
 	glm::mat4 zoomMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(1 / zoom, 1 / zoom, 1 / zoom));
 	glm::mat4 transformationMatrix = camMat * zoomMatrix *scaleMatrix* oMatrix;
-	//transformationMatrix = rotationMatrix * translationMatrix  * scaleMatrix;
+	
 	shaders[0]->setUniformMat4("transformationMatrix", transformationMatrix);
 
 	// Draw the entity

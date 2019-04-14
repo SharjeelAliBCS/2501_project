@@ -1,0 +1,169 @@
+Although the C-Class BASIC Unit is the 
+weakest out of the UNH Forces's, it 
+still packs quite a punch. Equipped 
+with single rockets with fast recharge
+rates, it will send them back to hell. 
+
+The C-Class DEFENDER Unit is a fine
+weapon for defense of UNH bases. 
+Using their high impact shells,
+they do alot of damage, yet require
+time to recharge. 
+
+The Infernal Emissary cannot move
+their ships across barren soil. Use
+the C-Class BARRIER to forcefully
+alter their paths, and lead the UNH
+to total victory. 
+
+Ironic. The Infernal Emissary, an
+empire known for their blood and fire,
+being scorched by their very own
+instrument. Use the IGNITION Cannon
+to light their ships on fire, and 
+watch those alien bastards burn. 
+
+The B-Class A.O.E. unit is formidable
+when used in short range. Shooting out
+a radius of charged particles, all
+Emissary ships will be hit on its path.
+But watch out for it's slow cooldown. 
+
+Used for high risk missions, this
+Stealth Sniper unit is quietly placed
+on the battlefield, away from all the
+chaos. Once it has found it target, it 
+will fire a deadly high speed bolt, 
+but needs to be reloaded. 
+
+The Assault Bomber is the most powerful
+weapon created. Longer than a building, 
+this matches up with Emmisary ships. 
+Once it locks on, it flies toward it, 
+dropping a warhead on contact, then 
+flies way to reload.
+
+The High Beam Laser is new state of 
+the art technology. It shoots out a 
+single intense laserbeam that will 
+cut through anything, including ships. 
+Ideal for firing at long, straight 
+paths. Cools down. 
+
+Salvage and existing tower for scrap
+and get 50% of it's value back.
+
+Commanded by the lowest of the Infernal
+Emissary's followers, the Servent Minor
+ship is easy to deal with. Even our 
+most basic of units can destroy them. 
+
+The Glutton Minor is a reward given to
+Ur'xol individuals who exhibit fierce 
+warrior traits in battle. Their strong 
+hull symbolizes the strength of their 
+pilots. Be wary, as this means that 
+they can withstand alot of fire. 
+
+Our intel suggests that the decendents 
+of those who escaped the Ur'xol empire 
+during the Faith Awakening, and joined
+the Infernal Emissary were given this 
+fast ship, to remember their ancestor's 
+who quickly escaped treason.
+
+Before the perversion of Ur-Sol, the
+god of the Ur-Xol, there existed many
+healers. Now for some odd reason, the
+Emissary is looking to revive this old
+tradition, by adding regeneration tech
+to their ships. Kill these fast.  
+
+As to honour their ancestors, the 
+Glutton warriors are given a fleeting
+starship to command, along with a new
+rank; Colossal. Their fast speed
+and insane armour means they are a 
+priority Bravo target. 
+
+Very few Colossal choose the path of
+healing instead, but those who do are 
+given this. Even more armour, but with
+the regen tech. Take them out fast with
+IGNITION Cannons to block out their
+regeneration. 
+
+If a Fleeting Ur-Xol ever ranked up,
+most chose the path of healing. A
+dark path leads them to bloodhealing. 
+They use their ships to heal themselves
+insanely fast, while also moving at
+super fast speeds. 
+
+The highest rank possible for an Ur-Xol.
+Thier pilots are respected, even by 
+their own empire that they betrayed. 
+They contain impenetrable hulls with 
+lightspeed movement and regeneration. 
+DO NOT ENGAGE without a bomber. 
+
+We have very little intel on the 
+Undying Zenith. However, rumors from
+the Infernal Emissary suggest that they 
+are controlled by the literal servents
+of Ur-Sol. If you see one, then do not 
+dare attack, only be ready for death.  
+
+Powerup: Creates a powerful NULL Zone 
+instantly destorying all but the 
+strongest of hostiles in range.
+NOTE: No credits earned from creeps 
+killed by NULL Zone.
+
+Powerup: Freezes all enemies in range 
+for four seconds.
+
+Powerup: Load up all outgoing troops
+with Morphine, by increasing their
+pain tolerance they can take twice
+as many hits for twenty seconds
+before falling in battle.
+
+Powerup: Equip all outgoing troops
+with a stimpack, increasing their 
+movement speed by 50% for twenty
+seconds.
+NOTE: creep speed capped at 2.5
+
+Powerup: Double tower attack rate for
+15 seconds.
+NOTE: tower rate of fire capped at 
+twenty attacks per second (0.05).
+
+Permanently increase all tower damage
+by 20%. Effects are multiplicative.
+
+Permanently increase all tower attack
+rates by 10%. Effects are multiplicative.
+NOTE: tower rate of fire capped at 
+twenty attacks per second (0.05).
+
+Permanently increase all tower range
+by 10%. Effects are multiplicative.
+NOTE: capped at 2x original range.
+
+Permanently increase all creep health
+and regeneration per second by 20%. 
+Effects are multiplicative.
+
+Permanently increase all creep 
+speed by 20%. 
+NOTE: creep speed capped at 2.5
+
+Permanently increase all creep
+costs by 50%
+WARNING: this act is irreversible
+and is only intended to ensure no 
+credits go to waste once you begin
+reaching the 200 creep cap.
+

@@ -1,3 +1,8 @@
+/*
+Class: Text
+Purposes: handles the text for rendering
+Contributers: Sharjeel Ali
+*/
 #pragma once
 #include "GameObject.h"
 #include "EnemyObject.h"
@@ -23,8 +28,6 @@ public:
 	inline void setCamPos(glm::vec3 newPosition) { camPos = newPosition; }
 	inline void setCamZoom(float newZoom) { zoom = newZoom; }
 	inline void setColor(glm::vec3 c) { color = c; }
-
-
 	inline void setID(std::string i) { id = i; }
 	//getters
 	inline std::string getText() { return text; }
@@ -32,6 +35,7 @@ public:
 
 private:
 	std::string id;
+	//stores a map of characters
 	std::map<char, GLuint> characters;
 	std::string text;
 	std::string renderText;

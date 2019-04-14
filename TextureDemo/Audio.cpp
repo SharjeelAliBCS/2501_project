@@ -13,16 +13,14 @@ wchar_t* Audio::strToLPCWSTR(const std::string& s)
 	wchar_t* buf = new wchar_t[len];
 	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
 	std::wstring r(buf);
-	//delete[] buf;
 
 	return buf;
-	//LPCWSTR result = r.c_str();
-	//return result;
+	
 }
 
 void Audio::addAudio(std::string file, std::string alias) {
 
-	audiofiles[alias] = file;
+	audiofiles[alias] = file;//adds the file to the map to be identified later
 	std::string inputStr = "open " + file + " alias " + alias;
 	mciSendString(strToLPCWSTR(inputStr), NULL, 0, 0);
 
@@ -46,8 +44,6 @@ void Audio::play(std::string alias) {
 
 void Audio::playRepeat(std::string alias) {
 	std::string inputStr = "play " + alias + " repeat";
-
-
 	mciSendString(strToLPCWSTR(inputStr), NULL, 0, NULL);
 }
 
