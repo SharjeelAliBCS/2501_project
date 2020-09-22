@@ -1,63 +1,29 @@
 # Comp2501 Term Project (RTS/Tower Defense)
 Github: https://github.com/SharjeelAliBCS/2501_project
 
-********************Developers********************
-David Neudorf #101029913
-	Roles:
-	Path planning, graph setup, map rendering, enemies, gameplay
+## Contents
+1. [Overview](#Overview)
+2. [Architecture](#Architecture)
+3. [Set up](#set-up)
+4. [Guide](#Guide)
+5. [Screenshots](#Screenshots)
+6. [Credits](#Credits)
 
-Sharjeel Ali #101070889
-	Roles:
-	Art Director, AI, towers,particles
+## Overview
 
-Raul Rodriguez Azurdia #101058745
-	Roles:
-	map loading, HUD, main menu,tower selection
-
-********************Game********************
 A 2D Tower defense RTS type game. Set in a fictional Sci fi world,
 two factions are at war sending legions of beasts to break the opponents
 stronghold, each side builds towers to destroy the invaders before they 
 reach a very important intel facility. If the aliens reach the base, game over. 
 
-********************Project Requirments********************
-1. Path planning done
-2. FSM AI done
-3. Game FSM done
-4. Particle systems done
-5. transformations done. 
-6. atleast one instance of hierachiral transformations done
-7. gameworld done
-8. enemy types: 9
-9. tower types: 8
-10. Auto defender done
-11. game economy: credits/income
-12. level design: different maps
-13. HUD design: complex and easy to use
-14. Power ups: 5
+## Architecture
 
-********************Features/Gameplay********************
-1. Once 20 enemies have reached the endpoint, game over. 
-2. Multiplayer component: Two teams, last one standing wins.
+## Set up
 
-********************CODE LOCATIONS********************
-Particle system: Uses the shader.cpp/.h file, then is used in the towerobject and enemyobject classes alongside
-		 the particle class. 
+## Guide
 
-********************NOTES/USEFUL INFO********************
--There are two videos in the texturedemo videos folder which showcases the assignment requirements. 
--Any buttons with an exit symbol (orange x) is non functional and should be assumed to be.
--Cannot yet buy creeps from left shop.
--Game does not end when hp<=0, again for testing purposes.
--For now, both towers and creep are free, this will be changed soon.
+### Controls
 
-
-********************BUGS/GLITCHES********************
--tower dps based on fps, more zoom = more dmg. must fix.
--scroll speed varies a little too much for my liking with zoom.
--radius is not lined up with the tower shooting radius (laser tower)
-
-********************Controls********************s
 MAIN MENU:
 Start: P
 
@@ -88,7 +54,11 @@ Place a tower: LEFT-MOUSE click
 Spawn an enemy: SPACE
 Deselect tower: SHIFT
 
-********************HOW TO PLAY********************
+### Game Rules
+
+1. Once 20 enemies have reached the endpoint, game over. 
+2. Multiplayer component: Two teams, last one standing wins.
+
 1. Once it has loaded, click the play button or press p. 
 2. Choose a map by pressing any key 1,2,3,4,5 (will show a different map depending on which)
    or click on a map to start. 
@@ -115,6 +85,32 @@ Deselect tower: SHIFT
 13. If 20 enemies reach the base, it's game over. 
 14. press escape to pause the game, then click to go back
 
+### Tips
+
+1. Any buttons with an exit symbol (orange x) is non functional and should be assumed to be.
+
+2. Cannot yet buy creeps from left shop.
+
+3. Game does not end when hp<=0, again for testing purposes.
+4. For now, both towers and creep are free, this will be changed soon.
 
 
+## Screenshots
+
+## Credits
+
+**David Neudorf**
+
+Roles:
+Path planning, graph setup, map rendering, enemies, gameplay
+
+**Sharjeel Ali**
+
+Roles:
+Art Director, AI, towers,particles
+
+**Raul Rodriguez Azurdia**
+
+Roles:
+map loading, HUD, main menu,tower selection
 
