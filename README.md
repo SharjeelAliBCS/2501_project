@@ -1,7 +1,5 @@
 ![alt text](assets/Graphics/Background/title.png)
 
-Github: https://github.com/SharjeelAliBCS/2501_project
-
 ## Contents
 1. [Overview](#Overview)
 2. [Architecture](#Architecture)
