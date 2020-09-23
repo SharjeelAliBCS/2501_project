@@ -29,6 +29,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 
 	movementX = 0.225f;
 	movementY = -0.3f;
+	hover = 0;
 
 	start_x = nodeWidth * movementX * -0.5;
 	start_y = nodeHeight * movementY * -0.5;
@@ -88,6 +89,7 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 	int row = 0;
 	int col = 0;
 
+	std::cout << fname << std::endl;
 	//read the csv and create the map
 	while (getline(in, line))    // get next line in file
 	{
@@ -152,8 +154,9 @@ Graph::Graph(int nodeWidth, int nodeHeight, GameObject nodeSprite, std::map<std:
 		col = 0;
 	}
 	in.close();
-	std::cout << "file read" << std::endl;
+	std::cout << "filedd read" << std::endl;
 	//erase the useless nodes
+
 	for (std::deque<pair<int, int>>::iterator it = removeNode.begin(); it != removeNode.end(); ++it) {
 		std::vector<Node*> row = nodes[it->first];
 		row.erase(row.begin()+it->second);
@@ -253,6 +256,7 @@ void Graph::update(int showRadius, float range) {
 
 //returns the id of the node at the mouse coordinates
 void Graph::getHoverCoords(float &x, float &y) {
+	std::cout << hover << std::endl;
 	Node n = getNode(hover);
 	x = n.getX();
 	y = n.getY();

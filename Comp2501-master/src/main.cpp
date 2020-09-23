@@ -438,6 +438,9 @@ void startGame(std::string fname, glm::vec3 &cameraTranslatePos, float cameraZoo
 	int start = 1149;
 
 	g = new Graph(wid, height, GameObject(glm::vec3(0.0f), textures["Map"][0], size, "map"), texMap, fname, window_width_g, window_height_g, window);
+
+	std::cout << "aydddydd" << std::endl;
+
 	cameraTranslatePos = g->getFocalPoint(0);
 	start = *(g->getBotStartSet().begin());
 	g->setZoom(cameraZoom);
@@ -453,6 +456,8 @@ void startGame(std::string fname, glm::vec3 &cameraTranslatePos, float cameraZoo
 	for (HUD* h : player2)h->setCamPos(cameraTranslatePos);
 	selectionGraphic->setCamPos(cameraTranslatePos);
 
+
+	std::cout << "ayydd" << std::endl;
 	background->setTex(textures["Background"][2]);
 	background->setImgScale(glm::vec3(41, 41, 1));
 	background->setPosition(glm::vec3(-0.1f, -5.0f, 0.0f));
@@ -510,12 +515,12 @@ int main(void){
 
 		/************************************************SHADER INIT************************************************/
 
-		shaders.push_back(new Shader("shader.vert", "shader.frag", 0));
+		shaders.push_back(new Shader("resource/shader.vert", "resource/shader.frag", 0));
 		shaders[0]->disable();
-		shaders.push_back(new Shader("shaderParticle.vert", "shaderParticle.frag", 1));
+		shaders.push_back(new Shader("resource/shaderParticle.vert", "resource/shaderParticle.frag", 1));
 		shaders[1]->CreateParticleArray(1);
 		shaders[1]->disable();
-		shaders.push_back(new Shader("shaderEnemyDeath.vert", "shaderEnemyDeath.frag", 2));
+		shaders.push_back(new Shader("resource/shaderEnemyDeath.vert", "resource/shaderEnemyDeath.frag", 2));
 		shaders[2]->CreateParticleArray(2);
 		shaders[2]->setRadius(2);
 		shaders[2]->disable();
@@ -1091,6 +1096,7 @@ int main(void){
 				if ((16 * factor <= xpos && xpos <= 254.4 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
 					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(1.0f, 0.85f, 0.0f));
+
 				}
 				if ((282.4 * factor <= xpos && xpos <= 517.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
 					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
@@ -1116,9 +1122,11 @@ int main(void){
 					_state = MainMenu;
 					background->setTex(textures["Background"][0]);
 				}
+
 				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
 					startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+
 				}
 				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
@@ -1138,9 +1146,15 @@ int main(void){
 				}
 
 				break;
+
 			}
 
+
+			
+
 			case Game: {
+
+
 				gameTime = glfwGetTime();
 				if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS && (timeOfLastMove + 0.3 < glfwGetTime()))
 				{
@@ -1253,7 +1267,6 @@ int main(void){
 						audio->playAgain("menuClick");
 						hudObjects[2]->setSelectionPowerUps(powerUpList[4]);
 						hudObjects[5]->setSelectionPowerUps(powerUpListHUD[4]);
-
 					}
 
 					if ((glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS ||
@@ -1746,6 +1759,8 @@ int main(void){
 			}
 
 			case MapMenu: {
+
+
 				selectionGraphic2->render(shaders);
 				for (HUD* h : mapHUD) {
 
@@ -1764,6 +1779,8 @@ int main(void){
 
 			}
 			case Game: {
+
+				std::cout << "ssdddf" << std::endl;
 
 				//**********HUD**********
 				selectionGraphic->render(shaders);
@@ -1829,6 +1846,7 @@ int main(void){
 				}
 				//=====================================================>>>>>>>>>>>>>>>>>DONT ERASE!!!!!!, THIS IS THE CODE TO BUY CREEPS WITH HOTKEYS
 
+				std::cout << "ddfd" << std::endl;
 
 				for (int i = 0; i < 10; i++) {
 					hudObjects[i]->setTex(textures["UI"][turnIndex]);
@@ -1862,16 +1880,26 @@ int main(void){
 					}
 
 				}
+
+				std::cout << "eee" << std::endl;
 				//**********Cursor**********
-				float x, y;
+				float x = 0, y = 0;
+
+				std::cout << "akkk" << std::endl;
 				int id = g->getHover();
+
 				g->getHoverCoords(x, y);
+
+				std::cout << "tttt" << std::endl;
 				cursor->setPosition(glm::vec3(x, y, 0.0f));
+
+
 				if (g->getNode(id).getBuildable(turn)) {
 
 					cursor->render(shaders);
 				}
 				else {
+
 					//glBlendColor(1.0f, 1.0f, 1.0f, 0.05f);
 					glEnable(GL_BLEND);
 					glBlendFunc(GL_ONE, GL_SRC_ALPHA);

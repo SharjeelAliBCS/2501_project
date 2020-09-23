@@ -32,7 +32,7 @@ TowerObject::TowerObject(glm::vec3 &entityPos, std::vector<GLuint> tex, std::vec
 	explosion_num = -1;
 	orgSpeed = speed;
 	duration = -1;
-
+	particle = NULL;
 	//if (type.compare("A-Class Auto Assault Bomber") == 0)curSpeed = speed;
 	std::cout << type << " Cost: " << cost << " ROF: " << ROF << " range: " << range << " speed = " << projectileSpeed << std::endl;
 

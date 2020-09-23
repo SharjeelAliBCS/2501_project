@@ -18,7 +18,12 @@ reach a very important intel facility. If the aliens reach the base, game over.
 
 ## Architecture
 
+The game implements C++ and the OpenGL library. Everything from shaders to the engine itself is made from scratch. 
+
 ## Set up
+
+To set up on windows, run the cmakelists file using the following command:
+`cmake .` This will build the dependencies for a visual studio project. Note: You must first open the cmakelists.txt file and specify where the libraries are located first. 
 
 ## Guide
 
