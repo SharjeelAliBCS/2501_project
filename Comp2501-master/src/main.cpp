@@ -219,147 +219,147 @@ GLuint createTexture(char *fname)
 void setallTexture(void)
 {
 
-	textures["Map"].push_back(createTexture("Graphics/Map/0_0_boundary.png"));//0
-	textures["Map"].push_back(createTexture("Graphics/Map/0_1_boundary.png"));//1
-	textures["Map"].push_back(createTexture("Graphics/Map/1_empty.png"));//2
-	textures["Map"].push_back(createTexture("Graphics/Map/2_checkpoint.png"));//3
-	textures["Map"].push_back(createTexture("Graphics/Map/3_health.png"));//4
-	textures["Map"].push_back(createTexture("Graphics/Map/6_spawn.png"));//5
-	textures["Map"].push_back(createTexture("Graphics/Map/7_destructible.png"));//6
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/0_0_boundary.png"));//0
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/0_1_boundary.png"));//1
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/1_empty.png"));//2
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/2_checkpoint.png"));//3
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/3_health.png"));//4
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/6_spawn.png"));//5
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/7_destructible.png"));//6
 
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_01.png"));//7
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_02.png"));//8
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_03.png"));//9
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_04.png"));//10
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_05.png"));//11
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_06.png"));//12
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_07.png"));//13
-	textures["Map"].push_back(createTexture("Graphics/Map/building_1/0_Boundary_08.png"));//14
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_01.png"));//7
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_02.png"));//8
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_03.png"));//9
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_04.png"));//10
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_05.png"));//11
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_06.png"));//12
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_07.png"));//13
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_1/0_Boundary_08.png"));//14
 
-	textures["Map"].push_back(createTexture("Graphics/Map/building_2/1_Boundary_01.png"));//13
-	textures["Map"].push_back(createTexture("Graphics/Map/building_2/1_Boundary_02.png"));//14
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_2/1_Boundary_01.png"));//13
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_2/1_Boundary_02.png"));//14
 
-	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_03.png"));//9
-	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_04.png"));//10
-	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_05.png"));//11
-	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_06.png"));//12
-	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_07.png"));//13
-	textures["Map"].push_back(createTexture("Graphics/Map/building_3/2_Boundary_08.png"));//14
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_3/2_Boundary_03.png"));//9
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_3/2_Boundary_04.png"));//10
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_3/2_Boundary_05.png"));//11
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_3/2_Boundary_06.png"));//12
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_3/2_Boundary_07.png"));//13
+	textures["Map"].push_back(createTexture("../assets/Graphics/Map/building_3/2_Boundary_08.png"));//14
 
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/normal.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/glutton.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/speedster.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regenerator.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/speedsterGlutton.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regeneratingGlutton.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regeneratingSpeedster.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/regeneratingSpeedsterGlutton.png"));
-	textures["Enemy"].push_back(createTexture("Graphics/Enemy/undying.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/normal.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/glutton.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/speedster.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/regenerator.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/speedsterGlutton.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/regeneratingGlutton.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/regeneratingSpeedster.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/regeneratingSpeedsterGlutton.png"));
+	textures["Enemy"].push_back(createTexture("../assets/Graphics/Enemy/undying.png"));
 
-	textures["Particle"].push_back(createTexture("Graphics/Particles/fire.png"));
-	textures["Particle"].push_back(createTexture("Graphics/Particles/enemyDeath.png"));
+	textures["Particle"].push_back(createTexture("../assets/Graphics/Particles/fire.png"));
+	textures["Particle"].push_back(createTexture("../assets/Graphics/Particles/enemyDeath.png"));
 
 	//basic
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_tower.png"));//0
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_turret.png"));//1
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_projectile.png"));//2
-	textures["Tower"].push_back(createTexture("Graphics/Tower/01_towerIcon.png"));//3
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/01_tower.png"));//0
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/01_turret.png"));//1
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/01_projectile.png"));//2
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/01_towerIcon.png"));//3
 
 	//defender
-	textures["Tower"].push_back(createTexture("Graphics/Tower/02_tower.png"));//4
-	textures["Tower"].push_back(createTexture("Graphics/Tower/02_turret.png"));//5
-	textures["Tower"].push_back(createTexture("Graphics/Tower/02_projectile.png"));//6
-	textures["Tower"].push_back(createTexture("Graphics/Tower/02_towerIcon.png"));//7
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/02_tower.png"));//4
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/02_turret.png"));//5
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/02_projectile.png"));//6
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/02_towerIcon.png"));//7
 
 	//barrier
-	textures["Tower"].push_back(createTexture("Graphics/Tower/05_barrier.png"));//11
-	textures["Tower"].push_back(createTexture("Graphics/Tower/05_towerIcon.png"));//8
-	textures["Tower"].push_back(createTexture("Graphics/Tower/05_towerIcon.png"));//9
-	textures["Tower"].push_back(createTexture("Graphics/Tower/05_towerIcon.png"));//11
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/05_barrier.png"));//11
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/05_towerIcon.png"));//8
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/05_towerIcon.png"));//9
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/05_towerIcon.png"));//11
 	//flamethrower
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_tower.png"));//8
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_turret.png"));//9
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/03_tower.png"));//8
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/03_turret.png"));//9
 	textures["Tower"].push_back(textures["Particle"][0]);//10
-	textures["Tower"].push_back(createTexture("Graphics/Tower/03_towerIcon.png"));//11
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/03_towerIcon.png"));//11
 
-	textures["Tower"].push_back(createTexture("Graphics/Tower/8_tower.png"));//4
-	textures["Tower"].push_back(createTexture("Graphics/Tower/8_tower.png"));//5
-	textures["Tower"].push_back(createTexture("Graphics/Tower/8_radius.png"));//6
-	textures["Tower"].push_back(createTexture("Graphics/Tower/8_towericon.png"));//7
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/8_tower.png"));//4
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/8_tower.png"));//5
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/8_radius.png"));//6
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/8_towericon.png"));//7
 
-	textures["Tower"].push_back(createTexture("Graphics/Tower/06_tower.png"));//4
-	textures["Tower"].push_back(createTexture("Graphics/Tower/06_turret.png"));//5
-	textures["Tower"].push_back(createTexture("Graphics/Tower/06_projectile.png"));//6
-	textures["Tower"].push_back(createTexture("Graphics/Tower/06_towerIcon.png"));//7
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/06_tower.png"));//4
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/06_turret.png"));//5
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/06_projectile.png"));//6
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/06_towerIcon.png"));//7
 
-	textures["Tower"].push_back(createTexture("Graphics/Tower/04_auto.png"));//4
-	textures["Tower"].push_back(createTexture("Graphics/Tower/04_radio.png"));//5
-	textures["Tower"].push_back(createTexture("Graphics/Tower/06_projectile.png"));//6
-	textures["Tower"].push_back(createTexture("Graphics/Tower/04_auto.png"));//7
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/04_auto.png"));//4
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/04_radio.png"));//5
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/06_projectile.png"));//6
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/04_auto.png"));//7
 
-	textures["Tower"].push_back(createTexture("Graphics/Tower/07_tower.png"));//4
-	textures["Tower"].push_back(createTexture("Graphics/Tower/07_turret.png"));//5
-	textures["Tower"].push_back(createTexture("Graphics/Tower/07_projectile.png"));//6
-	textures["Tower"].push_back(createTexture("Graphics/Tower/07_towerIcon.png"));//7
-
-
-	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_1.png"));
-	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_2.png"));
-	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_3.png"));
-	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_4.png"));
-	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_5.png"));
-	textures["Explosion"].push_back(createTexture("Graphics/Explosion/tower_explode_6.png"));
-
-	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player1.png"));
-	textures["UI"].push_back(createTexture("Graphics/HUD/panel_player2.png"));
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/07_tower.png"));//4
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/07_turret.png"));//5
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/07_projectile.png"));//6
+	textures["Tower"].push_back(createTexture("../assets/Graphics/Tower/07_towerIcon.png"));//7
 
 
-	textures["Cursor"].push_back(createTexture("Graphics/Cursor/cursor.png"));
-	textures["Cursor"].push_back(createTexture("Graphics/Cursor/select.png"));
+	textures["Explosion"].push_back(createTexture("../assets/Graphics/Explosion/tower_explode_1.png"));
+	textures["Explosion"].push_back(createTexture("../assets/Graphics/Explosion/tower_explode_2.png"));
+	textures["Explosion"].push_back(createTexture("../assets/Graphics/Explosion/tower_explode_3.png"));
+	textures["Explosion"].push_back(createTexture("../assets/Graphics/Explosion/tower_explode_4.png"));
+	textures["Explosion"].push_back(createTexture("../assets/Graphics/Explosion/tower_explode_5.png"));
+	textures["Explosion"].push_back(createTexture("../assets/Graphics/Explosion/tower_explode_6.png"));
 
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/nullzone.png"));//1
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/timestop.png"));//2
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/morphine.png"));//3
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/stimpack.png"));//4
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/giveemlead.png"));//5
-
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/damageup.png"));//5
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/rofup.png"));//5
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/rangeup.png"));//5
-
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/healthup.png"));//5
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/speedup.png"));//5
-	textures["MENU"].push_back(createTexture("Graphics/Buttons/costup.png"));//5
-
-	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map1box.png"));
-	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map2box.png"));
-	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map3box.png"));
-	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map4box.png"));
-	textures["MAPBOX"].push_back(createTexture("Graphics/MENU/MapSelection/map5box.png"));
-
-	textures["Background"].push_back(createTexture("Graphics/Background/menu.png"));//0
-	textures["Background"].push_back(createTexture("Graphics/Background/mapMenu.png"));//0
-	textures["Background"].push_back(createTexture("Graphics/Background/pauseMenu.png"));
+	textures["UI"].push_back(createTexture("../assets/Graphics/HUD/panel_player1.png"));
+	textures["UI"].push_back(createTexture("../assets/Graphics/HUD/panel_player2.png"));
 
 
+	textures["Cursor"].push_back(createTexture("../assets/Graphics/Cursor/cursor.png"));
+	textures["Cursor"].push_back(createTexture("../assets/Graphics/Cursor/select.png"));
 
-	textures["Player"].push_back(createTexture("Graphics/playerStats/hp.png"));
-	textures["Player"].push_back(createTexture("Graphics/playerStats/gold2.png"));
-	textures["Player"].push_back(createTexture("Graphics/playerStats/income2.png"));
-	textures["MENUHUD"].push_back(createTexture("Graphics/MENU/Play.png"));//0
-	textures["MENUHUD"].push_back(createTexture("Graphics/MENU/Quit.png"));//1
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/placeholder.png"));//0
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/nullzone.png"));//1
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/timestop.png"));//2
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/morphine.png"));//3
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/stimpack.png"));//4
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/giveemlead.png"));//5
 
-	textures["Button"].push_back(createTexture("Graphics/Buttons/placeholder.png"));//0
-	textures["Button"].push_back(createTexture("Graphics/Buttons/turn.png"));//0
-	textures["Button"].push_back(createTexture("Graphics/Buttons/wave.png"));//0
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/damageup.png"));//5
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/rofup.png"));//5
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/rangeup.png"));//5
+
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/healthup.png"));//5
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/speedup.png"));//5
+	textures["MENU"].push_back(createTexture("../assets/Graphics/Buttons/costup.png"));//5
+
+	textures["MAPBOX"].push_back(createTexture("../assets/Graphics/MENU/MapSelection/map1box.png"));
+	textures["MAPBOX"].push_back(createTexture("../assets/Graphics/MENU/MapSelection/map2box.png"));
+	textures["MAPBOX"].push_back(createTexture("../assets/Graphics/MENU/MapSelection/map3box.png"));
+	textures["MAPBOX"].push_back(createTexture("../assets/Graphics/MENU/MapSelection/map4box.png"));
+	textures["MAPBOX"].push_back(createTexture("../assets/Graphics/MENU/MapSelection/map5box.png"));
+
+	textures["Background"].push_back(createTexture("../assets/Graphics/Background/menu.png"));//0
+	textures["Background"].push_back(createTexture("../assets/Graphics/Background/mapMenu.png"));//0
+	textures["Background"].push_back(createTexture("../assets/Graphics/Background/pauseMenu.png"));
+
+
+
+	textures["Player"].push_back(createTexture("../assets/Graphics/playerStats/hp.png"));
+	textures["Player"].push_back(createTexture("../assets/Graphics/playerStats/gold2.png"));
+	textures["Player"].push_back(createTexture("../assets/Graphics/playerStats/income2.png"));
+	textures["MENUHUD"].push_back(createTexture("../assets/Graphics/MENU/Play.png"));//0
+	textures["MENUHUD"].push_back(createTexture("../assets/Graphics/MENU/Quit.png"));//1
+
+	textures["Button"].push_back(createTexture("../assets/Graphics/Buttons/placeholder.png"));//0
+	textures["Button"].push_back(createTexture("../assets/Graphics/Buttons/turn.png"));//0
+	textures["Button"].push_back(createTexture("../assets/Graphics/Buttons/wave.png"));//0
 
 	//Text is rendered by creating a map where each key is a character that corrasponds to an actual character.png file.
 	std::string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz=0123456789.,;:$#'!\"/?%&()@-";
 
 	for (int i = 0; i < characters.size(); i++) {
 
-		std::string s = "Graphics/Text/text_" + std::to_string(i + 1) + ".png";
+		std::string s = "../assets/Graphics/Text/text_" + std::to_string(i + 1) + ".png";
 
 		char *cstr = &s[0u];
 		std::cout << (i + 1) << " " << characters[i] << " " << s << std::endl;
@@ -370,40 +370,40 @@ void setallTexture(void)
 
 void setAudioTracks() {
 
-	audio->addAudio("Audio/Soundtrack/infected.mp3", "background");
+	audio->addAudio("../assets/Audio/Soundtrack/infected.mp3", "background");
 	audio->volume("background", 20);
 	//audio->playRepeat("background");
-	audio->addAudio("Audio/Soundtrack/mainMenu.mp3", "menu");
+	audio->addAudio("../assets/Audio/Soundtrack/mainMenu.mp3", "menu");
 	audio->volume("menu", 100);
 	audio->playRepeat("menu");
 
-	audio->addAudio("Audio/Towers/rocket.mp3", "bullet");
+	audio->addAudio("../assets/Audio/Towers/rocket.mp3", "bullet");
 	audio->volume("bullet", 100);
-	audio->addAudio("Audio/Towers/place.mp3", "towerPlaced");
+	audio->addAudio("../assets/Audio/Towers/place.mp3", "towerPlaced");
 	audio->volume("towerPlaced", 30);
-	audio->addAudio("Audio/Towers/ship.mp3", "ship");
+	audio->addAudio("../assets/Audio/Towers/ship.mp3", "ship");
 	audio->volume("ship", 30);
-	audio->addAudio("Audio/Towers/laser.mp3", "laser");
-	audio->addAudio("Audio/Towers/cooldown.mp3", "cooldown");
+	audio->addAudio("../assets/Audio/Towers/laser.mp3", "laser");
+	audio->addAudio("../assets/Audio/Towers/cooldown.mp3", "cooldown");
 	audio->volume("cooldown", 30);
 
-	audio->addAudio("Audio/HUD/menuClick.mp3", "menuClick");
+	audio->addAudio("../assets/Audio/HUD/menuClick.mp3", "menuClick");
 	audio->volume("menuClick", 100);
-	audio->addAudio("Audio/HUD/teamChange.mp3", "teamChange");
+	audio->addAudio("../assets/Audio/HUD/teamChange.mp3", "teamChange");
 	audio->volume("teamChange", 200);
-	audio->addAudio("Audio/HUD/enemySelected.mp3", "enemySelected");
+	audio->addAudio("../assets/Audio/HUD/enemySelected.mp3", "enemySelected");
 	audio->volume("enemySelected", 100);
 
-	audio->addAudio("Audio/Enemy/enemy.mp3", "enemyDeath");
+	audio->addAudio("../assets/Audio/Enemy/enemy.mp3", "enemyDeath");
 	audio->volume("enemyDeath", 100);
 
-	audio->addAudio("Audio/Voice/BaseUnderAttack.mp3", "baseAttack");
+	audio->addAudio("../assets/Audio/Voice/BaseUnderAttack.mp3", "baseAttack");
 	audio->volume("baseAttack", 100);
-	audio->addAudio("Audio/Voice/EnemiesApproaching.mp3", "enemiesComing");
+	audio->addAudio("../assets/Audio/Voice/EnemiesApproaching.mp3", "enemiesComing");
 	audio->volume("EnemiesComing", 100);
-	audio->addAudio("Audio/Voice/EnemyEliminated.mp3", "enemiesDestroyed");
+	audio->addAudio("../assets/Audio/Voice/EnemyEliminated.mp3", "enemiesDestroyed");
 	audio->volume("EnemiesDestroyed", 100);
-	audio->addAudio("Audio/Voice/UnitReady.mp3", "unitReady");
+	audio->addAudio("../assets/Audio/Voice/UnitReady.mp3", "unitReady");
 	audio->volume("unitReady", 100);
 
 
@@ -612,7 +612,7 @@ int main(void){
 		char turn = turnArr[turnIndex];
 
 		int level = 2;
-		std::string fname = "Levels/map"+std::to_string(level)+".csv";
+		std::string fname = "../assets/Levels/map"+std::to_string(level)+".csv";
 		int wid = 0;
 		int height = 0;
 		int start = 1149;
@@ -653,7 +653,7 @@ int main(void){
 
 		/************************************************FILE INIT************************************************/
 
-		std::vector < std::string>  discriptionTexts = fileLoader.LoadVectorTextFile("Descriptions/discriptions.txt");
+		std::vector < std::string>  discriptionTexts = fileLoader.LoadVectorTextFile("../assets/Descriptions/discriptions.txt");
 		std::cout << "size = " << discriptionTexts.size() << std::endl;
 		/************************************************GRAPH INIT************************************************/
 
@@ -727,7 +727,7 @@ int main(void){
 
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 0.85, 2, 10000, 0.5));index2 += 4;
 		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index2, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index2), textures["Explosion"], size, 100,   "A-Class High Beam Laser",     4, 4, 500, 0));
-		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")) , textures["Explosion"], size, 0, "Sell", 0, 0, 0, 0));
+		towerDetailHUD.push_back(new TowerObject(glm::vec3(1.8f, 3.8f, 0.0f), std::vector<GLuint>(createTexture("../assets/Graphics/Tower/sell.png"), createTexture("../assets/Graphics/Tower/sell.png")) , textures["Explosion"], size, 0, "Sell", 0, 0, 0, 0));
 
 
 		enemyDetailHUD.push_back(new EnemyObject(glm::vec3(1.8f, 3.8f, 0.0f), textures["Enemy"][0], size, 50, "Servent Minor", textures["Particle"][1], 1.0, 10, 0));//0
@@ -806,7 +806,7 @@ int main(void){
 
 		blueprints.push_back(new TowerObject(glm::vec3(-7.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 200, "A-Class Auto Assault Bomber", 0.85,  2,   10000, 0.5));index += 4;
 		blueprints.push_back(new TowerObject(glm::vec3(-8.35f, 9.3f, 0.0f), std::vector<GLuint>(textures["Tower"].begin() + index, textures["Tower"].end() - 4 * (textures["Tower"].size() / 4 - 1) + index), textures["Explosion"], size, 100,   "A-Class High Beam Laser",     4,  4,   500, 0));//index += 4;
-		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(createTexture("Graphics/Tower/sell.png"), createTexture("Graphics/Tower/sell.png")), textures["Explosion"], size, 5,   "Sell",     0,  0,   0, 0));//index += 4;
+		blueprints.push_back(new TowerObject(glm::vec3(-9.35f, 9.3f, 0.0f), std::vector<GLuint>(createTexture("../assets/Graphics/Tower/sell.png"), createTexture("../assets/Graphics/Tower/sell.png")), textures["Explosion"], size, 5,   "Sell",     0,  0,   0, 0));//index += 4;
 
 
 
@@ -1094,26 +1094,26 @@ int main(void){
 				double xpos, ypos;
 				glfwGetCursorPos(window, &xpos, &ypos);
 				if ((16 * factor <= xpos && xpos <= 254.4 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("../assets/Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(1.0f, 0.85f, 0.0f));
 
 				}
 				if ((282.4 * factor <= xpos && xpos <= 517.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime()))startGame("../assets/Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(0.07f, 0.85f, 0.0f));
 				}
 				if ((546.6* factor <= xpos && xpos <= 781.6 * factor) && (26.4 * factor <= ypos && ypos <= 256.8 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("../assets/Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(-0.9f, 0.85f, 0.0f));
 
 				}
 				//lower levels
 				if ((127.2 * factor <= xpos && xpos <= 360.8 * factor) && (317.6 * factor <= ypos && ypos <= 550.4 * factor)) {//start first row
-					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("../assets/Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(0.6f, 1.82f, 0.0f));
 				}
 				if ((436 * factor <= xpos && xpos <= 676.8 * factor) && (317.6 * factor <= ypos && ypos <= 550.4 * factor)) {//start first row
-						if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+						if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && (timeOfLastMove + 0.15< glfwGetTime()))startGame("../assets/Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 						selectionGraphic2->setPosition(glm::vec3(-0.5f, 1.82f, 0.0f));
 
 				}
@@ -1125,24 +1125,24 @@ int main(void){
 
 				if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					startGame("Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					startGame("../assets/Levels/map" + std::to_string(1) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 
 				}
 				if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					startGame("Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					startGame("../assets/Levels/map" + std::to_string(2) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					startGame("Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					startGame("../assets/Levels/map" + std::to_string(3) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					startGame("Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					startGame("../assets/Levels/map" + std::to_string(4) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 				if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS && (timeOfLastMove + 0.15 < glfwGetTime())) {
 					timeOfLastMove = glfwGetTime();
-					startGame("Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
+					startGame("../assets/Levels/map" + std::to_string(5) + ".csv", cameraTranslatePos, cameraZoom, background, selectionGraphic, size);
 				}
 
 				break;
