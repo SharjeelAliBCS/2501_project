@@ -1,4 +1,5 @@
-# Comp2501 Term Project (RTS/Tower Defense)
+![alt text](assets/Graphics/Background/title.png)
+
 Github: https://github.com/SharjeelAliBCS/2501_project
 
 ## Contents
@@ -23,7 +24,7 @@ The game implements C++ and the OpenGL library. Everything from shaders to the e
 ## Set up
 
 To set up on windows, run the cmakelists file using the following command:
-`cmake .` This will build the dependencies for a visual studio project. Note: You must first open the cmakelists.txt file and specify where the libraries are located first. 
+`cmake .` This will build the dependencies for a visual studio project. Once visual studio is running, set the project as the "startup project". Note: You must first open the cmakelists.txt file and specify where the libraries are located first. 
 
 ## Guide
 
