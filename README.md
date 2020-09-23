@@ -1,5 +1,6 @@
 ![alt text](assets/Graphics/Title/title.png)
 
+# A Sci-fi real time strategy (RTS) video game
 ## Contents
 1. [Overview](#Overview)
 2. [Architecture](#Architecture)
